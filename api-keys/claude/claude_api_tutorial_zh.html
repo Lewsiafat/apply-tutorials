@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>如何獲取 Claude API 金鑰</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            font-family: 'Noto Sans TC', 'Inter', sans-serif;
+            background-color: #0d0d0d;
+            color: #e0e0e0;
+            line-height: 1.6;
+        }
+
+        body {
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 50%, #D4A574 100%);
+            padding: 60px 40px;
+            border-radius: 12px;
+            margin-bottom: 60px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(212, 165, 116, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-emoji {
+            font-size: 80px;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #ffffff;
+        }
+
+        .hero p {
+            font-size: 18px;
+            color: #d0d0d0;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            margin-bottom: 50px;
+        }
+
+        .header h2 {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: #ffffff;
+        }
+
+        .header p {
+            font-size: 16px;
+            color: #a0a0a0;
+        }
+
+        /* Main Content Wrapper */
+        .content-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        @media (max-width: 900px) {
+            .content-wrapper {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Steps Section */
+        .steps-section {
+            flex: 1;
+        }
+
+        .step {
+            background: #1a1a1a;
+            border-left: 4px solid #D4A574;
+            padding: 30px;
+            margin-bottom: 25px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .step:hover {
+            background: #222222;
+            transform: translateX(5px);
+        }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .step-number {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: #D4A574;
+            color: #0d0d0d;
+            font-weight: 700;
+            font-size: 18px;
+            border-radius: 50%;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+
+        .step h3 {
+            font-size: 22px;
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+        }
+
+        .step p {
+            color: #c0c0c0;
+            margin-bottom: 15px;
+            font-size: 15px;
+        }
+
+        .step code {
+            background: #0d0d0d;
+            border: 1px solid #333333;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            color: #D4A574;
+            word-break: break-all;
+            display: inline-block;
+            margin: 5px 0;
+        }
+
+        .step-content {
+            margin: 15px 0;
+        }
+
+        .browser-mockup {
+            background: #0d0d0d;
+            border: 1px solid #333333;
+            border-radius: 8px;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+
+        .browser-header {
+            background: #1a1a1a;
+            padding: 10px 15px;
+            border-bottom: 1px solid #333333;
+            font-size: 12px;
+            color: #808080;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .browser-content {
+            padding: 20px;
+            font-size: 14px;
+            color: #c0c0c0;
+            background: #151515;
+        }
+
+        .browser-content p {
+            margin-bottom: 10px;
+        }
+
+        .highlight-box {
+            background: #1a1a1a;
+            border: 1px solid #D4A574;
+            border-radius: 6px;
+            padding: 15px;
+            margin: 15px 0;
+            color: #d0d0d0;
+            font-size: 14px;
+        }
+
+        .highlight-box strong {
+            color: #D4A574;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .sidebar-box {
+            background: #1a1a1a;
+            border: 1px solid #333333;
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        .sidebar-box.warning {
+            border-color: #ff6b6b;
+            border-left: 4px solid #ff6b6b;
+        }
+
+        .sidebar-box.tip {
+            border-color: #D4A574;
+            border-left: 4px solid #D4A574;
+        }
+
+        .sidebar-box h4 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .sidebar-box.warning h4 {
+            color: #ff9999;
+        }
+
+        .sidebar-box.tip h4 {
+            color: #D4A574;
+        }
+
+        .sidebar-box p {
+            font-size: 13px;
+            color: #a0a0a0;
+            line-height: 1.5;
+        }
+
+        .sidebar-box ul {
+            list-style: none;
+            font-size: 13px;
+            color: #a0a0a0;
+            margin: 10px 0;
+        }
+
+        .sidebar-box li {
+            padding: 5px 0;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .sidebar-box li::before {
+            content: '•';
+            position: absolute;
+            left: 8px;
+            color: #D4A574;
+        }
+
+        .sidebar-box.warning li::before {
+            color: #ff6b6b;
+        }
+
+        /* Footer */
+        .footer {
+            background: #1a1a1a;
+            border: 1px solid #333333;
+            border-radius: 8px;
+            padding: 30px;
+            text-align: center;
+            color: #808080;
+            margin-top: 40px;
+        }
+
+        .footer p {
+            margin-bottom: 10px;
+        }
+
+        .footer a {
+            color: #D4A574;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer a:hover {
+            color: #e5b896;
+        }
+
+        /* Icons/Emojis */
+        .icon {
+            display: inline-block;
+            margin-right: 5px;
+        }
+
+        /* Button Style */
+        .action-button {
+            background: #D4A574;
+            color: #0d0d0d;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            margin: 10px 0;
+            display: inline-block;
+        }
+
+        .action-button:hover {
+            background: #e5b896;
+            transform: translateY(-2px);
+        }
+
+        /* Billing Info */
+        .billing-section {
+            background: #1a1a1a;
+            border-left: 4px solid #D4A574;
+            padding: 30px;
+            margin: 30px 0;
+            border-radius: 8px;
+        }
+
+        .billing-section h3 {
+            font-size: 22px;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 15px;
+        }
+
+        .billing-section p {
+            color: #c0c0c0;
+            margin-bottom: 12px;
+            font-size: 15px;
+        }
+
+        .billing-list {
+            list-style: none;
+            color: #c0c0c0;
+            font-size: 14px;
+            margin: 15px 0;
+        }
+
+        .billing-list li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .billing-list li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #D4A574;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Hero Section -->
+        <div class="hero">
+            <div class="hero-content">
+                <span class="hero-emoji">🟤</span>
+                <h1>如何獲取 Claude API 金鑰</h1>
+                <p>按照此逐步指南獲取您的 Anthropic Claude API 金鑰，開始使用人工智能進行構建</p>
+            </div>
+        </div>
+
+        <!-- Header -->
+        <div class="header">
+            <h2>開始使用 Claude API</h2>
+            <p>此指南將引導您完成建立 API 金鑰的過程，以存取 Claude 模型</p>
+        </div>
+
+        <!-- Content Wrapper -->
+        <div class="content-wrapper">
+            <!-- Steps Section -->
+            <div class="steps-section">
+                <!-- Step 1 -->
+                <div class="step">
+                    <div class="step-header">
+                        <div class="step-number">1</div>
+                        <h3>前往 Anthropic 主控台</h3>
+                    </div>
+                    <p>導覽到 Anthropic 主控台，您可以在該位置管理 API 金鑰和帳戶設定。</p>
+                    <div class="browser-mockup">
+                        <div class="browser-header">https://console.anthropic.com</div>
+                        <div class="browser-content">
+                            <p><strong>Anthropic API 主控台</strong></p>
+                            <p>造訪：<code>https://console.anthropic.com</code></p>
+                            <p>這是存取您的 API 金鑰和帳戶的官方平台。</p>
+                        </div>
+                    </div>
+                    <div class="highlight-box">
+                        <span class="icon">💡</span>
+                        <strong>提示：</strong>將此頁面加入書籤以便今後快速存取。
+                    </div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="step">
+                    <div class="step-header">
+                        <div class="step-number">2</div>
+                        <h3>建立帳戶或登入</h3>
+                    </div>
+                    <p>如果您沒有 Anthropic 帳戶，請建立一個帳戶。如果您已經有帳戶，只需使用您的認證資訊登入。</p>
+                    <div class="step-content">
+                        <div class="highlight-box">
+                            <span class="icon">📧</span>
+                            您可以透過以下方式註冊：
+                            <ul style="margin-top: 10px; margin-left: 20px;">
+                                <li>電子郵件地址</li>
+                                <li>Google 帳戶</li>
+                                <li>GitHub 帳戶</li>
+                            </ul>
+                        </div>
+                        <p style="margin-top: 15px; color: #a0a0a0; font-size: 14px;">在註冊期間，您需要提供電子郵件並建立密碼，或透過您偏好的 OAuth 提供者進行身份驗證。</p>
+                    </div>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="step">
+                    <div class="step-header">
+                        <div class="step-number">3</div>
+                        <h3>導覽至 API 金鑰部分</h3>
+                    </div>
+                    <p>登入後，在主控台儀表板中找到 API 金鑰部分。</p>
+                    <div class="browser-mockup">
+                        <div class="browser-header">console.anthropic.com / dashboard</div>
+                        <div class="browser-content">
+                            <p><strong>導覽步驟：</strong></p>
+                            <p>1. 按一下您的帳戶圖示或功能表（右上方）</p>
+                            <p>2. 從下拉式選單中選擇「API 金鑰」或「金鑰」</p>
+                            <p>3. 您會看到現有金鑰的清單（如果有的話）</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="step">
+                    <div class="step-header">
+                        <div class="step-number">4</div>
+                        <h3>建立新的 API 金鑰</h3>
+                    </div>
+                    <p>按一下按鈕以建立新的 API 金鑰並為其提供描述性名稱。</p>
+                    <div class="step-content">
+                        <div class="highlight-box">
+                            <span class="icon">✏️</span>
+                            <strong>命名最佳實務：</strong>
+                            <ul style="margin-top: 10px; margin-left: 20px; color: #c0c0c0;">
+                                <li>使用描述性名稱（例如「production-app」、「testing-env」）</li>
+                                <li>包含用途或環境</li>
+                                <li>避免使用通用名稱，如「Key1」或「Test」</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="browser-mockup">
+                        <div class="browser-header">create_api_key_dialog</div>
+                        <div class="browser-content">
+                            <p><strong>建立 API 金鑰</strong></p>
+                            <p>金鑰名稱：<code>my-production-api</code></p>
+                            <p>提供名稱後，系統會為您產生唯一的金鑰。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 5 -->
+                <div class="step">
+                    <div class="step-header">
+                        <div class="step-number">5</div>
+                        <h3>複製並儲存您的 API 金鑰</h3>
+                    </div>
+                    <p>複製您的 API 金鑰並將其安全地儲存。關閉此對話方塊後，您將無法再看到它。</p>
+                    <div class="step-content">
+                        <div class="highlight-box">
+                            <span class="icon">🔑</span>
+                            <strong>您的 API 金鑰格式：</strong><br>
+                            <code>sk-ant-api...</code>
+                        </div>
+                        <p style="margin-top: 15px; color: #a0a0a0; font-size: 14px;">所有 Claude API 金鑰都以 <strong>sk-ant-</strong> 前綴開頭，後面跟著一長串英數字字符。</p>
+                    </div>
+                </div>
+
+                <!-- Billing Section -->
+                <div class="billing-section">
+                    <h3>帳單設定</h3>
+                    <p>若要使用您的 API 金鑰並存取 Claude 模型，您需要設定帳單資訊。</p>
+                    <ul class="billing-list">
+                        <li><strong>信用額度制系統：</strong>您根據 token 消耗量為您使用的內容付費</li>
+                        <li><strong>設定帳單限額：</strong>使用預算上限控制您的支出</li>
+                        <li><strong>每月發票：</strong>在儀表板中追蹤您的使用情況和成本</li>
+                        <li><strong>無設定費用：</strong>從小規模開始，視需要擴展</li>
+                    </ul>
+                    <p style="margin-top: 15px; color: #c0c0c0; font-size: 14px;">定價因模型而異。Claude Opus 功能最強大（成本最高），而 Haiku 速度最快且最實惠。如需目前費率，請查看 Anthropic 定價頁面。</p>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <!-- Warning Box -->
+                <div class="sidebar-box warning">
+                    <h4>
+                        <span class="icon">⚠️</span> 安全警告
+                    </h4>
+                    <p>永遠不要公開分享您的 API 金鑰或將其提交至版本控制。將其視為密碼。</p>
+                    <ul>
+                        <li>儲存在環境變數中</li>
+                        <li>使用秘密管理工具</li>
+                        <li>定期輪換金鑰</li>
+                        <li>刪除未使用的金鑰</li>
+                    </ul>
+                </div>
+
+                <!-- Tip Box -->
+                <div class="sidebar-box tip">
+                    <h4>
+                        <span class="icon">💡</span> 可用模型
+                    </h4>
+                    <p>取得 API 金鑰後，您可以使用這些 Claude 模型：</p>
+                    <ul>
+                        <li><strong>Claude Opus：</strong>最有能力</li>
+                        <li><strong>Claude Sonnet：</strong>平衡的</li>
+                        <li><strong>Claude Haiku：</strong>快速且實惠</li>
+                    </ul>
+                </div>
+
+                <!-- Info Box -->
+                <div class="sidebar-box tip">
+                    <h4>
+                        <span class="icon">📚</span> 資源
+                    </h4>
+                    <p>深入了解如何使用 Claude API：</p>
+                    <ul>
+                        <li>API 文件</li>
+                        <li>程式碼範例</li>
+                        <li>整合指南</li>
+                        <li>支援與社群</li>
+                    </ul>
+                </div>
+            </aside>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>有問題嗎？造訪 <a href="#">Anthropic 文件</a>或<a href="#">支援中心</a></p>
+            <p style="margin-top: 15px; font-size: 13px;">最後更新：2026 年 3 月 | <a href="#">報告問題</a></p>
+        </div>
+    </div>
+</body>
+</html>

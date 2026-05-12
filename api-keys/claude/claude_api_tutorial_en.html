@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Get a Claude API Key</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0d0d0d;
+            color: #e0e0e0;
+            line-height: 1.6;
+        }
+
+        body {
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 50%, #D4A574 100%);
+            padding: 60px 40px;
+            border-radius: 12px;
+            margin-bottom: 60px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(212, 165, 116, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-emoji {
+            font-size: 80px;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #ffffff;
+        }
+
+        .hero p {
+            font-size: 18px;
+            color: #d0d0d0;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            margin-bottom: 50px;
+        }
+
+        .header h2 {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: #ffffff;
+        }
+
+        .header p {
+            font-size: 16px;
+            color: #a0a0a0;
+        }
+
+        /* Main Content Wrapper */
+        .content-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        @media (max-width: 900px) {
+            .content-wrapper {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Steps Section */
+        .steps-section {
+            flex: 1;
+        }
+
+        .step {
+            background: #1a1a1a;
+            border-left: 4px solid #D4A574;
+            padding: 30px;
+            margin-bottom: 25px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .step:hover {
+            background: #222222;
+            transform: translateX(5px);
+        }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .step-number {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: #D4A574;
+            color: #0d0d0d;
+            font-weight: 700;
+            font-size: 18px;
+            border-radius: 50%;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+
+        .step h3 {
+            font-size: 22px;
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+        }
+
+        .step p {
+            color: #c0c0c0;
+            margin-bottom: 15px;
+            font-size: 15px;
+        }
+
+        .step code {
+            background: #0d0d0d;
+            border: 1px solid #333333;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            color: #D4A574;
+            word-break: break-all;
+            display: inline-block;
+            margin: 5px 0;
+        }
+
+        .step-content {
+            margin: 15px 0;
+        }
+
+        .browser-mockup {
+            background: #0d0d0d;
+            border: 1px solid #333333;
+            border-radius: 8px;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+
+        .browser-header {
+            background: #1a1a1a;
+            padding: 10px 15px;
+            border-bottom: 1px solid #333333;
+            font-size: 12px;
+            color: #808080;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .browser-content {
+            padding: 20px;
+            font-size: 14px;
+            color: #c0c0c0;
+            background: #151515;
+        }
+
+        .browser-content p {
+            margin-bottom: 10px;
+        }
+
+        .highlight-box {
+            background: #1a1a1a;
+            border: 1px solid #D4A574;
+            border-radius: 6px;
+            padding: 15px;
+            margin: 15px 0;
+            color: #d0d0d0;
+            font-size: 14px;
+        }
+
+        .highlight-box strong {
+            color: #D4A574;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .sidebar-box {
+            background: #1a1a1a;
+            border: 1px solid #333333;
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        .sidebar-box.warning {
+            border-color: #ff6b6b;
+            border-left: 4px solid #ff6b6b;
+        }
+
+        .sidebar-box.tip {
+            border-color: #D4A574;
+            border-left: 4px solid #D4A574;
+        }
+
+        .sidebar-box h4 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .sidebar-box.warning h4 {
+            color: #ff9999;
+        }
+
+        .sidebar-box.tip h4 {
+            color: #D4A574;
+        }
+
+        .sidebar-box p {
+            font-size: 13px;
+            color: #a0a0a0;
+            line-height: 1.5;
+        }
+
+        .sidebar-box ul {
+            list-style: none;
+            font-size: 13px;
+            color: #a0a0a0;
+            margin: 10px 0;
+        }
+
+        .sidebar-box li {
+            padding: 5px 0;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .sidebar-box li::before {
+            content: '•';
+            position: absolute;
+            left: 8px;
+            color: #D4A574;
+        }
+
+        .sidebar-box.warning li::before {
+            color: #ff6b6b;
+        }
+
+        /* Footer */
+        .footer {
+            background: #1a1a1a;
+            border: 1px solid #333333;
+            border-radius: 8px;
+            padding: 30px;
+            text-align: center;
+            color: #808080;
+            margin-top: 40px;
+        }
+
+        .footer p {
+            margin-bottom: 10px;
+        }
+
+        .footer a {
+            color: #D4A574;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer a:hover {
+            color: #e5b896;
+        }
+
+        /* Icons/Emojis */
+        .icon {
+            display: inline-block;
+            margin-right: 5px;
+        }
+
+        /* Button Style */
+        .action-button {
+            background: #D4A574;
+            color: #0d0d0d;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            margin: 10px 0;
+            display: inline-block;
+        }
+
+        .action-button:hover {
+            background: #e5b896;
+            transform: translateY(-2px);
+        }
+
+        /* Billing Info */
+        .billing-section {
+            background: #1a1a1a;
+            border-left: 4px solid #D4A574;
+            padding: 30px;
+            margin: 30px 0;
+            border-radius: 8px;
+        }
+
+        .billing-section h3 {
+            font-size: 22px;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 15px;
+        }
+
+        .billing-section p {
+            color: #c0c0c0;
+            margin-bottom: 12px;
+            font-size: 15px;
+        }
+
+        .billing-list {
+            list-style: none;
+            color: #c0c0c0;
+            font-size: 14px;
+            margin: 15px 0;
+        }
+
+        .billing-list li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .billing-list li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #D4A574;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Hero Section -->
+        <div class="hero">
+            <div class="hero-content">
+                <span class="hero-emoji">🟤</span>
+                <h1>How to Get a Claude API Key</h1>
+                <p>Follow this step-by-step guide to obtain your Anthropic Claude API key and start building with AI</p>
+            </div>
+        </div>
+
+        <!-- Header -->
+        <div class="header">
+            <h2>Getting Started with Claude API</h2>
+            <p>This guide will walk you through the process of creating an API key to access Claude models</p>
+        </div>
+
+        <!-- Content Wrapper -->
+        <div class="content-wrapper">
+            <!-- Steps Section -->
+            <div class="steps-section">
+                <!-- Step 1 -->
+                <div class="step">
+                    <div class="step-header">
+                        <div class="step-number">1</div>
+                        <h3>Go to Anthropic Console</h3>
+                    </div>
+                    <p>Navigate to the Anthropic Console where you can manage your API keys and account settings.</p>
+                    <div class="browser-mockup">
+                        <div class="browser-header">https://console.anthropic.com</div>
+                        <div class="browser-content">
+                            <p><strong>Anthropic API Console</strong></p>
+                            <p>Visit: <code>https://console.anthropic.com</code></p>
+                            <p>This is the official platform to access your API keys and account.</p>
+                        </div>
+                    </div>
+                    <div class="highlight-box">
+                        <span class="icon">💡</span>
+                        <strong>Tip:</strong> Bookmark this page for easy access in the future.
+                    </div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="step">
+                    <div class="step-header">
+                        <div class="step-number">2</div>
+                        <h3>Create an Account or Sign In</h3>
+                    </div>
+                    <p>If you don't have an Anthropic account, create one. If you already have an account, simply sign in with your credentials.</p>
+                    <div class="step-content">
+                        <div class="highlight-box">
+                            <span class="icon">📧</span>
+                            You can sign up with:
+                            <ul style="margin-top: 10px; margin-left: 20px;">
+                                <li>Email address</li>
+                                <li>Google account</li>
+                                <li>GitHub account</li>
+                            </ul>
+                        </div>
+                        <p style="margin-top: 15px; color: #a0a0a0; font-size: 14px;">During signup, you'll need to provide your email and create a password, or authenticate via your preferred OAuth provider.</p>
+                    </div>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="step">
+                    <div class="step-header">
+                        <div class="step-number">3</div>
+                        <h3>Navigate to API Keys Section</h3>
+                    </div>
+                    <p>Once logged in, find the API Keys section in your console dashboard.</p>
+                    <div class="browser-mockup">
+                        <div class="browser-header">console.anthropic.com / dashboard</div>
+                        <div class="browser-content">
+                            <p><strong>Navigation Steps:</strong></p>
+                            <p>1. Click on your account icon or menu (top-right)</p>
+                            <p>2. Select "API Keys" or "Keys" from the dropdown</p>
+                            <p>3. You'll see a list of existing keys (if any)</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="step">
+                    <div class="step-header">
+                        <div class="step-number">4</div>
+                        <h3>Create a New API Key</h3>
+                    </div>
+                    <p>Click the button to create a new API key and give it a descriptive name.</p>
+                    <div class="step-content">
+                        <div class="highlight-box">
+                            <span class="icon">✏️</span>
+                            <strong>Naming Best Practices:</strong>
+                            <ul style="margin-top: 10px; margin-left: 20px; color: #c0c0c0;">
+                                <li>Use descriptive names (e.g., "production-app", "testing-env")</li>
+                                <li>Include the purpose or environment</li>
+                                <li>Avoid generic names like "Key1" or "Test"</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="browser-mockup">
+                        <div class="browser-header">create_api_key_dialog</div>
+                        <div class="browser-content">
+                            <p><strong>Create API Key</strong></p>
+                            <p>Key Name: <code>my-production-api</code></p>
+                            <p>The system will generate a unique key for you after you provide a name.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 5 -->
+                <div class="step">
+                    <div class="step-header">
+                        <div class="step-number">5</div>
+                        <h3>Copy & Save Your API Key</h3>
+                    </div>
+                    <p>Copy your API key and store it securely. You won't be able to see it again after closing this dialog.</p>
+                    <div class="step-content">
+                        <div class="highlight-box">
+                            <span class="icon">🔑</span>
+                            <strong>Your API Key Format:</strong><br>
+                            <code>sk-ant-api...</code>
+                        </div>
+                        <p style="margin-top: 15px; color: #a0a0a0; font-size: 14px;">All Claude API keys start with the prefix <strong>sk-ant-</strong> followed by a long alphanumeric string.</p>
+                    </div>
+                </div>
+
+                <!-- Billing Section -->
+                <div class="billing-section">
+                    <h3>Billing Setup</h3>
+                    <p>To use your API key and access Claude models, you'll need to set up billing information.</p>
+                    <ul class="billing-list">
+                        <li><strong>Credit-based system:</strong> You pay for what you use based on token consumption</li>
+                        <li><strong>Set billing limits:</strong> Control your spending with budget caps</li>
+                        <li><strong>Monthly invoices:</strong> Track your usage and costs in the dashboard</li>
+                        <li><strong>No setup fees:</strong> Start small and scale as needed</li>
+                    </ul>
+                    <p style="margin-top: 15px; color: #c0c0c0; font-size: 14px;">Pricing varies by model. Claude Opus is the most capable (highest cost), while Haiku is the fastest and most affordable. Check the Anthropic pricing page for current rates.</p>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <!-- Warning Box -->
+                <div class="sidebar-box warning">
+                    <h4>
+                        <span class="icon">⚠️</span> Security Warning
+                    </h4>
+                    <p>Never share your API key publicly or commit it to version control. Treat it like a password.</p>
+                    <ul>
+                        <li>Store in environment variables</li>
+                        <li>Use secrets management tools</li>
+                        <li>Rotate keys periodically</li>
+                        <li>Delete unused keys</li>
+                    </ul>
+                </div>
+
+                <!-- Tip Box -->
+                <div class="sidebar-box tip">
+                    <h4>
+                        <span class="icon">💡</span> Available Models
+                    </h4>
+                    <p>Once you have an API key, you can use these Claude models:</p>
+                    <ul>
+                        <li><strong>Claude Opus:</strong> Most capable</li>
+                        <li><strong>Claude Sonnet:</strong> Balanced</li>
+                        <li><strong>Claude Haiku:</strong> Fast & affordable</li>
+                    </ul>
+                </div>
+
+                <!-- Info Box -->
+                <div class="sidebar-box tip">
+                    <h4>
+                        <span class="icon">📚</span> Resources
+                    </h4>
+                    <p>Learn more about using the Claude API:</p>
+                    <ul>
+                        <li>API Documentation</li>
+                        <li>Code Examples</li>
+                        <li>Integration Guides</li>
+                        <li>Support & Community</li>
+                    </ul>
+                </div>
+            </aside>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>Have questions? Visit the <a href="#">Anthropic Documentation</a> or <a href="#">Support Center</a></p>
+            <p style="margin-top: 15px; font-size: 13px;">Last updated: March 2026 | <a href="#">Report an issue</a></p>
+        </div>
+    </div>
+</body>
+</html>

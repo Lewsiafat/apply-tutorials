@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>如何取得 OpenAI API Key</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Noto Sans TC','Inter',sans-serif;background:#0d0d0d;color:#d1d5db;line-height:1.8}
+a{color:#10a37f;text-decoration:none}
+.hero{background:linear-gradient(135deg,#0d0d0d 0%,#1a1a2e 50%,#10a37f 100%);padding:80px 20px;text-align:center}
+.hero h1{font-size:2.6rem;font-weight:800;color:#fff;margin-bottom:16px}
+.hero .logo{font-size:3rem;margin-bottom:16px}
+.hero p{font-size:1.2rem;color:#9ca3af;max-width:600px;margin:0 auto}
+.container{max-width:800px;margin:0 auto;padding:40px 20px}
+.step{background:#1a1a1a;border-radius:12px;padding:32px;margin-bottom:40px;border-left:4px solid #10a37f}
+.step-number{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;background:#10a37f;color:#fff;border-radius:50%;font-weight:700;font-size:1.1rem;margin-bottom:16px}
+.step h2{font-size:1.5rem;color:#fff;margin-bottom:12px}
+.step p{margin-bottom:16px;color:#9ca3af}
+.mockup{background:#111;border-radius:8px;overflow:hidden;margin:20px 0;border:1px solid #333}
+.mockup-bar{background:#1a1a1a;padding:8px 16px;display:flex;align-items:center;gap:8px;border-bottom:1px solid #333}
+.mockup-dot{width:12px;height:12px;border-radius:50%;display:inline-block}
+.mockup-dot.red{background:#ec6a5e}.mockup-dot.yellow{background:#f4bf4f}.mockup-dot.green{background:#61c554}
+.mockup-url{background:#111;color:#666;padding:4px 12px;border-radius:4px;font-size:0.8rem;flex:1;margin-left:8px}
+.mockup-body{padding:20px}
+.sidebar{display:flex}.sidebar-nav{background:#1a1a1a;width:200px;min-width:200px;padding:16px;border-right:1px solid #333}
+.sidebar-nav .nav-item{padding:8px 12px;border-radius:6px;color:#9ca3af;font-size:0.85rem;margin-bottom:4px}
+.sidebar-nav .nav-item.active{background:#10a37f;color:#fff}
+.sidebar-content{flex:1;padding:20px}
+.btn{display:inline-block;padding:10px 24px;border-radius:6px;font-weight:600;font-size:0.9rem;border:none}
+.btn-primary{background:#10a37f;color:#fff}
+.highlight-box{border:2px dashed #10a37f;border-radius:8px;padding:12px;margin:12px 0;position:relative}
+.highlight-box::before{content:'👆';position:absolute;top:-14px;left:12px;font-size:1.2rem}
+.tip{background:#0d2818;border-left:4px solid #10a37f;border-radius:0 8px 8px 0;padding:16px;margin:16px 0}
+.tip::before{content:'💡 小提示：';font-weight:700;color:#10a37f}
+.warning{background:#2d1f0d;border-left:4px solid #f59e0b;border-radius:0 8px 8px 0;padding:16px;margin:16px 0}
+.warning::before{content:'⚠️ 重要：';font-weight:700;color:#f59e0b}
+.token-box{background:#111;border:1px solid #10a37f;border-radius:8px;padding:16px;margin:12px 0;word-break:break-all;font-family:monospace;font-size:0.85rem;color:#10a37f}
+.connector{width:4px;height:30px;background:#10a37f;margin:0 auto;opacity:0.3}
+.success-box{background:#0d2818;border:2px solid #10a37f;border-radius:12px;padding:24px;text-align:center;margin:20px 0}
+.success-box .icon{font-size:3rem;margin-bottom:12px}
+.form-mock{background:#1a1a1a;border-radius:8px;padding:16px;margin:12px 0}
+.form-mock label{display:block;color:#9ca3af;font-size:0.8rem;font-weight:600;margin-bottom:6px}
+.form-mock .input-mock{background:#111;border:1px solid #333;border-radius:4px;padding:10px 12px;color:#fff;width:100%;margin-bottom:12px;font-size:0.9rem}
+@media(max-width:640px){.hero h1{font-size:1.8rem}.sidebar{flex-direction:column}.sidebar-nav{width:100%;min-width:100%}}
+</style>
+</head>
+<body>
+<div class="hero">
+  <div class="logo">🟢</div>
+  <h1>如何取得<br>OpenAI API Key</h1>
+  <p>步驟教學 — 取得 GPT-4、GPT-4o 等模型的 API 存取權</p>
+</div>
+<div class="container">
+
+<div class="step">
+  <div class="step-number">1</div>
+  <h2>前往 OpenAI Platform</h2>
+  <p>在瀏覽器中開啟 OpenAI 開發者平台，使用你的 OpenAI 帳號登入（或註冊新帳號）。</p>
+  <div class="mockup">
+    <div class="mockup-bar"><span class="mockup-dot red"></span><span class="mockup-dot yellow"></span><span class="mockup-dot green"></span><div class="mockup-url">https://platform.openai.com</div></div>
+    <div class="mockup-body" style="text-align:center;padding:40px">
+      <div style="font-size:2rem;margin-bottom:12px">🟢</div>
+      <h3 style="color:#fff;margin-bottom:16px">Welcome to OpenAI Platform</h3>
+      <div class="highlight-box" style="display:inline-block"><span class="btn btn-primary">Log in（登入）</span></div>
+      <span style="color:#666;margin:0 12px">or</span>
+      <span class="btn" style="background:#333;color:#fff">Sign up（註冊）</span>
+    </div>
+  </div>
+  <div class="tip">如果還沒有帳號，點 <strong>「Sign up」</strong> 註冊。可以用 Google、Microsoft 或 Apple 帳號快速註冊。</div>
+</div>
+<div class="connector"></div>
+
+<div class="step">
+  <div class="step-number">2</div>
+  <h2>進入 API Keys 頁面</h2>
+  <p>登入後，在左側選單或儀表板中找到並點擊 <strong>「API keys」</strong>。</p>
+  <div class="mockup">
+    <div class="mockup-bar"><span class="mockup-dot red"></span><span class="mockup-dot yellow"></span><span class="mockup-dot green"></span><div class="mockup-url">platform.openai.com/api-keys</div></div>
+    <div class="mockup-body" style="padding:0">
+      <div class="sidebar">
+        <div class="sidebar-nav">
+          <div class="nav-item">Dashboard</div>
+          <div class="nav-item">Assistants</div>
+          <div class="nav-item">Playground</div>
+          <div class="nav-item active">API keys</div>
+          <div class="nav-item">Usage</div>
+          <div class="nav-item">Billing</div>
+        </div>
+        <div class="sidebar-content">
+          <h3 style="color:#fff;margin-bottom:16px">API Keys</h3>
+          <p style="color:#666;margin-bottom:16px">你的 API 金鑰列在下方。</p>
+          <div class="highlight-box"><span class="btn btn-primary">+ Create new secret key</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="connector"></div>
+
+<div class="step">
+  <div class="step-number">3</div>
+  <h2>建立新的 API Key</h2>
+  <p>點 <strong>「Create new secret key」</strong>，可以輸入一個名稱方便辨識，然後按 <strong>「Create」</strong>。</p>
+  <div class="mockup">
+    <div class="mockup-bar"><span class="mockup-dot red"></span><span class="mockup-dot yellow"></span><span class="mockup-dot green"></span><div class="mockup-url">platform.openai.com/api-keys</div></div>
+    <div class="mockup-body">
+      <div style="background:#1a1a1a;border-radius:12px;padding:24px;max-width:400px;margin:0 auto">
+        <h3 style="color:#fff;margin-bottom:16px;text-align:center">Create new secret key</h3>
+        <div class="form-mock">
+          <label>Name（名稱，選填）</label>
+          <div class="input-mock">我的專案 Key</div>
+          <label>Permissions（權限）</label>
+          <div class="input-mock">All</div>
+        </div>
+        <div class="highlight-box"><span class="btn btn-primary" style="width:100%;text-align:center;display:block">Create secret key</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="connector"></div>
+
+<div class="step">
+  <div class="step-number">4</div>
+  <h2>複製並儲存你的 API Key</h2>
+  <p>新的 API Key <strong>只會顯示一次</strong>。請立刻複製並存放到安全的地方。</p>
+  <div class="token-box">sk-proj-AbCdEfGhIjKlMnOpQrStUvWxYz1234567890...</div>
+  <div class="success-box">
+    <div class="icon">🎉</div>
+    <h3 style="color:#10a37f;margin-bottom:8px">API Key 建立成功！</h3>
+    <p style="color:#9ca3af">現在你可以用這個 Key 來呼叫 OpenAI 的 API（GPT-4、GPT-4o、DALL-E、Whisper 等）</p>
+  </div>
+  <div class="warning">OpenAI <strong>不會再次顯示此 Key</strong>。如果遺失了，你需要建立一個新的。建議存在密碼管理器或環境變數中。</div>
+</div>
+<div class="connector"></div>
+
+<div class="step">
+  <div class="step-number">5</div>
+  <h2>設定付款方式（必要）</h2>
+  <p>API 使用需要付費。前往左側選單的 <strong>「Billing」</strong>，新增付款方式。你可以設定用量上限來控制費用。</p>
+  <div class="mockup">
+    <div class="mockup-bar"><span class="mockup-dot red"></span><span class="mockup-dot yellow"></span><span class="mockup-dot green"></span><div class="mockup-url">platform.openai.com/settings/organization/billing</div></div>
+    <div class="mockup-body" style="padding:0">
+      <div class="sidebar">
+        <div class="sidebar-nav">
+          <div class="nav-item">API keys</div>
+          <div class="nav-item">Usage</div>
+          <div class="nav-item active">Billing</div>
+          <div class="nav-item">Limits</div>
+        </div>
+        <div class="sidebar-content">
+          <h3 style="color:#fff;margin-bottom:16px">Billing（帳單）</h3>
+          <div class="highlight-box"><span class="btn btn-primary">Add payment method（新增付款方式）</span></div>
+          <div class="tip" style="margin-top:16px">新帳號可能有免費試用額度，可以在「Usage」查看餘額。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="tip">在 <strong>「Limits」</strong> 設定每月用量上限，避免意外超支。</div>
+</div>
+
+</div>
+<div style="text-align:center;padding:40px;color:#666;font-size:0.85rem"><p>祝你開發順利！🟢</p></div>
+</body>
+</html>

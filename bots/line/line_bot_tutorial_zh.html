@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>如何建立 LINE Bot 並加入群組</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Noto Sans TC','Inter',sans-serif;background:#1a1a1a;color:#d1d5db;line-height:1.8}
+a{color:#06C755;text-decoration:none}
+.hero{background:linear-gradient(135deg,#1a1a1a 0%,#1a2e1a 40%,#06C755 100%);padding:80px 20px;text-align:center}
+.hero h1{font-size:2.6rem;font-weight:800;color:#fff;margin-bottom:16px}
+.hero .logo{font-size:3rem;margin-bottom:16px}
+.hero p{font-size:1.2rem;color:#9ca3af;max-width:600px;margin:0 auto}
+.container{max-width:800px;margin:0 auto;padding:40px 20px}
+.step{background:#222;border-radius:12px;padding:32px;margin-bottom:40px;border-left:4px solid #06C755}
+.step-number{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;background:#06C755;color:#fff;border-radius:50%;font-weight:700;font-size:1.1rem;margin-bottom:16px}
+.step h2{font-size:1.5rem;color:#fff;margin-bottom:12px}
+.step p{margin-bottom:16px;color:#9ca3af}
+.mockup{background:#111;border-radius:8px;overflow:hidden;margin:20px 0;border:1px solid #333}
+.mockup-bar{background:#222;padding:8px 16px;display:flex;align-items:center;gap:8px;border-bottom:1px solid #333}
+.mockup-dot{width:12px;height:12px;border-radius:50%;display:inline-block}
+.mockup-dot.red{background:#ec6a5e}.mockup-dot.yellow{background:#f4bf4f}.mockup-dot.green{background:#61c554}
+.mockup-url{background:#111;color:#666;padding:4px 12px;border-radius:4px;font-size:0.8rem;flex:1;margin-left:8px}
+.mockup-body{padding:20px}
+.sidebar{display:flex}.sidebar-nav{background:#222;width:220px;min-width:220px;padding:16px;border-right:1px solid #333}
+.sidebar-nav .nav-item{padding:8px 12px;border-radius:6px;color:#9ca3af;font-size:0.85rem;margin-bottom:4px}
+.sidebar-nav .nav-item.active{background:#06C755;color:#fff}
+.sidebar-nav .nav-header{color:#fff;font-weight:700;font-size:0.75rem;text-transform:uppercase;letter-spacing:0.5px;padding:8px 12px;margin-bottom:4px}
+.sidebar-content{flex:1;padding:20px}
+.btn{display:inline-block;padding:10px 24px;border-radius:6px;font-weight:600;font-size:0.9rem;border:none}
+.btn-primary{background:#06C755;color:#fff}
+.highlight-box{border:2px dashed #06C755;border-radius:8px;padding:12px;margin:12px 0;position:relative}
+.highlight-box::before{content:'👆';position:absolute;top:-14px;left:12px;font-size:1.2rem}
+.tip{background:#0d2818;border-left:4px solid #06C755;border-radius:0 8px 8px 0;padding:16px;margin:16px 0}
+.tip::before{content:'💡 小提示：';font-weight:700;color:#06C755}
+.warning{background:#2d1f0d;border-left:4px solid #f59e0b;border-radius:0 8px 8px 0;padding:16px;margin:16px 0}
+.warning::before{content:'⚠️ 重要：';font-weight:700;color:#f59e0b}
+.token-box{background:#111;border:1px solid #06C755;border-radius:8px;padding:16px;margin:12px 0;word-break:break-all;font-family:monospace;font-size:0.85rem;color:#06C755}
+.connector{width:4px;height:30px;background:#06C755;margin:0 auto;opacity:0.3}
+.success-box{background:#0d2818;border:2px solid #06C755;border-radius:12px;padding:24px;text-align:center;margin:20px 0}
+.success-box .icon{font-size:3rem;margin-bottom:12px}
+.form-mock{background:#222;border-radius:8px;padding:16px;margin:12px 0}
+.form-mock label{display:block;color:#9ca3af;font-size:0.8rem;font-weight:600;margin-bottom:6px}
+.form-mock .input-mock{background:#111;border:1px solid #333;border-radius:4px;padding:10px 12px;color:#fff;width:100%;margin-bottom:12px;font-size:0.9rem}
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid #333}
+.toggle-row:last-child{border-bottom:none}
+.toggle{width:44px;height:24px;background:#06C755;border-radius:12px;position:relative;display:inline-block}
+.toggle::after{content:'';position:absolute;top:3px;right:3px;width:18px;height:18px;background:#fff;border-radius:50%}
+.tab-bar{display:flex;border-bottom:2px solid #333;margin-bottom:16px}
+.tab-item{padding:10px 20px;color:#9ca3af;font-size:0.9rem;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px}
+.tab-item.active{color:#06C755;border-bottom-color:#06C755;font-weight:600}
+.qr-mock{width:120px;height:120px;background:#fff;border-radius:8px;margin:16px auto;display:flex;align-items:center;justify-content:center;font-size:0.7rem;color:#333;text-align:center;padding:8px}
+@media(max-width:640px){.hero h1{font-size:1.8rem}.sidebar{flex-direction:column}.sidebar-nav{width:100%;min-width:100%}}
+</style>
+</head>
+<body>
+<div class="hero">
+  <div class="logo">💬</div>
+  <h1>建立 LINE Bot<br>並加入你的群組</h1>
+  <p>圖文步驟教學 — 使用 LINE Developers Console</p>
+</div>
+<div class="container">
+
+<div class="step">
+  <div class="step-number">1</div>
+  <h2>前往 LINE Developers Console</h2>
+  <p>在瀏覽器中開啟 LINE Developers Console，用你的 LINE 帳號登入。如果還沒有開發者帳號，系統會引導你建立一個。</p>
+  <div class="mockup">
+    <div class="mockup-bar"><span class="mockup-dot red"></span><span class="mockup-dot yellow"></span><span class="mockup-dot green"></span><div class="mockup-url">https://developers.line.biz/console/</div></div>
+    <div class="mockup-body" style="text-align:center;padding:40px">
+      <div style="font-size:2.5rem;margin-bottom:12px">💬</div>
+      <h3 style="color:#fff;margin-bottom:8px">LINE Developers</h3>
+      <p style="color:#666;margin-bottom:20px">用 LINE 平台建立應用程式和服務</p>
+      <div class="highlight-box" style="display:inline-block"><span class="btn btn-primary">用 LINE 帳號登入</span></div>
+    </div>
+  </div>
+  <div class="tip">如果是第一次登入，需要同意開發者條款並建立<strong>開發者檔案</strong>（名稱 + email）。</div>
+</div>
+<div class="connector"></div>
+
+<div class="step">
+  <div class="step-number">2</div>
+  <h2>建立 Provider（提供者）</h2>
+  <p>Provider 代表你或你的公司。在 Providers 頁面點 <strong>「Create」</strong>，輸入名稱。</p>
+  <div class="mockup">
+    <div class="mockup-bar"><span class="mockup-dot red"></span><span class="mockup-dot yellow"></span><span class="mockup-dot green"></span><div class="mockup-url">developers.line.biz/console/</div></div>
+    <div class="mockup-body">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+        <span style="font-size:1.1rem;font-weight:700;color:#fff">Providers</span>
+        <div class="highlight-box" style="display:inline-block"><span class="btn btn-primary">Create</span></div>
+      </div>
+      <div style="background:#222;border-radius:8px;padding:20px;max-width:400px;margin:0 auto">
+        <h3 style="color:#fff;margin-bottom:16px;text-align:center">建立新的 Provider</h3>
+        <div class="form-mock">
+          <label>Provider name（提供者名稱）</label>
+          <div class="input-mock">我的公司</div>
+        </div>
+        <span class="btn btn-primary" style="width:100%;text-align:center;display:block">Create</span>
+      </div>
+    </div>
+  </div>
+  <div class="tip">Provider 名稱會顯示給加入 Bot 的使用者看，請用容易辨識的名字。</div>
+</div>
+<div class="connector"></div>
+
+<div class="step">
+  <div class="step-number">3</div>
+  <h2>建立 Messaging API Channel</h2>
+  <p>在你的 Provider 底下，點 <strong>「Create a new channel」</strong>，選擇 <strong>「Messaging API」</strong>。</p>
+  <div class="mockup">
+    <div class="mockup-bar"><span class="mockup-dot red"></span><span class="mockup-dot yellow"></span><span class="mockup-dot green"></span><div class="mockup-url">developers.line.biz/console/provider/[你的Provider]</div></div>
+    <div class="mockup-body">
+      <h3 style="color:#fff;margin-bottom:16px">選擇 Channel 類型</h3>
+      <div style="display:flex;gap:16px;flex-wrap:wrap">
+        <div class="highlight-box" style="flex:1;min-width:140px;text-align:center;background:#0d2818;border-color:#06C755">
+          <div style="font-size:2rem;margin-bottom:8px">💬</div>
+          <div style="color:#fff;font-weight:600">Messaging API</div>
+          <div style="color:#9ca3af;font-size:0.8rem">傳送/接收訊息</div>
+        </div>
+        <div style="flex:1;min-width:140px;text-align:center;padding:12px;background:#222;border-radius:8px;border:1px solid #333">
+          <div style="font-size:2rem;margin-bottom:8px">🔑</div>
+          <div style="color:#666;font-weight:600">LINE Login</div>
+          <div style="color:#666;font-size:0.8rem">使用者驗證</div>
+        </div>
+        <div style="flex:1;min-width:140px;text-align:center;padding:12px;background:#222;border-radius:8px;border:1px solid #333">
+          <div style="font-size:2rem;margin-bottom:8px">🤖</div>
+          <div style="color:#666;font-weight:600">LIFF</div>
+          <div style="color:#666;font-size:0.8rem">LINE 內的網頁應用</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="connector"></div>
+
+<div class="step">
+  <div class="step-number">4</div>
+  <h2>填寫 Channel 資料</h2>
+  <p>填寫 Messaging API Channel 的必要資訊。大部分欄位很直觀。</p>
+  <div class="mockup">
+    <div class="mockup-bar"><span class="mockup-dot red"></span><span class="mockup-dot yellow"></span><span class="mockup-dot green"></span><div class="mockup-url">developers.line.biz/console/channel/new</div></div>
+    <div class="mockup-body">
+      <h3 style="color:#fff;margin-bottom:16px">建立 Messaging API Channel</h3>
+      <div class="form-mock">
+        <label>Channel type（類型）</label>
+        <div class="input-mock" style="color:#06C755">Messaging API</div>
+        <label>Provider（提供者）</label>
+        <div class="input-mock">我的公司</div>
+        <label>Company or owner's country or region（國家/地區）</label>
+        <div class="input-mock">Taiwan（台灣）</div>
+        <label>Channel icon（圖示，選填）</label>
+        <div class="input-mock" style="color:#666">上傳圖片...</div>
+        <label>Channel name（名稱）</label>
+        <div class="input-mock">我的超棒 Bot</div>
+        <label>Channel description（描述）</label>
+        <div class="input-mock">團隊的好幫手</div>
+        <label>Category（類別）</label>
+        <div class="input-mock">科技</div>
+        <label>Subcategory（子類別）</label>
+        <div class="input-mock">軟體</div>
+      </div>
+      <div style="margin-top:8px">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+          <div style="width:18px;height:18px;background:#06C755;border-radius:3px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:0.65rem">✓</div>
+          <span style="font-size:0.85rem">我已閱讀並同意 LINE 官方帳號使用條款</span>
+        </div>
+        <div class="highlight-box"><span class="btn btn-primary" style="width:100%;text-align:center;display:block">Create（建立）</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="warning"><strong>Channel 名稱</strong>就是使用者看到的 Bot 名字。請慎重選擇，之後修改有限制。</div>
+</div>
+<div class="connector"></div>
+
+<div class="step">
+  <div class="step-number">5</div>
+  <h2>取得 Channel Access Token</h2>
+  <p>建立 Channel 後，進入 <strong>「Messaging API」</strong> 分頁。往下找到 <strong>「Issue」</strong> 按鈕來產生 <strong>Channel Access Token</strong>。</p>
+  <div class="mockup">
+    <div class="mockup-bar"><span class="mockup-dot red"></span><span class="mockup-dot yellow"></span><span class="mockup-dot green"></span><div class="mockup-url">developers.line.biz/console/channel/[你的Channel]</div></div>
+    <div class="mockup-body">
+      <div class="tab-bar">
+        <div class="tab-item">Basic settings</div>
+        <div class="tab-item active">Messaging API</div>
+        <div class="tab-item">LINE Login</div>
+        <div class="tab-item">Statistics</div>
+      </div>
+      <h3 style="color:#fff;margin-bottom:16px">Messaging API 設定</h3>
+      <div class="form-mock">
+        <label>Bot basic ID（基本 ID）</label>
+        <div class="input-mock" style="color:#06C755">@123abcde</div>
+        <label>Webhook URL</label>
+        <div class="input-mock" style="color:#666">https://your-server.com/webhook</div>
+      </div>
+      <div style="margin-top:16px">
+        <label style="color:#9ca3af;font-size:0.8rem;font-weight:600;margin-bottom:6px;display:block">Channel access token（長效）</label>
+        <div class="highlight-box"><span class="btn btn-primary">Issue（發行）</span></div>
+      </div>
+      <div class="token-box" style="margin-top:12px">eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJjaGFubm...</div>
+    </div>
+  </div>
+  <div class="warning"><strong>Channel Access Token</strong> 是控制 Bot 的鑰匙。<strong>絕對不要公開分享。</strong>你也可以在「Basic settings」分頁找到 <strong>Channel Secret</strong>，也要妥善保管。</div>
+  <div class="tip">你還需要 <strong>Channel Secret</strong>（在「Basic settings」分頁中），用於 webhook 簽章驗證。</div>
+</div>
+<div class="connector"></div>
+
+<div class="step">
+  <div class="step-number">6</div>
+  <h2>設定 Bot 回應方式</h2>
+  <p>在同一個 Messaging API 分頁，設定 webhook 和自動回覆。建議到 LINE Official Account Manager 關閉預設的自動回覆訊息。</p>
+  <div class="mockup">
+    <div class="mockup-bar"><span class="mockup-dot red"></span><span class="mockup-dot yellow"></span><span class="mockup-dot green"></span><div class="mockup-url">developers.line.biz/console/channel/[你的Channel]/messaging-api</div></div>
+    <div class="mockup-body">
+      <h3 style="color:#fff;margin-bottom:16px">回應設定</h3>
+      <div class="toggle-row">
+        <div><div style="color:#fff;font-weight:600">Use webhooks（使用 Webhook）</div><div style="color:#666;font-size:0.8rem">將訊息轉發到你的伺服器</div></div>
+        <div class="toggle"></div>
+      </div>
+      <div class="toggle-row">
+        <div><div style="color:#fff;font-weight:600">Auto-reply messages（自動回覆）</div><div style="color:#666;font-size:0.8rem">使用 webhook 時建議關閉</div></div>
+        <div style="width:44px;height:24px;background:#555;border-radius:12px;position:relative;display:inline-block"><div style="position:absolute;top:3px;left:3px;width:18px;height:18px;background:#fff;border-radius:50%"></div></div>
+      </div>
+      <div class="toggle-row">
+        <div><div style="color:#fff;font-weight:600">Greeting messages（歡迎訊息）</div><div style="color:#666;font-size:0.8rem">使用者加入時的歡迎訊息</div></div>
+        <div class="toggle"></div>
+      </div>
+    </div>
+  </div>
+  <div class="tip">如果你要用 webhook 自訂回覆，記得<strong>關閉自動回覆</strong>，不然預設訊息會跟你的 Bot 回覆打架。</div>
+</div>
+<div class="connector"></div>
+
+<div class="step">
+  <div class="step-number">7</div>
+  <h2>將 Bot 加入群組或好友</h2>
+  <p>你的 Bot 有 QR Code 和連結。使用者可以掃描 QR Code 或開啟連結來加 Bot 為好友，然後邀請它加入群組。</p>
+  <div class="mockup">
+    <div class="mockup-bar"><span class="mockup-dot red"></span><span class="mockup-dot yellow"></span><span class="mockup-dot green"></span><div class="mockup-url">developers.line.biz/console/channel/[你的Channel]/messaging-api</div></div>
+    <div class="mockup-body" style="text-align:center">
+      <h3 style="color:#fff;margin-bottom:8px">加 Bot 為好友</h3>
+      <p style="color:#666;margin-bottom:16px">用 LINE App 掃描此 QR Code</p>
+      <div class="qr-mock">[ QR Code ]<br>@123abcde</div>
+      <p style="color:#9ca3af;font-size:0.85rem;margin-top:12px">或開啟此連結：</p>
+      <div class="token-box" style="color:#06C755">https://line.me/R/ti/p/@123abcde</div>
+    </div>
+  </div>
+  <div class="success-box">
+    <div class="icon">🎉</div>
+    <h3 style="color:#06C755;margin-bottom:8px">Bot 建立成功！</h3>
+    <p style="color:#9ca3af">加 Bot 為好友後，就可以邀請它加入任何群組聊天。當你的 webhook 伺服器開始運作後，Bot 就能收發訊息了。</p>
+  </div>
+  <div class="tip">要讓 Bot 加入<strong>群組聊天</strong>，請到 LINE Official Account Manager 的設定中開啟<strong>「允許 Bot 加入群組聊天」</strong>。</div>
+</div>
+
+</div>
+<div style="text-align:center;padding:40px;color:#666;font-size:0.85rem"><p>祝你建立 Bot 順利！💬</p></div>
+</body>
+</html>

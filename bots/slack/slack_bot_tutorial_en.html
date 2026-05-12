@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How to Create a Slack Bot & Add It to Your Workspace</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;background:#1a1d21;color:#d1d2d3;line-height:1.7}
+a{color:#1d9bd1;text-decoration:none}
+a:hover{text-decoration:underline}
+
+.hero{background:linear-gradient(135deg,#1a1d21 0%,#2c1338 40%,#4a154b 70%,#611f69 100%);padding:80px 20px;text-align:center}
+.hero h1{font-size:2.8rem;font-weight:800;color:#fff;margin-bottom:16px}
+.hero p{font-size:1.2rem;color:#b9b9ba;max-width:600px;margin:0 auto}
+
+.container{max-width:800px;margin:0 auto;padding:40px 20px}
+
+.step{background:#222529;border-radius:12px;padding:32px;margin-bottom:40px;position:relative;border-left:4px solid #4a154b}
+.step-number{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;background:#4a154b;color:#fff;border-radius:50%;font-weight:700;font-size:1.1rem;margin-bottom:16px}
+.step h2{font-size:1.5rem;color:#fff;margin-bottom:12px}
+.step p{margin-bottom:16px;color:#b9b9ba}
+
+.mockup{background:#1a1d21;border-radius:8px;overflow:hidden;margin:20px 0;border:1px solid #383a3e}
+.mockup-bar{background:#222529;padding:8px 16px;display:flex;align-items:center;gap:8px;border-bottom:1px solid #383a3e}
+.mockup-dot{width:12px;height:12px;border-radius:50%;display:inline-block}
+.mockup-dot.red{background:#ec6a5e}
+.mockup-dot.yellow{background:#f4bf4f}
+.mockup-dot.green{background:#61c554}
+.mockup-url{background:#1a1d21;color:#7a7b7d;padding:4px 12px;border-radius:4px;font-size:0.8rem;flex:1;margin-left:8px}
+.mockup-body{padding:20px}
+
+.sidebar{display:flex;gap:0}
+.sidebar-nav{background:#4a154b;width:220px;min-width:220px;padding:16px;border-right:1px solid #5b2d5e}
+.sidebar-nav .nav-item{padding:8px 12px;border-radius:6px;color:#cfa8d0;font-size:0.85rem;margin-bottom:4px;cursor:pointer}
+.sidebar-nav .nav-item.active{background:#fff;color:#4a154b;font-weight:600}
+.sidebar-nav .nav-item:hover:not(.active){background:rgba(255,255,255,0.1)}
+.sidebar-nav .nav-header{color:#fff;font-weight:700;font-size:0.75rem;text-transform:uppercase;letter-spacing:0.5px;padding:8px 12px;margin-bottom:4px}
+.sidebar-content{flex:1;padding:20px;background:#1a1d21}
+
+.btn{display:inline-block;padding:10px 24px;border-radius:6px;font-weight:600;font-size:0.9rem;cursor:pointer;border:none}
+.btn-primary{background:#4a154b;color:#fff}
+.btn-success{background:#2eb67d;color:#fff}
+.btn-green{background:#007a5a;color:#fff}
+.btn-slack{background:#4a154b;color:#fff}
+
+.highlight-box{border:2px dashed #4a154b;border-radius:8px;padding:12px;margin:12px 0;position:relative}
+.highlight-box::before{content:'👆';position:absolute;top:-14px;left:12px;font-size:1.2rem}
+
+.tip{background:#1a3329;border-left:4px solid #2eb67d;border-radius:0 8px 8px 0;padding:16px;margin:16px 0}
+.tip::before{content:'💡 Tip: ';font-weight:700;color:#2eb67d}
+
+.warning{background:#3a2f1a;border-left:4px solid #ecb22e;border-radius:0 8px 8px 0;padding:16px;margin:16px 0}
+.warning::before{content:'⚠️ Important: ';font-weight:700;color:#ecb22e}
+
+.form-mock{background:#222529;border-radius:8px;padding:16px;margin:12px 0}
+.form-mock label{display:block;color:#b9b9ba;font-size:0.8rem;font-weight:600;margin-bottom:6px}
+.form-mock .input-mock{background:#1a1d21;border:1px solid #383a3e;border-radius:4px;padding:10px 12px;color:#fff;width:100%;margin-bottom:12px;font-size:0.9rem}
+
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid #383a3e}
+.toggle-row:last-child{border-bottom:none}
+.toggle{width:44px;height:24px;background:#2eb67d;border-radius:12px;position:relative;display:inline-block}
+.toggle::after{content:'';position:absolute;top:3px;right:3px;width:18px;height:18px;background:#fff;border-radius:50%}
+
+.scope-tag{display:inline-block;background:#1a1d21;border:1px solid #383a3e;border-radius:4px;padding:4px 10px;font-size:0.8rem;margin:4px;color:#d1d2d3}
+.scope-tag.active{border-color:#4a154b;background:#2c1338;color:#cfa8d0}
+
+.connector{width:4px;height:30px;background:#4a154b;margin:0 auto;opacity:0.3}
+
+.token-box{background:#1a1d21;border:1px solid #4a154b;border-radius:8px;padding:16px;margin:12px 0;word-break:break-all;font-family:monospace;font-size:0.85rem;color:#e8912d}
+
+.success-box{background:#1a3329;border:2px solid #2eb67d;border-radius:12px;padding:24px;text-align:center;margin:20px 0}
+.success-box .icon{font-size:3rem;margin-bottom:12px}
+
+.slack-msg{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid #383a3e}
+.slack-msg:last-child{border-bottom:none}
+.slack-avatar{width:36px;height:36px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:0.9rem;font-weight:700;flex-shrink:0}
+.slack-msg-content{flex:1}
+.slack-msg-header{display:flex;align-items:baseline;gap:8px;margin-bottom:2px}
+.slack-msg-name{font-weight:700;color:#fff;font-size:0.9rem}
+.slack-msg-badge{background:#4a154b;color:#fff;font-size:0.6rem;padding:1px 5px;border-radius:3px}
+.slack-msg-time{color:#7a7b7d;font-size:0.75rem}
+
+.permission-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0}
+.permission-item{background:#222529;border-radius:6px;padding:10px 12px;display:flex;align-items:center;gap:8px;font-size:0.85rem}
+.permission-check{width:18px;height:18px;background:#2eb67d;border-radius:4px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:0.65rem;font-weight:700;flex-shrink:0}
+
+@media(max-width:640px){
+  .hero h1{font-size:1.8rem}
+  .sidebar{flex-direction:column}
+  .sidebar-nav{width:100%;min-width:100%;border-right:none;border-bottom:1px solid #5b2d5e}
+  .permission-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <h1>Create a Slack Bot<br>& Add It to Your Workspace</h1>
+  <p>A step-by-step visual guide — no coding required</p>
+</div>
+
+<div class="container">
+
+<!-- Step 1 -->
+<div class="step">
+  <div class="step-number">1</div>
+  <h2>Go to Slack API Website</h2>
+  <p>Open the Slack API portal in your browser. Make sure you're signed in to the Slack workspace where you want to add the bot.</p>
+  
+  <div class="mockup">
+    <div class="mockup-bar">
+      <span class="mockup-dot red"></span>
+      <span class="mockup-dot yellow"></span>
+      <span class="mockup-dot green"></span>
+      <div class="mockup-url">https://api.slack.com/apps</div>
+    </div>
+    <div class="mockup-body">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+        <span style="font-size:1.2rem;font-weight:700;color:#fff">Your Apps</span>
+        <div class="highlight-box" style="display:inline-block">
+          <span class="btn btn-success">Create New App</span>
+        </div>
+      </div>
+      <p style="color:#7a7b7d;text-align:center;padding:40px">Your Slack apps will appear here...</p>
+    </div>
+  </div>
+  
+  <div class="tip">Click <strong>"Create New App"</strong> in the top-right corner to get started.</div>
+</div>
+
+<div class="connector"></div>
+
+<!-- Step 2 -->
+<div class="step">
+  <div class="step-number">2</div>
+  <h2>Create a New App</h2>
+  <p>Choose <strong>"From scratch"</strong> when asked how to create your app. Then enter a name and pick which workspace to add it to.</p>
+  
+  <div class="mockup">
+    <div class="mockup-bar">
+      <span class="mockup-dot red"></span>
+      <span class="mockup-dot yellow"></span>
+      <span class="mockup-dot green"></span>
+      <div class="mockup-url">api.slack.com/apps</div>
+    </div>
+    <div class="mockup-body">
+      <div style="max-width:440px;margin:0 auto">
+        <h3 style="color:#fff;margin-bottom:20px;text-align:center">Create an app</h3>
+        <div style="display:flex;gap:16px;margin-bottom:24px">
+          <div class="highlight-box" style="flex:1;text-align:center;background:#2c1338;border-color:#4a154b;cursor:pointer">
+            <div style="font-size:1.5rem;margin-bottom:8px">📝</div>
+            <div style="color:#fff;font-weight:600">From scratch</div>
+            <div style="color:#b9b9ba;font-size:0.8rem">Set up manually</div>
+          </div>
+          <div style="flex:1;text-align:center;padding:12px;background:#222529;border-radius:8px;border:1px solid #383a3e">
+            <div style="font-size:1.5rem;margin-bottom:8px">📋</div>
+            <div style="color:#7a7b7d;font-weight:600">From a manifest</div>
+            <div style="color:#7a7b7d;font-size:0.8rem">Use a JSON/YAML config</div>
+          </div>
+        </div>
+        <div class="form-mock">
+          <label>App Name</label>
+          <div class="input-mock">My Awesome Bot</div>
+          <label>Pick a workspace</label>
+          <div class="input-mock" style="margin:0">
+            <div style="display:flex;align-items:center;gap:8px">
+              <div style="width:20px;height:20px;background:#4a154b;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:0.6rem;color:#fff">M</div>
+              <span>My Workspace</span>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top:16px;text-align:right">
+          <span class="btn btn-success">Create App</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tip">Choose <strong>"From scratch"</strong> for the simplest setup. You can always add more features later.</div>
+</div>
+
+<div class="connector"></div>
+
+<!-- Step 3 -->
+<div class="step">
+  <div class="step-number">3</div>
+  <h2>Set Up Bot Permissions (Scopes)</h2>
+  <p>Go to <strong>"OAuth & Permissions"</strong> in the left sidebar. Scroll down to <strong>"Bot Token Scopes"</strong> and add the permissions your bot needs.</p>
+  
+  <div class="mockup">
+    <div class="mockup-bar">
+      <span class="mockup-dot red"></span>
+      <span class="mockup-dot yellow"></span>
+      <span class="mockup-dot green"></span>
+      <div class="mockup-url">api.slack.com/apps/[your-app]/oauth</div>
+    </div>
+    <div class="mockup-body" style="padding:0">
+      <div class="sidebar">
+        <div class="sidebar-nav">
+          <div class="nav-header">Settings</div>
+          <div class="nav-item">Basic Information</div>
+          <div class="nav-item active">OAuth & Permissions</div>
+          <div class="nav-header" style="margin-top:12px">Features</div>
+          <div class="nav-item">App Home</div>
+          <div class="nav-item">Event Subscriptions</div>
+          <div class="nav-item">Slash Commands</div>
+        </div>
+        <div class="sidebar-content">
+          <h3 style="color:#fff;margin-bottom:16px">Bot Token Scopes</h3>
+          <p style="color:#7a7b7d;font-size:0.85rem;margin-bottom:12px">Scopes define what your bot can do in channels and conversations.</p>
+          <div class="permission-grid">
+            <div class="permission-item"><div class="permission-check">✓</div>chat:write</div>
+            <div class="permission-item"><div class="permission-check">✓</div>channels:read</div>
+            <div class="permission-item"><div class="permission-check">✓</div>channels:history</div>
+            <div class="permission-item"><div class="permission-check">✓</div>im:read</div>
+          </div>
+          <div class="highlight-box" style="margin-top:12px">
+            <span class="btn btn-success">Add an OAuth Scope</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tip">Common scopes: <strong>chat:write</strong> (send messages), <strong>channels:read</strong> (see channel list), <strong>channels:history</strong> (read messages). Only add what you need.</div>
+</div>
+
+<div class="connector"></div>
+
+<!-- Step 4 -->
+<div class="step">
+  <div class="step-number">4</div>
+  <h2>Install the App to Your Workspace</h2>
+  <p>Scroll back up to the top of the <strong>"OAuth & Permissions"</strong> page and click <strong>"Install to Workspace"</strong>. Slack will ask you to confirm the permissions.</p>
+  
+  <div class="mockup">
+    <div class="mockup-bar">
+      <span class="mockup-dot red"></span>
+      <span class="mockup-dot yellow"></span>
+      <span class="mockup-dot green"></span>
+      <div class="mockup-url">api.slack.com/apps/[your-app]/oauth</div>
+    </div>
+    <div class="mockup-body">
+      <div style="max-width:400px;margin:0 auto;text-align:center">
+        <div style="font-size:2.5rem;margin-bottom:12px">🤖</div>
+        <h3 style="color:#fff;margin-bottom:8px">My Awesome Bot is requesting permission to access the <span style="color:#ecb22e">My Workspace</span> Slack workspace</h3>
+        <div style="background:#222529;border-radius:8px;padding:16px;margin:16px 0;text-align:left">
+          <div style="color:#b9b9ba;font-size:0.85rem;margin-bottom:8px"><strong>My Awesome Bot</strong> will be able to:</div>
+          <div style="color:#d1d2d3;font-size:0.85rem;padding:4px 0">• Send messages to channels</div>
+          <div style="color:#d1d2d3;font-size:0.85rem;padding:4px 0">• View basic channel info</div>
+          <div style="color:#d1d2d3;font-size:0.85rem;padding:4px 0">• View messages in channels</div>
+        </div>
+        <div class="highlight-box">
+          <span class="btn btn-success" style="width:100%;text-align:center;display:block">Allow</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="warning">After installing, you'll get a <strong>Bot User OAuth Token</strong> (starts with <code style="color:#e8912d">xoxb-</code>). This is your bot's key — <strong>never share it publicly</strong>.</div>
+  
+  <div class="token-box">xoxb-YOUR-BOT-TOKEN-HERE</div>
+</div>
+
+<div class="connector"></div>
+
+<!-- Step 5 -->
+<div class="step">
+  <div class="step-number">5</div>
+  <h2>Customize Your Bot (Optional)</h2>
+  <p>Go to <strong>"App Home"</strong> in the sidebar to set your bot's display name and profile picture. You can also enable the Messages tab for direct messages.</p>
+  
+  <div class="mockup">
+    <div class="mockup-bar">
+      <span class="mockup-dot red"></span>
+      <span class="mockup-dot yellow"></span>
+      <span class="mockup-dot green"></span>
+      <div class="mockup-url">api.slack.com/apps/[your-app]/app-home</div>
+    </div>
+    <div class="mockup-body" style="padding:0">
+      <div class="sidebar">
+        <div class="sidebar-nav">
+          <div class="nav-header">Settings</div>
+          <div class="nav-item">Basic Information</div>
+          <div class="nav-item">OAuth & Permissions</div>
+          <div class="nav-header" style="margin-top:12px">Features</div>
+          <div class="nav-item active">App Home</div>
+        </div>
+        <div class="sidebar-content">
+          <h3 style="color:#fff;margin-bottom:16px">Your App's Presence in Slack</h3>
+          <div class="form-mock">
+            <label>Display Name (Bot Name)</label>
+            <div class="input-mock">My Awesome Bot</div>
+            <label>Default Username</label>
+            <div class="input-mock" style="margin-bottom:0">my-awesome-bot</div>
+          </div>
+          <div style="margin-top:16px">
+            <h4 style="color:#fff;margin-bottom:12px">Show Tabs</h4>
+            <div class="toggle-row">
+              <div>
+                <div style="color:#fff;font-weight:600">Messages Tab</div>
+                <div style="color:#7a7b7d;font-size:0.8rem">Allow users to send your bot DMs</div>
+              </div>
+              <div class="toggle"></div>
+            </div>
+            <div class="toggle-row">
+              <div>
+                <div style="color:#fff;font-weight:600">Home Tab</div>
+                <div style="color:#7a7b7d;font-size:0.8rem">Show a custom home page for your bot</div>
+              </div>
+              <div class="toggle"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tip">Enable the <strong>Messages Tab</strong> if you want users to be able to chat directly with your bot.</div>
+</div>
+
+<div class="connector"></div>
+
+<!-- Step 6 -->
+<div class="step">
+  <div class="step-number">6</div>
+  <h2>Add the Bot to a Channel</h2>
+  <p>In Slack, go to the channel where you want the bot. Type <strong>/invite @YourBotName</strong> or click the channel settings and add the bot as a member.</p>
+  
+  <div class="mockup">
+    <div class="mockup-bar">
+      <span class="mockup-dot red"></span>
+      <span class="mockup-dot yellow"></span>
+      <span class="mockup-dot green"></span>
+      <div class="mockup-url">app.slack.com</div>
+    </div>
+    <div class="mockup-body" style="padding:0">
+      <div class="sidebar">
+        <div class="sidebar-nav" style="width:180px;min-width:180px">
+          <div class="nav-header">Channels</div>
+          <div class="nav-item active"># general</div>
+          <div class="nav-item"># random</div>
+          <div class="nav-item"># project-x</div>
+          <div class="nav-header" style="margin-top:12px">Apps</div>
+          <div class="nav-item">🤖 My Awesome Bot</div>
+        </div>
+        <div class="sidebar-content">
+          <div style="border-bottom:1px solid #383a3e;padding-bottom:12px;margin-bottom:16px">
+            <h3 style="color:#fff;font-size:1rem"># general</h3>
+          </div>
+          <div class="slack-msg">
+            <div class="slack-avatar" style="background:#2eb67d;color:#fff">Y</div>
+            <div class="slack-msg-content">
+              <div class="slack-msg-header">
+                <span class="slack-msg-name">You</span>
+                <span class="slack-msg-time">12:05 PM</span>
+              </div>
+              <div class="highlight-box" style="margin:4px 0 0;display:inline-block">
+                <span style="color:#d1d2d3">/invite @My Awesome Bot</span>
+              </div>
+            </div>
+          </div>
+          <div class="slack-msg">
+            <div class="slack-avatar" style="background:#4a154b;color:#fff">S</div>
+            <div class="slack-msg-content">
+              <div class="slack-msg-header">
+                <span class="slack-msg-name">Slackbot</span>
+                <span class="slack-msg-time">12:05 PM</span>
+              </div>
+              <div style="color:#2eb67d">✅ <strong>My Awesome Bot</strong> has been added to #general</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="success-box">
+    <div class="icon">🎉</div>
+    <h3 style="color:#2eb67d;margin-bottom:8px">Bot Added Successfully!</h3>
+    <p style="color:#b9b9ba">Your bot is now in the channel. It can send and read messages based on the permissions you set up (once you connect it to bot code).</p>
+  </div>
+
+  <div class="tip">You can also add the bot by going to <strong>Channel Settings → Integrations → Add Apps</strong> and searching for your bot's name.</div>
+</div>
+
+</div>
+
+<div style="text-align:center;padding:40px;color:#7a7b7d;font-size:0.85rem">
+  <p>Created with care — Happy bot building! 🤖</p>
+</div>
+
+</body>
+</html>

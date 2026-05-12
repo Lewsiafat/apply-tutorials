@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>如何建立 Telegram Bot 並加入群組</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Noto Sans TC','Inter',sans-serif;background:#17212b;color:#e4ecf2;line-height:1.8}
+a{color:#64b5ef;text-decoration:none}
+a:hover{text-decoration:underline}
+
+.hero{background:linear-gradient(135deg,#17212b 0%,#1c2e3e 40%,#1a3a52 70%,#2AABEE 100%);padding:80px 20px;text-align:center}
+.hero h1{font-size:2.6rem;font-weight:800;color:#fff;margin-bottom:16px}
+.hero p{font-size:1.2rem;color:#8ba4b8;max-width:600px;margin:0 auto}
+
+.container{max-width:800px;margin:0 auto;padding:40px 20px}
+
+.step{background:#1e2c3a;border-radius:12px;padding:32px;margin-bottom:40px;position:relative;border-left:4px solid #2AABEE}
+.step-number{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;background:#2AABEE;color:#fff;border-radius:50%;font-weight:700;font-size:1.1rem;margin-bottom:16px}
+.step h2{font-size:1.5rem;color:#fff;margin-bottom:12px}
+.step p{margin-bottom:16px;color:#8ba4b8}
+
+.mockup-phone{background:#0e1621;border-radius:24px;overflow:hidden;margin:20px auto;max-width:380px;border:2px solid #2b3945;box-shadow:0 8px 32px rgba(0,0,0,0.3)}
+.mockup-phone-header{background:#17212b;padding:12px 16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid #2b3945}
+.mockup-phone-avatar{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.2rem;color:#fff;font-weight:700}
+.mockup-phone-body{padding:16px;min-height:200px}
+
+.chat-bubble{max-width:85%;border-radius:12px;padding:10px 14px;margin-bottom:10px;font-size:0.9rem;line-height:1.5}
+.chat-bubble.bot{background:#182533;color:#e4ecf2;border-bottom-left-radius:4px}
+.chat-bubble.user{background:#2b5278;color:#fff;margin-left:auto;border-bottom-right-radius:4px}
+.chat-bubble .sender{font-weight:700;color:#64b5ef;font-size:0.8rem;margin-bottom:4px}
+.chat-bubble .time{font-size:0.7rem;color:#6b8699;text-align:right;margin-top:4px}
+
+.mockup-input{background:#17212b;padding:10px 16px;display:flex;align-items:center;gap:10px;border-top:1px solid #2b3945}
+.mockup-input-field{background:#242f3d;border:none;border-radius:20px;padding:8px 16px;color:#e4ecf2;flex:1;font-size:0.85rem}
+.mockup-input-send{width:36px;height:36px;background:#2AABEE;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:0.9rem}
+
+.btn{display:inline-block;padding:10px 24px;border-radius:6px;font-weight:600;font-size:0.9rem;cursor:pointer;border:none}
+.btn-primary{background:#2AABEE;color:#fff}
+.btn-success{background:#4fae4e;color:#fff}
+
+.highlight-box{border:2px dashed #2AABEE;border-radius:8px;padding:12px;margin:12px 0;position:relative}
+.highlight-box::before{content:'👆';position:absolute;top:-14px;left:12px;font-size:1.2rem}
+
+.tip{background:#1a3329;border-left:4px solid #4fae4e;border-radius:0 8px 8px 0;padding:16px;margin:16px 0}
+.tip::before{content:'💡 小提示：';font-weight:700;color:#4fae4e}
+
+.warning{background:#3a2f1a;border-left:4px solid #e5a545;border-radius:0 8px 8px 0;padding:16px;margin:16px 0}
+.warning::before{content:'⚠️ 重要：';font-weight:700;color:#e5a545}
+
+.token-box{background:#0e1621;border:1px solid #2AABEE;border-radius:8px;padding:16px;margin:12px 0;word-break:break-all;font-family:monospace;font-size:0.85rem;color:#2AABEE}
+
+.connector{width:4px;height:30px;background:#2AABEE;margin:0 auto;opacity:0.3}
+
+.success-box{background:#1a3329;border:2px solid #4fae4e;border-radius:12px;padding:24px;text-align:center;margin:20px 0}
+.success-box .icon{font-size:3rem;margin-bottom:12px}
+
+.command-list{background:#0e1621;border-radius:8px;padding:16px;margin:12px 0}
+.command-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #2b3945}
+.command-item:last-child{border-bottom:none}
+.command-name{color:#2AABEE;font-family:monospace;font-weight:600;min-width:140px}
+
+.menu-mockup{background:#0e1621;border-radius:12px;overflow:hidden;margin:16px 0;border:1px solid #2b3945}
+.menu-item{padding:12px 16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid #2b3945;color:#e4ecf2;font-size:0.9rem}
+.menu-item:last-child{border-bottom:none}
+.menu-icon{font-size:1.2rem;width:28px;text-align:center}
+
+@media(max-width:640px){
+  .hero h1{font-size:1.8rem}
+  .mockup-phone{max-width:100%}
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <h1>建立 Telegram Bot<br>並加入你的群組</h1>
+  <p>圖文步驟教學 — 不需要任何程式碼</p>
+</div>
+
+<div class="container">
+
+<!-- 步驟 1 -->
+<div class="step">
+  <div class="step-number">1</div>
+  <h2>開啟 Telegram 並搜尋 BotFather</h2>
+  <p>在 Telegram 中搜尋 <strong>@BotFather</strong> — 這是 Telegram 官方的機器人管理工具，用來建立和管理 Bot。</p>
+  
+  <div class="mockup-phone">
+    <div class="mockup-phone-header">
+      <div style="color:#8ba4b8;font-size:1.2rem">←</div>
+      <div style="background:#242f3d;border-radius:20px;padding:8px 16px;flex:1;color:#6b8699;font-size:0.85rem">
+        🔍 搜尋：<span style="color:#e4ecf2">BotFather</span>
+      </div>
+    </div>
+    <div class="mockup-phone-body" style="padding:0">
+      <div class="highlight-box" style="margin:0;border-radius:0;border:none;border-left:3px dashed #2AABEE">
+        <div style="display:flex;align-items:center;gap:12px;padding:12px 16px">
+          <div class="mockup-phone-avatar" style="background:#2AABEE;width:48px;height:48px">🤖</div>
+          <div style="flex:1">
+            <div style="display:flex;align-items:center;gap:6px">
+              <span style="color:#fff;font-weight:600">BotFather</span>
+              <span style="background:#2AABEE;color:#fff;font-size:0.6rem;padding:2px 6px;border-radius:4px">✓</span>
+            </div>
+            <div style="color:#6b8699;font-size:0.8rem">@BotFather · 官方機器人管理工具</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tip">請確認選擇有藍色驗證勾勾的帳號，避免找到假冒的帳號！</div>
+</div>
+
+<div class="connector"></div>
+
+<!-- 步驟 2 -->
+<div class="step">
+  <div class="step-number">2</div>
+  <h2>開始與 BotFather 對話</h2>
+  <p>打開 BotFather 的聊天視窗，點擊 <strong>「Start」</strong> 或輸入 <strong>/start</strong>。BotFather 會顯示可用指令列表。</p>
+  
+  <div class="mockup-phone">
+    <div class="mockup-phone-header">
+      <div style="color:#8ba4b8;font-size:1.2rem">←</div>
+      <div class="mockup-phone-avatar" style="background:#2AABEE">🤖</div>
+      <div>
+        <div style="color:#fff;font-weight:600;font-size:0.9rem">BotFather</div>
+        <div style="color:#6b8699;font-size:0.75rem">線上</div>
+      </div>
+    </div>
+    <div class="mockup-phone-body">
+      <div class="chat-bubble bot">
+        <div class="sender">BotFather</div>
+        我可以幫你建立和管理 Telegram Bot。以下是可用的指令：<br><br>
+        <strong>/newbot</strong> — 建立新的 Bot<br>
+        <strong>/mybots</strong> — 管理你的 Bot<br>
+        <strong>/setname</strong> — 修改 Bot 名稱<br>
+        <strong>/setdescription</strong> — 修改 Bot 描述<br>
+        <strong>/setabouttext</strong> — 修改 Bot 簡介<br>
+        <strong>/setuserpic</strong> — 修改 Bot 頭像
+        <div class="time">12:00</div>
+      </div>
+    </div>
+    <div class="mockup-input">
+      <div class="mockup-input-field">/start</div>
+      <div class="mockup-input-send">➤</div>
+    </div>
+  </div>
+
+  <div class="tip">如果 BotFather 沒有自動回應，先輸入 <strong>/start</strong> 試試。</div>
+</div>
+
+<div class="connector"></div>
+
+<!-- 步驟 3 -->
+<div class="step">
+  <div class="step-number">3</div>
+  <h2>建立你的新 Bot</h2>
+  <p>輸入 <strong>/newbot</strong> 並送出。BotFather 會問你兩個問題：先問 <strong>顯示名稱</strong>，再問 <strong>使用者名稱</strong>（必須以 "bot" 結尾）。</p>
+  
+  <div class="mockup-phone">
+    <div class="mockup-phone-header">
+      <div style="color:#8ba4b8;font-size:1.2rem">←</div>
+      <div class="mockup-phone-avatar" style="background:#2AABEE">🤖</div>
+      <div>
+        <div style="color:#fff;font-weight:600;font-size:0.9rem">BotFather</div>
+        <div style="color:#6b8699;font-size:0.75rem">線上</div>
+      </div>
+    </div>
+    <div class="mockup-phone-body">
+      <div class="chat-bubble user">
+        /newbot
+        <div class="time">12:01</div>
+      </div>
+      <div class="chat-bubble bot">
+        <div class="sender">BotFather</div>
+        好的，要建立新 Bot。你想叫它什麼名字？請輸入 Bot 的名稱。
+        <div class="time">12:01</div>
+      </div>
+      <div class="chat-bubble user">
+        我的超棒 Bot
+        <div class="time">12:02</div>
+      </div>
+      <div class="chat-bubble bot">
+        <div class="sender">BotFather</div>
+        很好。現在請選擇一個使用者名稱（username），必須以「bot」結尾。例如：TetrisBot 或 tetris_bot。
+        <div class="time">12:02</div>
+      </div>
+      <div class="chat-bubble user" style="margin-bottom:0">
+        <div class="highlight-box" style="margin:0;border-color:#2AABEE">
+          my_awesome_helper_bot
+        </div>
+        <div class="time">12:03</div>
+      </div>
+    </div>
+    <div class="mockup-input">
+      <div class="mockup-input-field">輸入訊息...</div>
+      <div class="mockup-input-send">➤</div>
+    </div>
+  </div>
+
+  <div class="warning">使用者名稱<strong>必須以 "bot" 結尾</strong>（例如：my_helper_bot）。如果名稱被佔用了，試試加數字或底線。</div>
+</div>
+
+<div class="connector"></div>
+
+<!-- 步驟 4 -->
+<div class="step">
+  <div class="step-number">4</div>
+  <h2>取得你的 Bot Token</h2>
+  <p>建立完成後，BotFather 會給你一個 <strong>Token（權杖）</strong>— 這是控制你的 Bot 的鑰匙，請妥善保管！</p>
+  
+  <div class="mockup-phone">
+    <div class="mockup-phone-header">
+      <div style="color:#8ba4b8;font-size:1.2rem">←</div>
+      <div class="mockup-phone-avatar" style="background:#2AABEE">🤖</div>
+      <div>
+        <div style="color:#fff;font-weight:600;font-size:0.9rem">BotFather</div>
+        <div style="color:#6b8699;font-size:0.75rem">線上</div>
+      </div>
+    </div>
+    <div class="mockup-phone-body">
+      <div class="chat-bubble bot">
+        <div class="sender">BotFather</div>
+        完成！恭喜你建立了新的 Bot。你可以在 <span style="color:#64b5ef">t.me/my_awesome_helper_bot</span> 找到它。<br><br>
+        請使用以下 Token 來存取 HTTP API：<br>
+        <div class="token-box" style="margin:8px 0">1234567890:ABCdefGHI_jklMNOpqrSTUvwxYZ</div>
+        請妥善保管你的 Token。任何擁有此 Token 的人都可以控制你的 Bot。
+        <div class="time">12:03</div>
+      </div>
+    </div>
+    <div class="mockup-input">
+      <div class="mockup-input-field">輸入訊息...</div>
+      <div class="mockup-input-send">➤</div>
+    </div>
+  </div>
+
+  <div class="warning">Bot 的 <strong>Token</strong> 就像密碼一樣。<strong>絕對不要公開分享。</strong>如果不小心外洩了，對 BotFather 發送 <strong>/revoke</strong> 來重新產生一個新的。</div>
+</div>
+
+<div class="connector"></div>
+
+<!-- 步驟 5 -->
+<div class="step">
+  <div class="step-number">5</div>
+  <h2>自訂你的 Bot（選擇性）</h2>
+  <p>你可以透過 BotFather 的指令來設定 Bot 的頭像、描述和簡介。</p>
+  
+  <div class="command-list">
+    <div class="command-item">
+      <span class="command-name">/setuserpic</span>
+      <span>設定 Bot 的頭像</span>
+    </div>
+    <div class="command-item">
+      <span class="command-name">/setdescription</span>
+      <span>設定使用者首次開啟 Bot 時看到的文字</span>
+    </div>
+    <div class="command-item">
+      <span class="command-name">/setabouttext</span>
+      <span>設定 Bot 個人檔案中的簡介文字</span>
+    </div>
+    <div class="command-item">
+      <span class="command-name">/setcommands</span>
+      <span>設定 Bot 的指令選單</span>
+    </div>
+  </div>
+
+  <div class="tip">設定頭像和描述可以讓你的 Bot 看起來更專業、更值得信賴。</div>
+</div>
+
+<div class="connector"></div>
+
+<!-- 步驟 6 -->
+<div class="step">
+  <div class="step-number">6</div>
+  <h2>將 Bot 加入你的群組</h2>
+  <p>要把 Bot 加入群組聊天，打開群組設定，然後用 Bot 的使用者名稱將它加為新成員。</p>
+  
+  <div class="mockup-phone">
+    <div class="mockup-phone-header">
+      <div style="color:#8ba4b8;font-size:1.2rem">←</div>
+      <div class="mockup-phone-avatar" style="background:#4fae4e;width:36px;height:36px;font-size:0.9rem">群</div>
+      <div>
+        <div style="color:#fff;font-weight:600;font-size:0.9rem">我的群組</div>
+        <div style="color:#6b8699;font-size:0.75rem">3 位成員</div>
+      </div>
+    </div>
+    <div class="mockup-phone-body" style="padding:0">
+      <div class="menu-mockup" style="margin:16px;border-radius:8px">
+        <div class="menu-item" style="color:#6b8699;font-size:0.8rem;font-weight:600">群組設定</div>
+        <div class="menu-item">
+          <span class="menu-icon">👥</span>
+          <span>成員（3）</span>
+        </div>
+        <div class="menu-item highlight-box" style="margin:0;border-radius:0;border:none;border-left:3px dashed #2AABEE">
+          <span class="menu-icon">➕</span>
+          <span style="color:#2AABEE;font-weight:600">新增成員</span>
+        </div>
+      </div>
+      <div style="padding:0 16px 16px">
+        <div style="background:#242f3d;border-radius:20px;padding:10px 16px;color:#6b8699;font-size:0.85rem;margin-bottom:12px">
+          🔍 搜尋：<span style="color:#e4ecf2">@my_awesome_helper_bot</span>
+        </div>
+        <div class="highlight-box" style="margin:0">
+          <div style="display:flex;align-items:center;gap:12px;padding:8px">
+            <div class="mockup-phone-avatar" style="background:#2AABEE;width:40px;height:40px;font-size:0.9rem">🤖</div>
+            <div>
+              <div style="color:#fff;font-weight:600">我的超棒 Bot</div>
+              <div style="color:#6b8699;font-size:0.8rem">@my_awesome_helper_bot</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="success-box">
+    <div class="icon">🎉</div>
+    <h3 style="color:#4fae4e;margin-bottom:8px">Bot 加入成功！</h3>
+    <p style="color:#8ba4b8">你的 Bot 現在已經在群組中了。它會顯示為成員之一，並且可以回應訊息（在你設定好 Bot 程式碼之後）。</p>
+  </div>
+
+  <div class="tip">如果你的 Bot 需要讀取所有訊息（不只是指令），請對 BotFather 發送 <strong>/setprivacy</strong> 並設為 <strong>Disabled</strong>。預設情況下，群組中的 Bot 只能看到以「/」開頭的訊息。</div>
+</div>
+
+</div>
+
+<div style="text-align:center;padding:40px;color:#6b8699;font-size:0.85rem">
+  <p>祝你建立 Bot 順利！🤖</p>
+</div>
+
+</body>
+</html>

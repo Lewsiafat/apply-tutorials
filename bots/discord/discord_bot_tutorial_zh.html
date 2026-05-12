@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>如何建立 Discord Bot 並加入伺服器</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Noto Sans TC','Inter',sans-serif;background:#1a1a2e;color:#dcddde;line-height:1.8}
+a{color:#5865F2;text-decoration:none}
+a:hover{text-decoration:underline}
+
+.hero{background:linear-gradient(135deg,#1a1a2e 0%,#16213e 40%,#0f3460 70%,#5865F2 100%);padding:80px 20px;text-align:center}
+.hero h1{font-size:2.6rem;font-weight:800;color:#fff;margin-bottom:16px}
+.hero p{font-size:1.2rem;color:#b9bbbe;max-width:600px;margin:0 auto}
+
+.container{max-width:800px;margin:0 auto;padding:40px 20px}
+
+.step{background:#2f3136;border-radius:12px;padding:32px;margin-bottom:40px;position:relative;border-left:4px solid #5865F2}
+.step-number{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;background:#5865F2;color:#fff;border-radius:50%;font-weight:700;font-size:1.1rem;margin-bottom:16px}
+.step h2{font-size:1.5rem;color:#fff;margin-bottom:12px}
+.step p{margin-bottom:16px;color:#b9bbbe}
+
+.mockup{background:#202225;border-radius:8px;overflow:hidden;margin:20px 0;border:1px solid #40444b}
+.mockup-bar{background:#36393f;padding:8px 16px;display:flex;align-items:center;gap:8px;border-bottom:1px solid #40444b}
+.mockup-dot{width:12px;height:12px;border-radius:50%;display:inline-block}
+.mockup-dot.red{background:#ed4245}
+.mockup-dot.yellow{background:#fee75c}
+.mockup-dot.green{background:#57f287}
+.mockup-url{background:#202225;color:#72767d;padding:4px 12px;border-radius:4px;font-size:0.8rem;flex:1;margin-left:8px}
+.mockup-body{padding:20px}
+
+.sidebar{display:flex;gap:0}
+.sidebar-nav{background:#2f3136;width:200px;min-width:200px;padding:16px;border-right:1px solid #40444b}
+.sidebar-nav .nav-item{padding:8px 12px;border-radius:6px;color:#b9bbbe;font-size:0.85rem;margin-bottom:4px;cursor:pointer}
+.sidebar-nav .nav-item.active{background:#5865F2;color:#fff}
+.sidebar-nav .nav-item:hover:not(.active){background:#36393f}
+.sidebar-content{flex:1;padding:20px}
+
+.btn{display:inline-block;padding:10px 24px;border-radius:6px;font-weight:600;font-size:0.9rem;cursor:pointer;border:none}
+.btn-primary{background:#5865F2;color:#fff}
+.btn-success{background:#57f287;color:#000}
+.btn-danger{background:#ed4245;color:#fff}
+
+.highlight-box{border:2px dashed #5865F2;border-radius:8px;padding:12px;margin:12px 0;position:relative}
+.highlight-box::before{content:'👆';position:absolute;top:-14px;left:12px;font-size:1.2rem}
+
+.tip{background:#2d4f2d;border-left:4px solid #57f287;border-radius:0 8px 8px 0;padding:16px;margin:16px 0}
+.tip::before{content:'💡 小提示：';font-weight:700;color:#57f287}
+
+.warning{background:#4f3d2d;border-left:4px solid #fee75c;border-radius:0 8px 8px 0;padding:16px;margin:16px 0}
+.warning::before{content:'⚠️ 重要：';font-weight:700;color:#fee75c}
+
+.form-mock{background:#36393f;border-radius:8px;padding:16px;margin:12px 0}
+.form-mock label{display:block;color:#b9bbbe;font-size:0.8rem;font-weight:600;text-transform:uppercase;margin-bottom:6px}
+.form-mock .input-mock{background:#202225;border:1px solid #40444b;border-radius:4px;padding:10px 12px;color:#fff;width:100%;margin-bottom:12px;font-size:0.9rem}
+
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid #40444b}
+.toggle-row:last-child{border-bottom:none}
+.toggle{width:44px;height:24px;background:#57f287;border-radius:12px;position:relative;display:inline-block}
+.toggle::after{content:'';position:absolute;top:3px;right:3px;width:18px;height:18px;background:#fff;border-radius:50%}
+
+.checkbox-row{display:flex;align-items:center;gap:10px;padding:8px 0}
+.checkbox{width:20px;height:20px;background:#5865F2;border-radius:4px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:0.7rem;font-weight:700}
+
+.connector{width:4px;height:30px;background:#5865F2;margin:0 auto;opacity:0.3}
+
+.url-box{background:#202225;border:1px solid #5865F2;border-radius:8px;padding:16px;margin:12px 0;word-break:break-all;font-family:monospace;font-size:0.85rem;color:#5865F2}
+
+.success-box{background:#2d4f2d;border:2px solid #57f287;border-radius:12px;padding:24px;text-align:center;margin:20px 0}
+.success-box .icon{font-size:3rem;margin-bottom:12px}
+
+@media(max-width:640px){
+  .hero h1{font-size:1.8rem}
+  .sidebar{flex-direction:column}
+  .sidebar-nav{width:100%;min-width:100%;border-right:none;border-bottom:1px solid #40444b}
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <h1>建立 Discord Bot<br>並加入你的伺服器</h1>
+  <p>圖文步驟教學 — 不需要任何程式碼</p>
+</div>
+
+<div class="container">
+
+<!-- 步驟 1 -->
+<div class="step">
+  <div class="step-number">1</div>
+  <h2>開啟 Discord 開發者入口</h2>
+  <p>在瀏覽器中前往 Discord Developer Portal，你需要先登入你的 Discord 帳號。</p>
+  
+  <div class="mockup">
+    <div class="mockup-bar">
+      <span class="mockup-dot red"></span>
+      <span class="mockup-dot yellow"></span>
+      <span class="mockup-dot green"></span>
+      <div class="mockup-url">https://discord.com/developers/applications</div>
+    </div>
+    <div class="mockup-body">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+        <span style="font-size:1.2rem;font-weight:700;color:#fff">Applications</span>
+        <div class="highlight-box" style="display:inline-block">
+          <span class="btn btn-primary">New Application</span>
+        </div>
+      </div>
+      <p style="color:#72767d;text-align:center;padding:40px">你的應用程式會顯示在這裡...</p>
+    </div>
+  </div>
+  
+  <div class="tip">點擊右上角的 <strong>「New Application」</strong> 按鈕來開始建立。</div>
+</div>
+
+<div class="connector"></div>
+
+<!-- 步驟 2 -->
+<div class="step">
+  <div class="step-number">2</div>
+  <h2>建立新的 Application</h2>
+  <p>輸入你的應用程式名稱 — 這會成為你的 Bot 顯示名稱（之後可以修改）。</p>
+  
+  <div class="mockup">
+    <div class="mockup-bar">
+      <span class="mockup-dot red"></span>
+      <span class="mockup-dot yellow"></span>
+      <span class="mockup-dot green"></span>
+      <div class="mockup-url">discord.com/developers/applications</div>
+    </div>
+    <div class="mockup-body">
+      <div style="background:#36393f;border-radius:12px;padding:24px;max-width:400px;margin:0 auto">
+        <h3 style="color:#fff;margin-bottom:16px;text-align:center">Create an Application</h3>
+        <div class="form-mock">
+          <label>Name（名稱）</label>
+          <div class="input-mock">我的超棒 Bot</div>
+        </div>
+        <div class="highlight-box">
+          <span class="btn btn-primary" style="width:100%;text-align:center;display:block">Create</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tip">選一個好記的名字。建立後你還可以在下一頁設定頭像和描述。</div>
+</div>
+
+<div class="connector"></div>
+
+<!-- 步驟 3 -->
+<div class="step">
+  <div class="step-number">3</div>
+  <h2>設定 Bot</h2>
+  <p>建立 Application 後，點擊左側選單的 <strong>「Bot」</strong>，然後按 <strong>「Add Bot」</strong> 把你的應用程式變成一個 Bot。</p>
+  
+  <div class="mockup">
+    <div class="mockup-bar">
+      <span class="mockup-dot red"></span>
+      <span class="mockup-dot yellow"></span>
+      <span class="mockup-dot green"></span>
+      <div class="mockup-url">discord.com/developers/applications/[你的App]/bot</div>
+    </div>
+    <div class="mockup-body" style="padding:0">
+      <div class="sidebar">
+        <div class="sidebar-nav">
+          <div class="nav-item">General Information</div>
+          <div class="nav-item active">Bot</div>
+          <div class="nav-item">OAuth2</div>
+          <div class="nav-item">Rich Presence</div>
+        </div>
+        <div class="sidebar-content">
+          <h3 style="color:#fff;margin-bottom:16px">Bot</h3>
+          <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px">
+            <div style="width:48px;height:48px;background:#5865F2;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.2rem">🤖</div>
+            <div>
+              <div style="color:#fff;font-weight:600">我的超棒 Bot</div>
+              <div style="color:#72767d;font-size:0.8rem">Bot</div>
+            </div>
+          </div>
+          <div class="form-mock">
+            <label>Token（權杖）</label>
+            <div style="display:flex;gap:8px">
+              <div class="input-mock" style="margin:0;flex:1">••••••••••••••••••••••</div>
+              <span class="btn btn-primary" style="padding:10px 16px">Copy</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="warning">Bot 的 <strong>Token（權杖）</strong>就像密碼一樣。<strong>絕對不要分享給任何人</strong>，也不要公開發布。如果不小心外洩，請立刻按「Reset Token」重設。</div>
+</div>
+
+<div class="connector"></div>
+
+<!-- 步驟 4 -->
+<div class="step">
+  <div class="step-number">4</div>
+  <h2>設定權限與 Intents</h2>
+  <p>在 Bot 頁面往下滑，找到 <strong>「Privileged Gateway Intents」</strong>。這些設定控制你的 Bot 可以存取哪些資料。</p>
+  
+  <div class="mockup">
+    <div class="mockup-bar">
+      <span class="mockup-dot red"></span>
+      <span class="mockup-dot yellow"></span>
+      <span class="mockup-dot green"></span>
+      <div class="mockup-url">discord.com/developers/applications/[你的App]/bot</div>
+    </div>
+    <div class="mockup-body">
+      <h3 style="color:#fff;margin-bottom:16px">Privileged Gateway Intents</h3>
+      <div class="toggle-row">
+        <div>
+          <div style="color:#fff;font-weight:600">Presence Intent（上線狀態）</div>
+          <div style="color:#72767d;font-size:0.8rem">讓 Bot 可以看到使用者的上線狀態</div>
+        </div>
+        <div class="toggle"></div>
+      </div>
+      <div class="toggle-row">
+        <div>
+          <div style="color:#fff;font-weight:600">Server Members Intent（成員列表）</div>
+          <div style="color:#72767d;font-size:0.8rem">讓 Bot 可以存取伺服器成員列表</div>
+        </div>
+        <div class="toggle"></div>
+      </div>
+      <div class="toggle-row">
+        <div>
+          <div style="color:#fff;font-weight:600">Message Content Intent（訊息內容）</div>
+          <div style="color:#72767d;font-size:0.8rem">讓 Bot 可以讀取訊息內容</div>
+        </div>
+        <div class="toggle"></div>
+      </div>
+      <div class="highlight-box" style="margin-top:16px">
+        <span class="btn btn-success">Save Changes</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="tip">根據你的 Bot 需求開啟對應的 Intent。大部分 Bot 都需要開啟 <strong>Message Content Intent</strong>。記得按 <strong>Save Changes</strong> 儲存！</div>
+</div>
+
+<div class="connector"></div>
+
+<!-- 步驟 5 -->
+<div class="step">
+  <div class="step-number">5</div>
+  <h2>產生邀請連結（OAuth2）</h2>
+  <p>點擊左側選單的 <strong>「OAuth2」</strong>，再點 <strong>「URL Generator」</strong>。選擇你的 Bot 需要的範圍和權限。</p>
+  
+  <div class="mockup">
+    <div class="mockup-bar">
+      <span class="mockup-dot red"></span>
+      <span class="mockup-dot yellow"></span>
+      <span class="mockup-dot green"></span>
+      <div class="mockup-url">discord.com/developers/applications/[你的App]/oauth2</div>
+    </div>
+    <div class="mockup-body" style="padding:0">
+      <div class="sidebar">
+        <div class="sidebar-nav">
+          <div class="nav-item">General Information</div>
+          <div class="nav-item">Bot</div>
+          <div class="nav-item active">OAuth2</div>
+        </div>
+        <div class="sidebar-content">
+          <h3 style="color:#fff;margin-bottom:16px">Scopes（範圍）</h3>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px">
+            <div class="highlight-box" style="display:inline-flex;align-items:center;gap:8px">
+              <div class="checkbox">✓</div><span style="color:#fff">bot</span>
+            </div>
+            <div style="display:inline-flex;align-items:center;gap:8px;padding:8px 12px;background:#36393f;border-radius:6px">
+              <div class="checkbox" style="background:#40444b"> </div><span style="color:#b9bbbe">identify</span>
+            </div>
+            <div style="display:inline-flex;align-items:center;gap:8px;padding:8px 12px;background:#36393f;border-radius:6px">
+              <div class="checkbox" style="background:#40444b"> </div><span style="color:#b9bbbe">guilds</span>
+            </div>
+          </div>
+          
+          <h3 style="color:#fff;margin-bottom:16px">Bot Permissions（Bot 權限）</h3>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px">
+            <div class="checkbox-row"><div class="checkbox">✓</div><span>Send Messages（傳送訊息）</span></div>
+            <div class="checkbox-row"><div class="checkbox">✓</div><span>Read Messages（讀取訊息）</span></div>
+            <div class="checkbox-row"><div class="checkbox">✓</div><span>Manage Messages（管理訊息）</span></div>
+          </div>
+
+          <h3 style="color:#fff;margin-bottom:8px">Generated URL（產生的連結）</h3>
+          <div class="url-box">https://discord.com/oauth2/authorize?client_id=123456789&permissions=8192&scope=bot</div>
+          <div class="highlight-box" style="margin-top:8px">
+            <span class="btn btn-primary">Copy（複製）</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tip">在 <strong>Scopes</strong> 勾選 <strong>「bot」</strong>，然後在 <strong>Bot Permissions</strong> 選擇你的 Bot 需要的權限。最後複製底部產生的 URL 連結。</div>
+</div>
+
+<div class="connector"></div>
+
+<!-- 步驟 6 -->
+<div class="step">
+  <div class="step-number">6</div>
+  <h2>將 Bot 加入你的伺服器</h2>
+  <p>把剛才複製的邀請連結貼到瀏覽器。Discord 會請你選擇要把 Bot 加到哪個伺服器。</p>
+  
+  <div class="mockup">
+    <div class="mockup-bar">
+      <span class="mockup-dot red"></span>
+      <span class="mockup-dot yellow"></span>
+      <span class="mockup-dot green"></span>
+      <div class="mockup-url">discord.com/oauth2/authorize?client_id=...</div>
+    </div>
+    <div class="mockup-body">
+      <div style="max-width:360px;margin:0 auto;text-align:center">
+        <div style="font-size:2rem;margin-bottom:8px">🤖</div>
+        <h3 style="color:#fff;margin-bottom:4px">我的超棒 Bot</h3>
+        <p style="color:#72767d;font-size:0.85rem;margin-bottom:20px">想要加入你的伺服器</p>
+        
+        <div class="form-mock">
+          <label>Add to Server（加入伺服器）</label>
+          <div class="highlight-box">
+            <div class="input-mock" style="margin:0">
+              <div style="background:#36393f;border-radius:8px;padding:10px;display:flex;align-items:center;gap:12px;text-align:left">
+                <div style="width:32px;height:32px;background:#5865F2;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.8rem;color:#fff">我</div>
+                <span style="color:#fff">我的伺服器</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div style="margin-top:16px">
+          <span class="btn btn-primary" style="width:100%;text-align:center;display:block">Authorize（授權）</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="success-box">
+    <div class="icon">🎉</div>
+    <h3 style="color:#57f287;margin-bottom:8px">Bot 加入成功！</h3>
+    <p style="color:#b9bbbe">你的 Bot 現在會出現在伺服器的成員列表中（在你執行 Bot 程式碼之前，它會顯示為離線狀態）。</p>
+  </div>
+
+  <div class="warning">你需要擁有目標伺服器的 <strong>「管理伺服器」</strong> 權限才能加入 Bot。如果下拉選單中看不到你的伺服器，請聯繫伺服器擁有者。</div>
+</div>
+
+</div>
+
+<div style="text-align:center;padding:40px;color:#72767d;font-size:0.85rem">
+  <p>祝你建立 Bot 順利！🤖</p>
+</div>
+
+</body>
+</html>

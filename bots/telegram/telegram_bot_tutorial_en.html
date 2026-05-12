@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How to Create a Telegram Bot & Add It to Your Group</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;background:#17212b;color:#e4ecf2;line-height:1.7}
+a{color:#64b5ef;text-decoration:none}
+a:hover{text-decoration:underline}
+
+.hero{background:linear-gradient(135deg,#17212b 0%,#1c2e3e 40%,#1a3a52 70%,#2AABEE 100%);padding:80px 20px;text-align:center}
+.hero h1{font-size:2.8rem;font-weight:800;color:#fff;margin-bottom:16px}
+.hero p{font-size:1.2rem;color:#8ba4b8;max-width:600px;margin:0 auto}
+
+.container{max-width:800px;margin:0 auto;padding:40px 20px}
+
+.step{background:#1e2c3a;border-radius:12px;padding:32px;margin-bottom:40px;position:relative;border-left:4px solid #2AABEE}
+.step-number{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;background:#2AABEE;color:#fff;border-radius:50%;font-weight:700;font-size:1.1rem;margin-bottom:16px}
+.step h2{font-size:1.5rem;color:#fff;margin-bottom:12px}
+.step p{margin-bottom:16px;color:#8ba4b8}
+
+.mockup-phone{background:#0e1621;border-radius:24px;overflow:hidden;margin:20px auto;max-width:380px;border:2px solid #2b3945;box-shadow:0 8px 32px rgba(0,0,0,0.3)}
+.mockup-phone-header{background:#17212b;padding:12px 16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid #2b3945}
+.mockup-phone-avatar{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.2rem;color:#fff;font-weight:700}
+.mockup-phone-body{padding:16px;min-height:200px}
+
+.chat-bubble{max-width:85%;border-radius:12px;padding:10px 14px;margin-bottom:10px;font-size:0.9rem;line-height:1.5}
+.chat-bubble.bot{background:#182533;color:#e4ecf2;border-bottom-left-radius:4px}
+.chat-bubble.user{background:#2b5278;color:#fff;margin-left:auto;border-bottom-right-radius:4px}
+.chat-bubble .sender{font-weight:700;color:#64b5ef;font-size:0.8rem;margin-bottom:4px}
+.chat-bubble .time{font-size:0.7rem;color:#6b8699;text-align:right;margin-top:4px}
+
+.mockup-input{background:#17212b;padding:10px 16px;display:flex;align-items:center;gap:10px;border-top:1px solid #2b3945}
+.mockup-input-field{background:#242f3d;border:none;border-radius:20px;padding:8px 16px;color:#e4ecf2;flex:1;font-size:0.85rem}
+.mockup-input-send{width:36px;height:36px;background:#2AABEE;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:0.9rem}
+
+.btn{display:inline-block;padding:10px 24px;border-radius:6px;font-weight:600;font-size:0.9rem;cursor:pointer;border:none}
+.btn-primary{background:#2AABEE;color:#fff}
+.btn-success{background:#4fae4e;color:#fff}
+
+.highlight-box{border:2px dashed #2AABEE;border-radius:8px;padding:12px;margin:12px 0;position:relative}
+.highlight-box::before{content:'👆';position:absolute;top:-14px;left:12px;font-size:1.2rem}
+
+.tip{background:#1a3329;border-left:4px solid #4fae4e;border-radius:0 8px 8px 0;padding:16px;margin:16px 0}
+.tip::before{content:'💡 Tip: ';font-weight:700;color:#4fae4e}
+
+.warning{background:#3a2f1a;border-left:4px solid #e5a545;border-radius:0 8px 8px 0;padding:16px;margin:16px 0}
+.warning::before{content:'⚠️ Important: ';font-weight:700;color:#e5a545}
+
+.token-box{background:#0e1621;border:1px solid #2AABEE;border-radius:8px;padding:16px;margin:12px 0;word-break:break-all;font-family:monospace;font-size:0.85rem;color:#2AABEE}
+
+.connector{width:4px;height:30px;background:#2AABEE;margin:0 auto;opacity:0.3}
+
+.success-box{background:#1a3329;border:2px solid #4fae4e;border-radius:12px;padding:24px;text-align:center;margin:20px 0}
+.success-box .icon{font-size:3rem;margin-bottom:12px}
+
+.command-list{background:#0e1621;border-radius:8px;padding:16px;margin:12px 0}
+.command-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #2b3945}
+.command-item:last-child{border-bottom:none}
+.command-name{color:#2AABEE;font-family:monospace;font-weight:600;min-width:120px}
+
+.menu-mockup{background:#0e1621;border-radius:12px;overflow:hidden;margin:16px 0;border:1px solid #2b3945}
+.menu-item{padding:12px 16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid #2b3945;color:#e4ecf2;font-size:0.9rem}
+.menu-item:last-child{border-bottom:none}
+.menu-item:hover{background:#1e2c3a}
+.menu-icon{font-size:1.2rem;width:28px;text-align:center}
+
+@media(max-width:640px){
+  .hero h1{font-size:1.8rem}
+  .mockup-phone{max-width:100%}
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <h1>Create a Telegram Bot<br>& Add It to Your Group</h1>
+  <p>A step-by-step visual guide — no coding required</p>
+</div>
+
+<div class="container">
+
+<!-- Step 1 -->
+<div class="step">
+  <div class="step-number">1</div>
+  <h2>Open Telegram & Find BotFather</h2>
+  <p>In Telegram, search for <strong>@BotFather</strong> — this is the official Telegram bot that helps you create and manage bots.</p>
+  
+  <div class="mockup-phone">
+    <div class="mockup-phone-header">
+      <div style="color:#8ba4b8;font-size:1.2rem">←</div>
+      <div style="background:#242f3d;border-radius:20px;padding:8px 16px;flex:1;color:#6b8699;font-size:0.85rem">
+        🔍 Search: <span style="color:#e4ecf2">BotFather</span>
+      </div>
+    </div>
+    <div class="mockup-phone-body" style="padding:0">
+      <div class="highlight-box" style="margin:0;border-radius:0;border:none;border-left:3px dashed #2AABEE">
+        <div style="display:flex;align-items:center;gap:12px;padding:12px 16px">
+          <div class="mockup-phone-avatar" style="background:#2AABEE;width:48px;height:48px">🤖</div>
+          <div style="flex:1">
+            <div style="display:flex;align-items:center;gap:6px">
+              <span style="color:#fff;font-weight:600">BotFather</span>
+              <span style="background:#2AABEE;color:#fff;font-size:0.6rem;padding:2px 6px;border-radius:4px">✓</span>
+            </div>
+            <div style="color:#6b8699;font-size:0.8rem">@BotFather · Official bot manager</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tip">Make sure you pick the one with the blue verified checkmark. There are fake accounts that look similar!</div>
+</div>
+
+<div class="connector"></div>
+
+<!-- Step 2 -->
+<div class="step">
+  <div class="step-number">2</div>
+  <h2>Start a Chat with BotFather</h2>
+  <p>Open the chat with BotFather and tap <strong>"Start"</strong> or type <strong>/start</strong>. BotFather will show you a list of available commands.</p>
+  
+  <div class="mockup-phone">
+    <div class="mockup-phone-header">
+      <div style="color:#8ba4b8;font-size:1.2rem">←</div>
+      <div class="mockup-phone-avatar" style="background:#2AABEE">🤖</div>
+      <div>
+        <div style="color:#fff;font-weight:600;font-size:0.9rem">BotFather</div>
+        <div style="color:#6b8699;font-size:0.75rem">online</div>
+      </div>
+    </div>
+    <div class="mockup-phone-body">
+      <div class="chat-bubble bot">
+        <div class="sender">BotFather</div>
+        I can help you create and manage Telegram bots. Here's what I can do:<br><br>
+        <strong>/newbot</strong> — create a new bot<br>
+        <strong>/mybots</strong> — manage your bots<br>
+        <strong>/setname</strong> — change bot name<br>
+        <strong>/setdescription</strong> — change bot description<br>
+        <strong>/setabouttext</strong> — change bot about text<br>
+        <strong>/setuserpic</strong> — change bot profile photo
+        <div class="time">12:00</div>
+      </div>
+    </div>
+    <div class="mockup-input">
+      <div class="mockup-input-field">/start</div>
+      <div class="mockup-input-send">➤</div>
+    </div>
+  </div>
+
+  <div class="tip">Type <strong>/start</strong> first if BotFather doesn't respond automatically.</div>
+</div>
+
+<div class="connector"></div>
+
+<!-- Step 3 -->
+<div class="step">
+  <div class="step-number">3</div>
+  <h2>Create Your New Bot</h2>
+  <p>Type <strong>/newbot</strong> and send it. BotFather will ask you two questions: first the <strong>display name</strong>, then the <strong>username</strong> (must end with "bot").</p>
+  
+  <div class="mockup-phone">
+    <div class="mockup-phone-header">
+      <div style="color:#8ba4b8;font-size:1.2rem">←</div>
+      <div class="mockup-phone-avatar" style="background:#2AABEE">🤖</div>
+      <div>
+        <div style="color:#fff;font-weight:600;font-size:0.9rem">BotFather</div>
+        <div style="color:#6b8699;font-size:0.75rem">online</div>
+      </div>
+    </div>
+    <div class="mockup-phone-body">
+      <div class="chat-bubble user">
+        /newbot
+        <div class="time">12:01</div>
+      </div>
+      <div class="chat-bubble bot">
+        <div class="sender">BotFather</div>
+        Alright, a new bot. How are we going to call it? Please choose a name for your bot.
+        <div class="time">12:01</div>
+      </div>
+      <div class="chat-bubble user">
+        My Awesome Bot
+        <div class="time">12:02</div>
+      </div>
+      <div class="chat-bubble bot">
+        <div class="sender">BotFather</div>
+        Good. Now let's choose a username for your bot. It must end in 'bot'. Like this, for example: TetrisBot or tetris_bot.
+        <div class="time">12:02</div>
+      </div>
+      <div class="chat-bubble user" style="margin-bottom:0">
+        <div class="highlight-box" style="margin:0;border-color:#2AABEE">
+          my_awesome_helper_bot
+        </div>
+        <div class="time">12:03</div>
+      </div>
+    </div>
+    <div class="mockup-input">
+      <div class="mockup-input-field">Type a message...</div>
+      <div class="mockup-input-send">➤</div>
+    </div>
+  </div>
+
+  <div class="warning">The username <strong>must end with "bot"</strong> (e.g., my_helper_bot). If the name is taken, try adding numbers or underscores.</div>
+</div>
+
+<div class="connector"></div>
+
+<!-- Step 4 -->
+<div class="step">
+  <div class="step-number">4</div>
+  <h2>Get Your Bot Token</h2>
+  <p>After creating the bot, BotFather will give you a <strong>Token</strong> — this is the key to control your bot. Keep it safe!</p>
+  
+  <div class="mockup-phone">
+    <div class="mockup-phone-header">
+      <div style="color:#8ba4b8;font-size:1.2rem">←</div>
+      <div class="mockup-phone-avatar" style="background:#2AABEE">🤖</div>
+      <div>
+        <div style="color:#fff;font-weight:600;font-size:0.9rem">BotFather</div>
+        <div style="color:#6b8699;font-size:0.75rem">online</div>
+      </div>
+    </div>
+    <div class="mockup-phone-body">
+      <div class="chat-bubble bot">
+        <div class="sender">BotFather</div>
+        Done! Congratulations on your new bot. You will find it at <span style="color:#64b5ef">t.me/my_awesome_helper_bot</span>.<br><br>
+        Use this token to access the HTTP API:<br>
+        <div class="token-box" style="margin:8px 0">1234567890:ABCdefGHI_jklMNOpqrSTUvwxYZ</div>
+        Keep your token secure and store it safely. Anyone with your token can control your bot.
+        <div class="time">12:03</div>
+      </div>
+    </div>
+    <div class="mockup-input">
+      <div class="mockup-input-field">Type a message...</div>
+      <div class="mockup-input-send">➤</div>
+    </div>
+  </div>
+
+  <div class="warning">Your bot <strong>Token</strong> is like a password. <strong>Never share it publicly.</strong> If it gets leaked, send <strong>/revoke</strong> to BotFather to generate a new one.</div>
+</div>
+
+<div class="connector"></div>
+
+<!-- Step 5 -->
+<div class="step">
+  <div class="step-number">5</div>
+  <h2>Customize Your Bot (Optional)</h2>
+  <p>You can set a profile picture, description, and about text for your bot using BotFather commands.</p>
+  
+  <div class="command-list">
+    <div class="command-item">
+      <span class="command-name">/setuserpic</span>
+      <span>Set a profile photo for your bot</span>
+    </div>
+    <div class="command-item">
+      <span class="command-name">/setdescription</span>
+      <span>Set the text shown when users first open the bot</span>
+    </div>
+    <div class="command-item">
+      <span class="command-name">/setabouttext</span>
+      <span>Set the bio text in the bot's profile</span>
+    </div>
+    <div class="command-item">
+      <span class="command-name">/setcommands</span>
+      <span>Set the menu of available commands</span>
+    </div>
+  </div>
+
+  <div class="tip">Setting a profile picture and description makes your bot look more professional and trustworthy.</div>
+</div>
+
+<div class="connector"></div>
+
+<!-- Step 6 -->
+<div class="step">
+  <div class="step-number">6</div>
+  <h2>Add the Bot to Your Group</h2>
+  <p>To add your bot to a group chat, open the group settings and add it as a new member using its username.</p>
+  
+  <div class="mockup-phone">
+    <div class="mockup-phone-header">
+      <div style="color:#8ba4b8;font-size:1.2rem">←</div>
+      <div class="mockup-phone-avatar" style="background:#4fae4e;width:36px;height:36px;font-size:0.9rem">G</div>
+      <div>
+        <div style="color:#fff;font-weight:600;font-size:0.9rem">My Group Chat</div>
+        <div style="color:#6b8699;font-size:0.75rem">3 members</div>
+      </div>
+    </div>
+    <div class="mockup-phone-body" style="padding:0">
+      <div class="menu-mockup" style="margin:16px;border-radius:8px">
+        <div class="menu-item" style="color:#6b8699;font-size:0.8rem;font-weight:600">Group Settings</div>
+        <div class="menu-item">
+          <span class="menu-icon">👥</span>
+          <span>Members (3)</span>
+        </div>
+        <div class="menu-item highlight-box" style="margin:0;border-radius:0;border:none;border-left:3px dashed #2AABEE">
+          <span class="menu-icon">➕</span>
+          <span style="color:#2AABEE;font-weight:600">Add Members</span>
+        </div>
+      </div>
+      <div style="padding:0 16px 16px">
+        <div style="background:#242f3d;border-radius:20px;padding:10px 16px;color:#6b8699;font-size:0.85rem;margin-bottom:12px">
+          🔍 Search: <span style="color:#e4ecf2">@my_awesome_helper_bot</span>
+        </div>
+        <div class="highlight-box" style="margin:0">
+          <div style="display:flex;align-items:center;gap:12px;padding:8px">
+            <div class="mockup-phone-avatar" style="background:#2AABEE;width:40px;height:40px;font-size:0.9rem">🤖</div>
+            <div>
+              <div style="color:#fff;font-weight:600">My Awesome Bot</div>
+              <div style="color:#6b8699;font-size:0.8rem">@my_awesome_helper_bot</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="success-box">
+    <div class="icon">🎉</div>
+    <h3 style="color:#4fae4e;margin-bottom:8px">Bot Added Successfully!</h3>
+    <p style="color:#8ba4b8">Your bot is now in the group. It will show as a member and can respond to messages (once you set up the bot code).</p>
+  </div>
+
+  <div class="tip">If your bot needs to read all messages (not just commands), send <strong>/setprivacy</strong> to BotFather and set it to <strong>Disabled</strong>. By default, bots in groups only see messages starting with "/".</div>
+</div>
+
+</div>
+
+<div style="text-align:center;padding:40px;color:#6b8699;font-size:0.85rem">
+  <p>Created with care — Happy bot building! 🤖</p>
+</div>
+
+</body>
+</html>
