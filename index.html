@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Apply Tutorials</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Sora:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:        #070b0f;
+      --surface:   #0d1318;
+      --border:    #1a2530;
+      --border-hi: #243444;
+      --cyan:      #00d4ff;
+      --cyan-dim:  rgba(0, 212, 255, 0.12);
+      --cyan-glow: rgba(0, 212, 255, 0.25);
+      --green:     #00ff9d;
+      --text:      #d4e0ea;
+      --muted:     #5a7080;
+      --card-bg:   rgba(13, 19, 24, 0.95);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Sora', sans-serif;
+      font-size: 15px;
+      line-height: 1.6;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── Grid texture overlay ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 40px 40px;
+      opacity: 0.35;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── Radial spotlight ── */
+    body::after {
+      content: '';
+      position: fixed;
+      top: -20vh;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 90vw;
+      height: 70vh;
+      background: radial-gradient(ellipse at center, rgba(0,212,255,0.06) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .wrap {
+      position: relative;
+      z-index: 1;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 24px 80px;
+    }
+
+    /* ── Header ── */
+    header {
+      padding: 64px 0 48px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 56px;
+    }
+
+    .breadcrumb {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .breadcrumb span { color: var(--cyan); }
+    .breadcrumb::before {
+      content: '>';
+      color: var(--green);
+      font-size: 13px;
+    }
+
+    h1 {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: clamp(28px, 5vw, 42px);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: #fff;
+      line-height: 1.1;
+      margin-bottom: 14px;
+    }
+
+    h1 em {
+      font-style: normal;
+      color: var(--cyan);
+      text-shadow: 0 0 24px var(--cyan-glow);
+    }
+
+    .subtitle {
+      font-size: 14px;
+      color: var(--muted);
+      font-weight: 300;
+      letter-spacing: 0.01em;
+    }
+
+    .badge-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 3px;
+      border: 1px solid var(--border-hi);
+      color: var(--muted);
+      background: var(--surface);
+    }
+
+    /* ── Section ── */
+    section { margin-bottom: 52px; }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .section-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+    }
+
+    .section-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #fff;
+      letter-spacing: -0.01em;
+    }
+
+    .section-line {
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* ── Card grid ── */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(195px, 1fr));
+      gap: 12px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px 18px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+      opacity: 0;
+      transition: opacity 0.25s;
+    }
+
+    .card:hover {
+      border-color: var(--border-hi);
+      box-shadow: 0 0 28px var(--cyan-dim), 0 4px 16px rgba(0,0,0,0.4);
+      transform: translateY(-2px);
+    }
+
+    .card:hover::before { opacity: 1; }
+
+    .card-icon {
+      font-size: 26px;
+      line-height: 1;
+    }
+
+    .card-name {
+      font-size: 15px;
+      font-weight: 600;
+      color: #e8f0f8;
+      letter-spacing: -0.01em;
+    }
+
+    .card-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-top: 1px;
+    }
+
+    .card-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn {
+      flex: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      padding: 7px 10px;
+      border-radius: 5px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-decoration: none;
+      transition: background 0.15s, color 0.15s, box-shadow 0.15s;
+      cursor: pointer;
+    }
+
+    .btn-zh {
+      background: var(--cyan-dim);
+      color: var(--cyan);
+      border: 1px solid rgba(0,212,255,0.2);
+    }
+    .btn-zh:hover {
+      background: rgba(0, 212, 255, 0.2);
+      box-shadow: 0 0 12px var(--cyan-dim);
+    }
+
+    .btn-en {
+      background: rgba(255,255,255,0.04);
+      color: var(--muted);
+      border: 1px solid var(--border);
+    }
+    .btn-en:hover {
+      background: rgba(255,255,255,0.08);
+      color: var(--text);
+      border-color: var(--border-hi);
+    }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding-top: 28px;
+      margin-top: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .footer-text {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .footer-text a {
+      color: var(--cyan);
+      text-decoration: none;
+      opacity: 0.7;
+      transition: opacity 0.15s;
+    }
+    .footer-text a:hover { opacity: 1; }
+
+    .count-pill {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.06em;
+      padding: 3px 9px;
+      border-radius: 20px;
+      background: var(--cyan-dim);
+      color: var(--cyan);
+      border: 1px solid rgba(0,212,255,0.15);
+    }
+
+    /* ── Animations ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    header  { animation: fadeUp 0.5s ease both; }
+    section:nth-of-type(1) { animation: fadeUp 0.5s 0.1s ease both; }
+    section:nth-of-type(2) { animation: fadeUp 0.5s 0.2s ease both; }
+    footer  { animation: fadeUp 0.5s 0.3s ease both; }
+
+    /* ── Responsive ── */
+    @media (max-width: 480px) {
+      .grid { grid-template-columns: 1fr 1fr; }
+      h1 { font-size: 26px; }
+    }
+  </style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="breadcrumb">
+      <span>Lewsiafat</span> / apply-tutorials
+    </div>
+    <h1>Apply<br><em>Tutorials</em></h1>
+    <p class="subtitle">Step-by-step guides for bots &amp; API keys · 繁中 &amp; English</p>
+    <div class="badge-row">
+      <span class="badge">8 tutorials</span>
+      <span class="badge">4 bots</span>
+      <span class="badge">4 api keys</span>
+      <span class="badge">ZH + EN</span>
+    </div>
+  </header>
+
+  <!-- Bots -->
+  <section>
+    <div class="section-header">
+      <span class="section-label">01</span>
+      <h2 class="section-title">🤖 Bots</h2>
+      <div class="section-line"></div>
+      <span class="count-pill">4 platforms</span>
+    </div>
+    <div class="grid">
+
+      <div class="card">
+        <div class="card-icon">✈️</div>
+        <div>
+          <div class="card-name">Telegram</div>
+          <div class="card-tag">messaging bot</div>
+        </div>
+        <div class="card-actions">
+          <a class="btn btn-zh" href="bots/telegram/telegram_bot_tutorial_zh.html">繁中</a>
+          <a class="btn btn-en" href="bots/telegram/telegram_bot_tutorial_en.html">EN</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-icon">🎮</div>
+        <div>
+          <div class="card-name">Discord</div>
+          <div class="card-tag">community bot</div>
+        </div>
+        <div class="card-actions">
+          <a class="btn btn-zh" href="bots/discord/discord_bot_tutorial_zh.html">繁中</a>
+          <a class="btn btn-en" href="bots/discord/discord_bot_tutorial_en.html">EN</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-icon">💬</div>
+        <div>
+          <div class="card-name">LINE</div>
+          <div class="card-tag">messaging bot</div>
+        </div>
+        <div class="card-actions">
+          <a class="btn btn-zh" href="bots/line/line_bot_tutorial_zh.html">繁中</a>
+          <a class="btn btn-en" href="bots/line/line_bot_tutorial_en.html">EN</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-icon">🟣</div>
+        <div>
+          <div class="card-name">Slack</div>
+          <div class="card-tag">workspace bot</div>
+        </div>
+        <div class="card-actions">
+          <a class="btn btn-zh" href="bots/slack/slack_bot_tutorial_zh.html">繁中</a>
+          <a class="btn btn-en" href="bots/slack/slack_bot_tutorial_en.html">EN</a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- API Keys -->
+  <section>
+    <div class="section-header">
+      <span class="section-label">02</span>
+      <h2 class="section-title">🔑 API Keys</h2>
+      <div class="section-line"></div>
+      <span class="count-pill">4 providers</span>
+    </div>
+    <div class="grid">
+
+      <div class="card">
+        <div class="card-icon">🧠</div>
+        <div>
+          <div class="card-name">Claude</div>
+          <div class="card-tag">anthropic</div>
+        </div>
+        <div class="card-actions">
+          <a class="btn btn-zh" href="api-keys/claude/claude_api_tutorial_zh.html">繁中</a>
+          <a class="btn btn-en" href="api-keys/claude/claude_api_tutorial_en.html">EN</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-icon">⚡</div>
+        <div>
+          <div class="card-name">OpenAI</div>
+          <div class="card-tag">openai</div>
+        </div>
+        <div class="card-actions">
+          <a class="btn btn-zh" href="api-keys/openai/openai_api_tutorial_zh.html">繁中</a>
+          <a class="btn btn-en" href="api-keys/openai/openai_api_tutorial_en.html">EN</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-icon">🔀</div>
+        <div>
+          <div class="card-name">OpenRouter</div>
+          <div class="card-tag">multi-model</div>
+        </div>
+        <div class="card-actions">
+          <a class="btn btn-zh" href="api-keys/openrouter/openrouter_api_tutorial_zh.html">繁中</a>
+          <a class="btn btn-en" href="api-keys/openrouter/openrouter_api_tutorial_en.html">EN</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-icon">💎</div>
+        <div>
+          <div class="card-name">Gemini</div>
+          <div class="card-tag">google</div>
+        </div>
+        <div class="card-actions">
+          <a class="btn btn-zh" href="api-keys/gemini/gemini_api_tutorial_zh.html">繁中</a>
+          <a class="btn btn-en" href="api-keys/gemini/gemini_api_tutorial_en.html">EN</a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <footer>
+    <span class="footer-text">
+      <a href="https://github.com/Lewsiafat/apply-tutorials" target="_blank" rel="noopener">github.com/Lewsiafat/apply-tutorials</a>
+    </span>
+    <span class="footer-text">16 tutorials · ZH + EN</span>
+  </footer>
+
+</div>
+</body>
+</html>
