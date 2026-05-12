@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-TW" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Sora:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <style>
+    /* ── Dark theme (default) ── */
     :root {
       --bg:        #070b0f;
       --surface:   #0d1318;
@@ -20,10 +21,38 @@
       --text:      #d4e0ea;
       --muted:     #5a7080;
       --card-bg:   rgba(13, 19, 24, 0.95);
+      --grid-color: #1a2530;
+      --grid-opacity: 0.35;
+      --spotlight: rgba(0,212,255,0.06);
+      --h1-color:  #fff;
+      --section-title: #fff;
+      --card-name: #e8f0f8;
+      --shadow: rgba(0,0,0,0.4);
+    }
+
+    /* ── Light theme ── */
+    [data-theme="light"] {
+      --bg:        #f4f7fb;
+      --surface:   #ffffff;
+      --border:    #dde4ed;
+      --border-hi: #c2cfe0;
+      --cyan:      #0090b8;
+      --cyan-dim:  rgba(0, 144, 184, 0.1);
+      --cyan-glow: rgba(0, 144, 184, 0.2);
+      --green:     #00a86b;
+      --text:      #2d3f52;
+      --muted:     #8a9bb0;
+      --card-bg:   #ffffff;
+      --grid-color: #c8d5e2;
+      --grid-opacity: 0.5;
+      --spotlight: rgba(0,144,184,0.04);
+      --h1-color:  #0f1e2e;
+      --section-title: #0f1e2e;
+      --card-name: #1a2d40;
+      --shadow: rgba(0,0,0,0.08);
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     html { scroll-behavior: smooth; }
 
     body {
@@ -34,32 +63,30 @@
       line-height: 1.6;
       min-height: 100vh;
       overflow-x: hidden;
+      transition: background 0.3s, color 0.3s;
     }
 
-    /* ── Grid texture overlay ── */
     body::before {
       content: '';
       position: fixed;
       inset: 0;
       background-image:
-        linear-gradient(var(--border) 1px, transparent 1px),
-        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+        linear-gradient(var(--grid-color) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
       background-size: 40px 40px;
-      opacity: 0.35;
+      opacity: var(--grid-opacity);
       pointer-events: none;
       z-index: 0;
+      transition: opacity 0.3s;
     }
 
-    /* ── Radial spotlight ── */
     body::after {
       content: '';
       position: fixed;
-      top: -20vh;
-      left: 50%;
+      top: -20vh; left: 50%;
       transform: translateX(-50%);
-      width: 90vw;
-      height: 70vh;
-      background: radial-gradient(ellipse at center, rgba(0,212,255,0.06) 0%, transparent 70%);
+      width: 90vw; height: 70vh;
+      background: radial-gradient(ellipse at center, var(--spotlight) 0%, transparent 70%);
       pointer-events: none;
       z-index: 0;
     }
@@ -70,6 +97,52 @@
       max-width: 900px;
       margin: 0 auto;
       padding: 0 24px 80px;
+    }
+
+    /* ── Controls bar ── */
+    .controls {
+      position: fixed;
+      top: 20px; right: 24px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      z-index: 100;
+    }
+
+    .ctrl-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      padding: 6px 12px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--muted);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+      transition: all 0.15s;
+      box-shadow: 0 2px 8px var(--shadow);
+    }
+
+    .ctrl-btn:hover {
+      border-color: var(--border-hi);
+      color: var(--text);
+    }
+
+    .ctrl-btn.active {
+      background: var(--cyan-dim);
+      border-color: var(--cyan);
+      color: var(--cyan);
+    }
+
+    .divider {
+      width: 1px;
+      height: 18px;
+      background: var(--border);
     }
 
     /* ── Header ── */
@@ -91,22 +164,17 @@
       gap: 8px;
     }
     .breadcrumb span { color: var(--cyan); }
-    .breadcrumb::before {
-      content: '>';
-      color: var(--green);
-      font-size: 13px;
-    }
+    .breadcrumb::before { content: '>'; color: var(--green); font-size: 13px; }
 
     h1 {
       font-family: 'JetBrains Mono', monospace;
       font-size: clamp(28px, 5vw, 42px);
       font-weight: 700;
       letter-spacing: -0.02em;
-      color: #fff;
+      color: var(--h1-color);
       line-height: 1.1;
       margin-bottom: 14px;
     }
-
     h1 em {
       font-style: normal;
       color: var(--cyan);
@@ -126,7 +194,6 @@
       margin-top: 20px;
       flex-wrap: wrap;
     }
-
     .badge {
       font-family: 'JetBrains Mono', monospace;
       font-size: 10px;
@@ -141,14 +208,12 @@
 
     /* ── Section ── */
     section { margin-bottom: 52px; }
-
     .section-header {
       display: flex;
       align-items: center;
       gap: 12px;
       margin-bottom: 24px;
     }
-
     .section-label {
       font-family: 'JetBrains Mono', monospace;
       font-size: 11px;
@@ -156,19 +221,13 @@
       letter-spacing: 0.1em;
       color: var(--muted);
     }
-
     .section-title {
       font-size: 18px;
       font-weight: 600;
-      color: #fff;
+      color: var(--section-title);
       letter-spacing: -0.01em;
     }
-
-    .section-line {
-      flex: 1;
-      height: 1px;
-      background: var(--border);
-    }
+    .section-line { flex: 1; height: 1px; background: var(--border); }
 
     /* ── Card grid ── */
     .grid {
@@ -185,11 +244,10 @@
       display: flex;
       flex-direction: column;
       gap: 14px;
-      transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+      transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s, background 0.3s;
       position: relative;
       overflow: hidden;
     }
-
     .card::before {
       content: '';
       position: absolute;
@@ -199,27 +257,20 @@
       opacity: 0;
       transition: opacity 0.25s;
     }
-
     .card:hover {
       border-color: var(--border-hi);
-      box-shadow: 0 0 28px var(--cyan-dim), 0 4px 16px rgba(0,0,0,0.4);
+      box-shadow: 0 0 28px var(--cyan-dim), 0 4px 16px var(--shadow);
       transform: translateY(-2px);
     }
-
     .card:hover::before { opacity: 1; }
 
-    .card-icon {
-      font-size: 26px;
-      line-height: 1;
-    }
-
+    .card-icon { font-size: 26px; line-height: 1; }
     .card-name {
       font-size: 15px;
       font-weight: 600;
-      color: #e8f0f8;
+      color: var(--card-name);
       letter-spacing: -0.01em;
     }
-
     .card-tag {
       font-family: 'JetBrains Mono', monospace;
       font-size: 9px;
@@ -228,18 +279,13 @@
       color: var(--muted);
       margin-top: 1px;
     }
-
-    .card-actions {
-      display: flex;
-      gap: 8px;
-    }
+    .card-actions { display: flex; gap: 8px; }
 
     .btn {
       flex: 1;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 5px;
       padding: 7px 10px;
       border-radius: 5px;
       font-family: 'JetBrains Mono', monospace;
@@ -250,27 +296,22 @@
       transition: background 0.15s, color 0.15s, box-shadow 0.15s;
       cursor: pointer;
     }
-
     .btn-zh {
       background: var(--cyan-dim);
       color: var(--cyan);
       border: 1px solid rgba(0,212,255,0.2);
     }
-    .btn-zh:hover {
-      background: rgba(0, 212, 255, 0.2);
-      box-shadow: 0 0 12px var(--cyan-dim);
-    }
-
+    [data-theme="light"] .btn-zh { border-color: rgba(0,144,184,0.25); }
+    .btn-zh:hover { background: rgba(0,212,255,0.2); box-shadow: 0 0 12px var(--cyan-dim); }
+    [data-theme="light"] .btn-zh:hover { background: rgba(0,144,184,0.18); }
     .btn-en {
       background: rgba(255,255,255,0.04);
       color: var(--muted);
       border: 1px solid var(--border);
     }
-    .btn-en:hover {
-      background: rgba(255,255,255,0.08);
-      color: var(--text);
-      border-color: var(--border-hi);
-    }
+    [data-theme="light"] .btn-en { background: var(--surface); }
+    .btn-en:hover { background: rgba(255,255,255,0.08); color: var(--text); border-color: var(--border-hi); }
+    [data-theme="light"] .btn-en:hover { background: var(--bg); }
 
     /* ── Footer ── */
     footer {
@@ -283,19 +324,12 @@
       flex-wrap: wrap;
       gap: 12px;
     }
-
     .footer-text {
       font-family: 'JetBrains Mono', monospace;
       font-size: 11px;
       color: var(--muted);
     }
-
-    .footer-text a {
-      color: var(--cyan);
-      text-decoration: none;
-      opacity: 0.7;
-      transition: opacity 0.15s;
-    }
+    .footer-text a { color: var(--cyan); text-decoration: none; opacity: 0.7; transition: opacity 0.15s; }
     .footer-text a:hover { opacity: 1; }
 
     .count-pill {
@@ -308,13 +342,13 @@
       color: var(--cyan);
       border: 1px solid rgba(0,212,255,0.15);
     }
+    [data-theme="light"] .count-pill { border-color: rgba(0,144,184,0.2); }
 
     /* ── Animations ── */
     @keyframes fadeUp {
       from { opacity: 0; transform: translateY(16px); }
       to   { opacity: 1; transform: translateY(0); }
     }
-
     header  { animation: fadeUp 0.5s ease both; }
     section:nth-of-type(1) { animation: fadeUp 0.5s 0.1s ease both; }
     section:nth-of-type(2) { animation: fadeUp 0.5s 0.2s ease both; }
@@ -324,10 +358,21 @@
     @media (max-width: 480px) {
       .grid { grid-template-columns: 1fr 1fr; }
       h1 { font-size: 26px; }
+      .controls { top: 12px; right: 12px; gap: 4px; }
+      .ctrl-btn { padding: 5px 8px; font-size: 10px; }
     }
   </style>
 </head>
 <body>
+
+<!-- Controls: theme + lang -->
+<div class="controls">
+  <button class="ctrl-btn" id="btn-zh-TW" onclick="setLang('zh-TW')">繁中</button>
+  <button class="ctrl-btn" id="btn-en" onclick="setLang('en')">EN</button>
+  <div class="divider"></div>
+  <button class="ctrl-btn" id="btn-theme" onclick="toggleTheme()" title="Toggle theme">🌙</button>
+</div>
+
 <div class="wrap">
 
   <header>
@@ -335,11 +380,13 @@
       <span>Lewsiafat</span> / apply-tutorials
     </div>
     <h1>Apply<br><em>Tutorials</em></h1>
-    <p class="subtitle">Step-by-step guides for bots &amp; API keys · 繁中 &amp; English</p>
+    <p class="subtitle" data-zh="逐步教學：Bot 申請 &amp; API 金鑰設定 · 繁中 &amp; English" data-en="Step-by-step guides for bots &amp; API keys · 繁中 &amp; English">
+      逐步教學：Bot 申請 &amp; API 金鑰設定 · 繁中 &amp; English
+    </p>
     <div class="badge-row">
-      <span class="badge">8 tutorials</span>
-      <span class="badge">4 bots</span>
-      <span class="badge">4 api keys</span>
+      <span class="badge" data-zh="8 個教學" data-en="8 tutorials">8 個教學</span>
+      <span class="badge" data-zh="4 個 Bot" data-en="4 bots">4 個 Bot</span>
+      <span class="badge" data-zh="4 個 API 金鑰" data-en="4 api keys">4 個 API 金鑰</span>
       <span class="badge">ZH + EN</span>
     </div>
   </header>
@@ -348,9 +395,9 @@
   <section>
     <div class="section-header">
       <span class="section-label">01</span>
-      <h2 class="section-title">🤖 Bots</h2>
+      <h2 class="section-title">🤖 <span data-zh="Bot 申請" data-en="Bots">Bot 申請</span></h2>
       <div class="section-line"></div>
-      <span class="count-pill">4 platforms</span>
+      <span class="count-pill" data-zh="4 個平台" data-en="4 platforms">4 個平台</span>
     </div>
     <div class="grid">
 
@@ -358,7 +405,7 @@
         <div class="card-icon">✈️</div>
         <div>
           <div class="card-name">Telegram</div>
-          <div class="card-tag">messaging bot</div>
+          <div class="card-tag" data-zh="訊息機器人" data-en="messaging bot">訊息機器人</div>
         </div>
         <div class="card-actions">
           <a class="btn btn-zh" href="bots/telegram/telegram_bot_tutorial_zh.html">繁中</a>
@@ -370,7 +417,7 @@
         <div class="card-icon">🎮</div>
         <div>
           <div class="card-name">Discord</div>
-          <div class="card-tag">community bot</div>
+          <div class="card-tag" data-zh="社群機器人" data-en="community bot">社群機器人</div>
         </div>
         <div class="card-actions">
           <a class="btn btn-zh" href="bots/discord/discord_bot_tutorial_zh.html">繁中</a>
@@ -382,7 +429,7 @@
         <div class="card-icon">💬</div>
         <div>
           <div class="card-name">LINE</div>
-          <div class="card-tag">messaging bot</div>
+          <div class="card-tag" data-zh="訊息機器人" data-en="messaging bot">訊息機器人</div>
         </div>
         <div class="card-actions">
           <a class="btn btn-zh" href="bots/line/line_bot_tutorial_zh.html">繁中</a>
@@ -394,7 +441,7 @@
         <div class="card-icon">🟣</div>
         <div>
           <div class="card-name">Slack</div>
-          <div class="card-tag">workspace bot</div>
+          <div class="card-tag" data-zh="工作區機器人" data-en="workspace bot">工作區機器人</div>
         </div>
         <div class="card-actions">
           <a class="btn btn-zh" href="bots/slack/slack_bot_tutorial_zh.html">繁中</a>
@@ -409,9 +456,9 @@
   <section>
     <div class="section-header">
       <span class="section-label">02</span>
-      <h2 class="section-title">🔑 API Keys</h2>
+      <h2 class="section-title">🔑 <span data-zh="API 金鑰申請" data-en="API Keys">API 金鑰申請</span></h2>
       <div class="section-line"></div>
-      <span class="count-pill">4 providers</span>
+      <span class="count-pill" data-zh="4 個服務商" data-en="4 providers">4 個服務商</span>
     </div>
     <div class="grid">
 
@@ -443,7 +490,7 @@
         <div class="card-icon">🔀</div>
         <div>
           <div class="card-name">OpenRouter</div>
-          <div class="card-tag">multi-model</div>
+          <div class="card-tag" data-zh="多模型路由" data-en="multi-model">多模型路由</div>
         </div>
         <div class="card-actions">
           <a class="btn btn-zh" href="api-keys/openrouter/openrouter_api_tutorial_zh.html">繁中</a>
@@ -470,9 +517,46 @@
     <span class="footer-text">
       <a href="https://github.com/Lewsiafat/apply-tutorials" target="_blank" rel="noopener">github.com/Lewsiafat/apply-tutorials</a>
     </span>
-    <span class="footer-text">16 tutorials · ZH + EN</span>
+    <span class="footer-text" data-zh="16 個教學 · 繁中 + 英文" data-en="16 tutorials · ZH + EN">16 個教學 · 繁中 + 英文</span>
   </footer>
 
 </div>
+
+<script>
+  const THEME_KEY = 'apply-tutorials-theme';
+  const LANG_KEY  = 'apply-tutorials-lang';
+
+  // ── Theme ──
+  function toggleTheme() {
+    const html = document.documentElement;
+    const next = html.dataset.theme === 'dark' ? 'light' : 'dark';
+    html.dataset.theme = next;
+    localStorage.setItem(THEME_KEY, next);
+    document.getElementById('btn-theme').textContent = next === 'dark' ? '🌙' : '☀️';
+  }
+
+  // ── Language ──
+  function setLang(lang) {
+    document.documentElement.lang = lang;
+    localStorage.setItem(LANG_KEY, lang);
+
+    document.querySelectorAll('[data-zh]').forEach(el => {
+      el.innerHTML = lang === 'zh-TW' ? el.dataset.zh : el.dataset.en;
+    });
+
+    document.getElementById('btn-zh-TW').classList.toggle('active', lang === 'zh-TW');
+    document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+  }
+
+  // ── Init on load ──
+  (function init() {
+    const savedTheme = localStorage.getItem(THEME_KEY) || 'dark';
+    document.documentElement.dataset.theme = savedTheme;
+    document.getElementById('btn-theme').textContent = savedTheme === 'dark' ? '🌙' : '☀️';
+
+    const savedLang = localStorage.getItem(LANG_KEY) || 'zh-TW';
+    setLang(savedLang);
+  })();
+</script>
 </body>
 </html>
