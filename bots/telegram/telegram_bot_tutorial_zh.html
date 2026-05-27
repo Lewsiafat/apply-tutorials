@@ -328,9 +328,98 @@ a:hover{text-decoration:underline}
 
 </div>
 
+
+<div class="connector"></div>
+
+<!-- 步驟 7 -->
+<div class="step">
+  <div class="step-number">7</div>
+  <h2>取得 Telegram User ID</h2>
+  <p>許多 Bot 設定需要你的 <strong>User ID</strong>（數字帳號 ID），例如設定管理員白名單、限制特定使用者使用 Bot 等。以下提供三種取得方式。</p>
+
+  <h3 style="color:#fff;margin:20px 0 8px">方法 A：使用 @userinfobot（最簡單）</h3>
+  <p>直接在 Telegram 搜尋並開啟 <strong>@userinfobot</strong>，傳送任意訊息，它會立即回傳你的 User ID。</p>
+
+  <div class="mockup-phone">
+    <div class="mockup-phone-header">
+      <div style="color:#8ba4b8;font-size:1.2rem">←</div>
+      <div class="mockup-phone-avatar" style="background:#5b6e84">ℹ️</div>
+      <div>
+        <div style="color:#fff;font-weight:600;font-size:0.9rem">userinfobot</div>
+        <div style="color:#6b8699;font-size:0.75rem">@userinfobot</div>
+      </div>
+    </div>
+    <div class="mockup-phone-body">
+      <div class="chat-bubble user">
+        /start
+        <div class="time">14:00</div>
+      </div>
+      <div class="chat-bubble bot">
+        <div class="sender">userinfobot</div>
+        👤 <strong>你的帳號資訊</strong><br><br>
+        Id: <span style="color:#2AABEE;font-family:monospace">123456789</span><br>
+        First: Lewis<br>
+        Last: —<br>
+        Username: @lewsiafat<br>
+        Language: zh-hant
+        <div class="time">14:00</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="highlight-box" style="margin-top:12px">
+    <strong style="color:#2AABEE">Id: 123456789</strong> ← 這就是你的 User ID，複製這個數字使用
+  </div>
+
+  <h3 style="color:#fff;margin:24px 0 8px">方法 B：使用 @RawDataBot（可取得群組 ID）</h3>
+  <p>搜尋 <strong>@RawDataBot</strong>，在你想取得 ID 的群組中加入此 Bot 並傳送一則訊息，它會回傳完整的訊息原始資料，包含 <code style="background:#0e1621;padding:2px 6px;border-radius:4px">chat.id</code>（群組 ID）和 <code style="background:#0e1621;padding:2px 6px;border-radius:4px">from.id</code>（發送者 User ID）。</p>
+
+  <div class="token-box" style="font-size:0.78rem;line-height:1.8">
+    {<br>
+    &nbsp;&nbsp;"message_id": 42,<br>
+    &nbsp;&nbsp;"from": {<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<strong style="color:#4fae4e">"id": 123456789</strong>,&nbsp;&nbsp;<span style="color:#6b8699">← 你的 User ID</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;"first_name": "Lewis",<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;"username": "lewsiafat"<br>
+    &nbsp;&nbsp;},<br>
+    &nbsp;&nbsp;"chat": {<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<strong style="color:#e5a545">"id": -1001234567890</strong>,&nbsp;&nbsp;<span style="color:#6b8699">← 群組 ID（負數）</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;"title": "我的群組",<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;"type": "supergroup"<br>
+    &nbsp;&nbsp;}<br>
+    }
+  </div>
+
+  <div class="tip">群組 ID 通常是<strong>負數</strong>（例如 -1001234567890），User ID 是正數。設定 Bot 時兩者都可能用到。</div>
+
+  <h3 style="color:#fff;margin:24px 0 8px">方法 C：透過 Bot API 查詢（開發者用）</h3>
+  <p>如果你已有 Bot Token，可以直接呼叫 Telegram API 的 <code style="background:#0e1621;padding:2px 6px;border-radius:4px">getUpdates</code>，在回傳的 JSON 中找到 User ID。</p>
+
+  <div class="token-box" style="font-size:0.82rem">
+    https://api.telegram.org/bot<strong style="color:#2AABEE">&lt;YOUR_BOT_TOKEN&gt;</strong>/getUpdates
+  </div>
+
+  <p style="margin-top:12px">先對你的 Bot 傳送一則訊息，再開啟上方網址（把 Token 換成你的），在 JSON 結果中找 <code style="background:#0e1621;padding:2px 6px;border-radius:4px">message.from.id</code> 欄位即為 User ID。</p>
+
+  <div class="warning">若 <code>getUpdates</code> 回傳空陣列，先確認你已對 Bot 傳送過訊息，並且 Bot 沒有設定 Webhook（有 Webhook 時 getUpdates 不會有資料）。</div>
+
+  <div class="success-box">
+    <div class="icon">🆔</div>
+    <h3 style="color:#4fae4e;margin-bottom:8px">三種方法總結</h3>
+    <div style="text-align:left;color:#8ba4b8">
+      <div style="margin-bottom:8px">✅ <strong style="color:#fff">@userinfobot</strong> — 最快，只要傳訊息就能查自己的 User ID</div>
+      <div style="margin-bottom:8px">✅ <strong style="color:#fff">@RawDataBot</strong> — 可同時取得群組 ID 和 User ID</div>
+      <div>✅ <strong style="color:#fff">getUpdates API</strong> — 開發者偏好，不需要第三方 Bot</div>
+    </div>
+  </div>
+</div>
+
+
 <div style="text-align:center;padding:40px;color:#6b8699;font-size:0.85rem">
   <p>祝你建立 Bot 順利！🤖</p>
 </div>
 
 </body>
 </html>
+
+<!-- 步驟 7 已插入於 </div> 前，取代舊的結尾 -->

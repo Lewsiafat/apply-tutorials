@@ -329,6 +329,93 @@ a:hover{text-decoration:underline}
 
 </div>
 
+
+<div class="connector"></div>
+
+<!-- Step 7 -->
+<div class="step">
+  <div class="step-number">7</div>
+  <h2>Find Your Telegram User ID</h2>
+  <p>Many Bot configurations require your <strong>User ID</strong> (a numeric account ID) — for example, setting up admin whitelists or restricting Bot access to specific users. Here are three ways to find it.</p>
+
+  <h3 style="color:#fff;margin:20px 0 8px">Method A: Use @userinfobot (Easiest)</h3>
+  <p>Search for <strong>@userinfobot</strong> in Telegram, open a chat and send any message. It instantly replies with your User ID.</p>
+
+  <div class="mockup-phone">
+    <div class="mockup-phone-header">
+      <div style="color:#8ba4b8;font-size:1.2rem">←</div>
+      <div class="mockup-phone-avatar" style="background:#5b6e84">ℹ️</div>
+      <div>
+        <div style="color:#fff;font-weight:600;font-size:0.9rem">userinfobot</div>
+        <div style="color:#6b8699;font-size:0.75rem">@userinfobot</div>
+      </div>
+    </div>
+    <div class="mockup-phone-body">
+      <div class="chat-bubble user">
+        /start
+        <div class="time">14:00</div>
+      </div>
+      <div class="chat-bubble bot">
+        <div class="sender">userinfobot</div>
+        👤 <strong>Your account info</strong><br><br>
+        Id: <span style="color:#2AABEE;font-family:monospace">123456789</span><br>
+        First: Lewis<br>
+        Last: —<br>
+        Username: @lewsiafat<br>
+        Language: en
+        <div class="time">14:00</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="highlight-box" style="margin-top:12px">
+    <strong style="color:#2AABEE">Id: 123456789</strong> ← This is your User ID — copy this number
+  </div>
+
+  <h3 style="color:#fff;margin:24px 0 8px">Method B: Use @RawDataBot (Also gets Group ID)</h3>
+  <p>Search for <strong>@RawDataBot</strong>, add it to your group, and send a message. It replies with the full raw JSON of that message, including <code style="background:#0e1621;padding:2px 6px;border-radius:4px">chat.id</code> (group ID) and <code style="background:#0e1621;padding:2px 6px;border-radius:4px">from.id</code> (your User ID).</p>
+
+  <div class="token-box" style="font-size:0.78rem;line-height:1.8">
+    {<br>
+    &nbsp;&nbsp;"message_id": 42,<br>
+    &nbsp;&nbsp;"from": {<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<strong style="color:#4fae4e">"id": 123456789</strong>,&nbsp;&nbsp;<span style="color:#6b8699">← Your User ID</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;"first_name": "Lewis",<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;"username": "lewsiafat"<br>
+    &nbsp;&nbsp;},<br>
+    &nbsp;&nbsp;"chat": {<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<strong style="color:#e5a545">"id": -1001234567890</strong>,&nbsp;&nbsp;<span style="color:#6b8699">← Group ID (negative)</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;"title": "My Group",<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;"type": "supergroup"<br>
+    &nbsp;&nbsp;}<br>
+    }
+  </div>
+
+  <div class="tip">Group IDs are always <strong>negative numbers</strong> (e.g. -1001234567890), while User IDs are positive. You may need both when configuring your Bot.</div>
+
+  <h3 style="color:#fff;margin:24px 0 8px">Method C: Use the Bot API directly (For Developers)</h3>
+  <p>If you already have a Bot Token, call the <code style="background:#0e1621;padding:2px 6px;border-radius:4px">getUpdates</code> endpoint and find the User ID in the JSON response.</p>
+
+  <div class="token-box" style="font-size:0.82rem">
+    https://api.telegram.org/bot<strong style="color:#2AABEE">&lt;YOUR_BOT_TOKEN&gt;</strong>/getUpdates
+  </div>
+
+  <p style="margin-top:12px">First send a message to your Bot, then open the URL above (replacing the Token). Look for <code style="background:#0e1621;padding:2px 6px;border-radius:4px">message.from.id</code> in the JSON — that is your User ID.</p>
+
+  <div class="warning">If <code>getUpdates</code> returns an empty array, make sure you have sent a message to the Bot first, and that no Webhook is set (Webhooks disable getUpdates).</div>
+
+  <div class="success-box">
+    <div class="icon">🆔</div>
+    <h3 style="color:#4fae4e;margin-bottom:8px">Summary</h3>
+    <div style="text-align:left;color:#8ba4b8">
+      <div style="margin-bottom:8px">✅ <strong style="color:#fff">@userinfobot</strong> — Quickest way to get your own User ID</div>
+      <div style="margin-bottom:8px">✅ <strong style="color:#fff">@RawDataBot</strong> — Get both Group ID and User ID at once</div>
+      <div>✅ <strong style="color:#fff">getUpdates API</strong> — Developer-preferred, no third-party Bot needed</div>
+    </div>
+  </div>
+</div>
+
+
 <div style="text-align:center;padding:40px;color:#6b8699;font-size:0.85rem">
   <p>Created with care — Happy bot building! 🤖</p>
 </div>
