@@ -109,70 +109,85 @@ a{color:#06C755;text-decoration:none}
 
 <div class="step">
   <div class="step-number">3</div>
-  <h2>Create a Messaging API Channel</h2>
-  <p>Under your new provider, click <strong>"Create a new channel"</strong> and select <strong>"Messaging API"</strong>.</p>
+  <h2>Create a LINE Official Account</h2>
+  <p>Since September 2024, LINE <strong>no longer</strong> allows creating Messaging API channels directly from the Developers Console. The correct approach is to first create a <strong>LINE Official Account</strong> in the LINE Official Account Manager.</p>
+  <div class="warning">
+    If you can't find a "Messaging API" option under your Provider in LINE Developers Console, that's expected. <strong>You must create an Official Account first before you can enable Messaging API.</strong>
+  </div>
   <div class="mockup">
-    <div class="mockup-bar"><span class="mockup-dot red"></span><span class="mockup-dot yellow"></span><span class="mockup-dot green"></span><div class="mockup-url">developers.line.biz/console/provider/[your-provider]</div></div>
-    <div class="mockup-body">
-      <h3 style="color:#fff;margin-bottom:16px">Choose a channel type</h3>
-      <div style="display:flex;gap:16px;flex-wrap:wrap">
-        <div class="highlight-box" style="flex:1;min-width:140px;text-align:center;background:#0d2818;border-color:#06C755">
-          <div style="font-size:2rem;margin-bottom:8px">💬</div>
-          <div style="color:#fff;font-weight:600">Messaging API</div>
-          <div style="color:#9ca3af;font-size:0.8rem">Send/receive messages</div>
-        </div>
-        <div style="flex:1;min-width:140px;text-align:center;padding:12px;background:#222;border-radius:8px;border:1px solid #333">
-          <div style="font-size:2rem;margin-bottom:8px">🔑</div>
-          <div style="color:#666;font-weight:600">LINE Login</div>
-          <div style="color:#666;font-size:0.8rem">User authentication</div>
-        </div>
-        <div style="flex:1;min-width:140px;text-align:center;padding:12px;background:#222;border-radius:8px;border:1px solid #333">
-          <div style="font-size:2rem;margin-bottom:8px">🤖</div>
-          <div style="color:#666;font-weight:600">LIFF</div>
-          <div style="color:#666;font-size:0.8rem">Web apps in LINE</div>
-        </div>
-      </div>
+    <div class="mockup-bar"><span class="mockup-dot red"></span><span class="mockup-dot yellow"></span><span class="mockup-dot green"></span><div class="mockup-url">https://manager.line.biz/</div></div>
+    <div class="mockup-body" style="text-align:center;padding:40px">
+      <div style="font-size:2.5rem;margin-bottom:12px">💚</div>
+      <h3 style="color:#fff;margin-bottom:8px">LINE Official Account Manager</h3>
+      <p style="color:#666;margin-bottom:24px">Manage your LINE Official Account</p>
+      <div class="highlight-box" style="display:inline-block"><span class="btn btn-primary">Create Account</span></div>
     </div>
   </div>
+  <p>After clicking "Create Account", fill in the required details:</p>
+  <div class="mockup">
+    <div class="mockup-bar"><span class="mockup-dot red"></span><span class="mockup-dot yellow"></span><span class="mockup-dot green"></span><div class="mockup-url">manager.line.biz/account/create</div></div>
+    <div class="mockup-body">
+      <h3 style="color:#fff;margin-bottom:16px">Create a LINE Official Account</h3>
+      <div class="form-mock">
+        <label>Account name (this becomes your Bot's display name)</label>
+        <div class="input-mock">My Awesome Bot</div>
+        <label>Industry</label>
+        <div class="input-mock">Technology / IT</div>
+        <label>Business type</label>
+        <div class="input-mock">Software Development</div>
+        <label>Email address</label>
+        <div class="input-mock">you@example.com</div>
+      </div>
+      <div class="highlight-box"><span class="btn btn-primary" style="width:100%;text-align:center;display:block">Create</span></div>
+    </div>
+  </div>
+  <div class="tip">Once created, you'll enter the Official Account dashboard. The account name becomes your bot's display name — choose it carefully.</div>
 </div>
 <div class="connector"></div>
 
 <div class="step">
   <div class="step-number">4</div>
-  <h2>Fill in Channel Details</h2>
-  <p>Fill in the required information for your Messaging API channel. Most fields are straightforward.</p>
+  <h2>Enable Messaging API</h2>
+  <p>In the LINE Official Account Manager dashboard, go to <strong>Settings → Messaging API</strong>, then click "Enable Messaging API".</p>
   <div class="mockup">
-    <div class="mockup-bar"><span class="mockup-dot red"></span><span class="mockup-dot yellow"></span><span class="mockup-dot green"></span><div class="mockup-url">developers.line.biz/console/channel/new</div></div>
+    <div class="mockup-bar"><span class="mockup-dot red"></span><span class="mockup-dot yellow"></span><span class="mockup-dot green"></span><div class="mockup-url">manager.line.biz/account/@your-account/setting/messaging-api</div></div>
     <div class="mockup-body">
-      <h3 style="color:#fff;margin-bottom:16px">Create a Messaging API channel</h3>
+      <div class="sidebar">
+        <div class="sidebar-nav">
+          <div class="nav-header">Settings</div>
+          <div class="nav-item">Basic settings</div>
+          <div class="nav-item">Response settings</div>
+          <div class="nav-item active">Messaging API ▶</div>
+          <div class="nav-item">Account info</div>
+        </div>
+        <div class="sidebar-content">
+          <h3 style="color:#fff;margin-bottom:8px">Messaging API</h3>
+          <p style="color:#666;font-size:0.85rem;margin-bottom:20px">Once enabled, you can send and receive messages via API</p>
+          <div class="highlight-box"><span class="btn btn-primary">Enable Messaging API</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <p>After clicking Enable, you'll be asked to select a <strong>Provider</strong> (the one you created in Step 2):</p>
+  <div class="mockup">
+    <div class="mockup-bar"><span class="mockup-dot red"></span><span class="mockup-dot yellow"></span><span class="mockup-dot green"></span><div class="mockup-url">manager.line.biz/account/.../messaging-api/link-provider</div></div>
+    <div class="mockup-body">
+      <h3 style="color:#fff;margin-bottom:16px">Select a Provider</h3>
       <div class="form-mock">
-        <label>Channel type</label>
-        <div class="input-mock" style="color:#06C755">Messaging API</div>
-        <label>Provider</label>
-        <div class="input-mock">My Company</div>
-        <label>Company or owner's country or region</label>
-        <div class="input-mock">Taiwan</div>
-        <label>Channel icon (optional)</label>
-        <div class="input-mock" style="color:#666">Upload an image...</div>
-        <label>Channel name</label>
-        <div class="input-mock">My Awesome Bot</div>
-        <label>Channel description</label>
-        <div class="input-mock">A helpful bot for our team</div>
-        <label>Category</label>
-        <div class="input-mock">Technology</div>
-        <label>Subcategory</label>
-        <div class="input-mock">Software</div>
+        <label>Choose a Provider to link</label>
+        <div class="input-mock" style="color:#06C755">My Company ▾</div>
       </div>
       <div style="margin-top:8px">
         <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
           <div style="width:18px;height:18px;background:#06C755;border-radius:3px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:0.65rem">✓</div>
-          <span style="font-size:0.85rem">I have read and agree to the LINE Official Account Terms of Use</span>
+          <span style="font-size:0.85rem">I agree to the Messaging API Terms of Use</span>
         </div>
-        <div class="highlight-box"><span class="btn btn-primary" style="width:100%;text-align:center;display:block">Create</span></div>
+        <div class="highlight-box"><span class="btn btn-primary" style="width:100%;text-align:center;display:block">OK</span></div>
       </div>
     </div>
   </div>
-  <div class="warning">The <strong>Channel name</strong> is what users see as the bot's name. Choose carefully — changing it later has restrictions.</div>
+  <div class="tip">After confirming, your Messaging API Channel will appear under the Provider in LINE Developers Console. You can now return to the Developers Console to continue configuration.</div>
+  <div class="warning">An Official Account can only be linked to <strong>one Provider</strong>, and this <strong>cannot be changed</strong> later. Make sure you select the correct Provider.</div>
 </div>
 <div class="connector"></div>
 

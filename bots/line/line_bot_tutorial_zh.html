@@ -107,70 +107,85 @@ a{color:#06C755;text-decoration:none}
 
 <div class="step">
   <div class="step-number">3</div>
-  <h2>建立 Messaging API Channel</h2>
-  <p>在你的 Provider 底下，點 <strong>「Create a new channel」</strong>，選擇 <strong>「Messaging API」</strong>。</p>
+  <h2>建立 LINE 官方帳號</h2>
+  <p>LINE 自 2024 年 9 月起，<strong>不再</strong>支援從 Developers Console 直接建立 Messaging API Channel。正確做法是先在 <strong>LINE Official Account Manager</strong> 建立一個 LINE 官方帳號。</p>
+  <div class="warning">
+    如果你在 LINE Developers Console 的 Provider 底下找不到「Messaging API」選項，這是正常的。<strong>必須先建立官方帳號，才能啟用 Messaging API。</strong>
+  </div>
   <div class="mockup">
-    <div class="mockup-bar"><span class="mockup-dot red"></span><span class="mockup-dot yellow"></span><span class="mockup-dot green"></span><div class="mockup-url">developers.line.biz/console/provider/[你的Provider]</div></div>
-    <div class="mockup-body">
-      <h3 style="color:#fff;margin-bottom:16px">選擇 Channel 類型</h3>
-      <div style="display:flex;gap:16px;flex-wrap:wrap">
-        <div class="highlight-box" style="flex:1;min-width:140px;text-align:center;background:#0d2818;border-color:#06C755">
-          <div style="font-size:2rem;margin-bottom:8px">💬</div>
-          <div style="color:#fff;font-weight:600">Messaging API</div>
-          <div style="color:#9ca3af;font-size:0.8rem">傳送/接收訊息</div>
-        </div>
-        <div style="flex:1;min-width:140px;text-align:center;padding:12px;background:#222;border-radius:8px;border:1px solid #333">
-          <div style="font-size:2rem;margin-bottom:8px">🔑</div>
-          <div style="color:#666;font-weight:600">LINE Login</div>
-          <div style="color:#666;font-size:0.8rem">使用者驗證</div>
-        </div>
-        <div style="flex:1;min-width:140px;text-align:center;padding:12px;background:#222;border-radius:8px;border:1px solid #333">
-          <div style="font-size:2rem;margin-bottom:8px">🤖</div>
-          <div style="color:#666;font-weight:600">LIFF</div>
-          <div style="color:#666;font-size:0.8rem">LINE 內的網頁應用</div>
-        </div>
-      </div>
+    <div class="mockup-bar"><span class="mockup-dot red"></span><span class="mockup-dot yellow"></span><span class="mockup-dot green"></span><div class="mockup-url">https://manager.line.biz/</div></div>
+    <div class="mockup-body" style="text-align:center;padding:40px">
+      <div style="font-size:2.5rem;margin-bottom:12px">💚</div>
+      <h3 style="color:#fff;margin-bottom:8px">LINE Official Account Manager</h3>
+      <p style="color:#666;margin-bottom:24px">管理你的 LINE 官方帳號</p>
+      <div class="highlight-box" style="display:inline-block"><span class="btn btn-primary">建立帳號</span></div>
     </div>
   </div>
+  <p>點擊「建立帳號」後，填寫以下資料：</p>
+  <div class="mockup">
+    <div class="mockup-bar"><span class="mockup-dot red"></span><span class="mockup-dot yellow"></span><span class="mockup-dot green"></span><div class="mockup-url">manager.line.biz/account/create</div></div>
+    <div class="mockup-body">
+      <h3 style="color:#fff;margin-bottom:16px">建立 LINE 官方帳號</h3>
+      <div class="form-mock">
+        <label>帳號名稱（即 Bot 名稱，使用者看到的名字）</label>
+        <div class="input-mock">我的超棒 Bot</div>
+        <label>業種（行業類別）</label>
+        <div class="input-mock">科技・IT</div>
+        <label>業態（業務形態）</label>
+        <div class="input-mock">系統・軟體開發</div>
+        <label>電子郵件地址</label>
+        <div class="input-mock">you@example.com</div>
+      </div>
+      <div class="highlight-box"><span class="btn btn-primary" style="width:100%;text-align:center;display:block">建立</span></div>
+    </div>
+  </div>
+  <div class="tip">建立完成後會進入官方帳號管理後台。帳號名稱就是未來 Bot 顯示的名字，請慎重選擇。</div>
 </div>
 <div class="connector"></div>
 
 <div class="step">
   <div class="step-number">4</div>
-  <h2>填寫 Channel 資料</h2>
-  <p>填寫 Messaging API Channel 的必要資訊。大部分欄位很直觀。</p>
+  <h2>啟用 Messaging API</h2>
+  <p>在 LINE Official Account Manager 後台，前往 <strong>設定（Settings）→ Messaging API</strong>，然後點擊「啟用 Messaging API」。</p>
   <div class="mockup">
-    <div class="mockup-bar"><span class="mockup-dot red"></span><span class="mockup-dot yellow"></span><span class="mockup-dot green"></span><div class="mockup-url">developers.line.biz/console/channel/new</div></div>
+    <div class="mockup-bar"><span class="mockup-dot red"></span><span class="mockup-dot yellow"></span><span class="mockup-dot green"></span><div class="mockup-url">manager.line.biz/account/@你的帳號/setting/messaging-api</div></div>
     <div class="mockup-body">
-      <h3 style="color:#fff;margin-bottom:16px">建立 Messaging API Channel</h3>
+      <div class="sidebar">
+        <div class="sidebar-nav">
+          <div class="nav-header">設定</div>
+          <div class="nav-item">基本設定</div>
+          <div class="nav-item">回應設定</div>
+          <div class="nav-item active">Messaging API ▶</div>
+          <div class="nav-item">帳號資料</div>
+        </div>
+        <div class="sidebar-content">
+          <h3 style="color:#fff;margin-bottom:8px">Messaging API</h3>
+          <p style="color:#666;font-size:0.85rem;margin-bottom:20px">啟用後可透過 API 自動傳送及接收訊息</p>
+          <div class="highlight-box"><span class="btn btn-primary">啟用 Messaging API</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <p>點擊啟用後，系統會要求你選擇一個 <strong>Provider</strong>（就是步驟 2 建立的那個）：</p>
+  <div class="mockup">
+    <div class="mockup-bar"><span class="mockup-dot red"></span><span class="mockup-dot yellow"></span><span class="mockup-dot green"></span><div class="mockup-url">manager.line.biz/account/.../messaging-api/link-provider</div></div>
+    <div class="mockup-body">
+      <h3 style="color:#fff;margin-bottom:16px">選擇 Provider</h3>
       <div class="form-mock">
-        <label>Channel type（類型）</label>
-        <div class="input-mock" style="color:#06C755">Messaging API</div>
-        <label>Provider（提供者）</label>
-        <div class="input-mock">我的公司</div>
-        <label>Company or owner's country or region（國家/地區）</label>
-        <div class="input-mock">Taiwan（台灣）</div>
-        <label>Channel icon（圖示，選填）</label>
-        <div class="input-mock" style="color:#666">上傳圖片...</div>
-        <label>Channel name（名稱）</label>
-        <div class="input-mock">我的超棒 Bot</div>
-        <label>Channel description（描述）</label>
-        <div class="input-mock">團隊的好幫手</div>
-        <label>Category（類別）</label>
-        <div class="input-mock">科技</div>
-        <label>Subcategory（子類別）</label>
-        <div class="input-mock">軟體</div>
+        <label>選擇要連結的 Provider</label>
+        <div class="input-mock" style="color:#06C755">我的公司 ▾</div>
       </div>
       <div style="margin-top:8px">
         <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
           <div style="width:18px;height:18px;background:#06C755;border-radius:3px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:0.65rem">✓</div>
-          <span style="font-size:0.85rem">我已閱讀並同意 LINE 官方帳號使用條款</span>
+          <span style="font-size:0.85rem">我同意 Messaging API 使用條款</span>
         </div>
-        <div class="highlight-box"><span class="btn btn-primary" style="width:100%;text-align:center;display:block">Create（建立）</span></div>
+        <div class="highlight-box"><span class="btn btn-primary" style="width:100%;text-align:center;display:block">OK（確認）</span></div>
       </div>
     </div>
   </div>
-  <div class="warning"><strong>Channel 名稱</strong>就是使用者看到的 Bot 名字。請慎重選擇，之後修改有限制。</div>
+  <div class="tip">確認後，你的 Messaging API Channel 就會出現在 LINE Developers Console 的 Provider 底下。現在可以回到 Developers Console 繼續設定。</div>
+  <div class="warning">一個官方帳號只能連結到<strong>一個 Provider</strong>，且連結後<strong>無法更改</strong>。請確認選到正確的 Provider。</div>
 </div>
 <div class="connector"></div>
 

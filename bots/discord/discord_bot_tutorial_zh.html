@@ -268,11 +268,11 @@ a:hover{text-decoration:underline}
             <div class="highlight-box" style="display:inline-flex;align-items:center;gap:8px">
               <div class="checkbox">✓</div><span style="color:#fff">bot</span>
             </div>
-            <div style="display:inline-flex;align-items:center;gap:8px;padding:8px 12px;background:#36393f;border-radius:6px">
-              <div class="checkbox" style="background:#40444b"> </div><span style="color:#b9bbbe">identify</span>
+            <div class="highlight-box" style="display:inline-flex;align-items:center;gap:8px">
+              <div class="checkbox">✓</div><span style="color:#fff">applications.commands</span>
             </div>
             <div style="display:inline-flex;align-items:center;gap:8px;padding:8px 12px;background:#36393f;border-radius:6px">
-              <div class="checkbox" style="background:#40444b"> </div><span style="color:#b9bbbe">guilds</span>
+              <div class="checkbox" style="background:#40444b"> </div><span style="color:#b9bbbe">identify</span>
             </div>
           </div>
           
@@ -284,7 +284,7 @@ a:hover{text-decoration:underline}
           </div>
 
           <h3 style="color:#fff;margin-bottom:8px">Generated URL（產生的連結）</h3>
-          <div class="url-box">https://discord.com/oauth2/authorize?client_id=123456789&permissions=8192&scope=bot</div>
+          <div class="url-box">https://discord.com/oauth2/authorize?client_id=123456789&permissions=11264&scope=bot+applications.commands</div>
           <div class="highlight-box" style="margin-top:8px">
             <span class="btn btn-primary">Copy（複製）</span>
           </div>
@@ -293,7 +293,7 @@ a:hover{text-decoration:underline}
     </div>
   </div>
 
-  <div class="tip">在 <strong>Scopes</strong> 勾選 <strong>「bot」</strong>，然後在 <strong>Bot Permissions</strong> 選擇你的 Bot 需要的權限。最後複製底部產生的 URL 連結。</div>
+  <div class="tip">在 <strong>Scopes</strong> 同時勾選 <strong>「bot」</strong> 和 <strong>「applications.commands」</strong>（支援斜線指令），然後在 <strong>Bot Permissions</strong> 選擇需要的權限。最後複製底部產生的 URL 連結。</div>
 </div>
 
 <div class="connector"></div>

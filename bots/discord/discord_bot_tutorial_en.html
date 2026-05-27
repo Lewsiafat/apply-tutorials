@@ -271,11 +271,11 @@ a:hover{text-decoration:underline}
             <div class="highlight-box" style="display:inline-flex;align-items:center;gap:8px">
               <div class="checkbox">✓</div><span style="color:#fff">bot</span>
             </div>
-            <div style="display:inline-flex;align-items:center;gap:8px;padding:8px 12px;background:#36393f;border-radius:6px">
-              <div class="checkbox" style="background:#40444b"> </div><span style="color:#b9bbbe">identify</span>
+            <div class="highlight-box" style="display:inline-flex;align-items:center;gap:8px">
+              <div class="checkbox">✓</div><span style="color:#fff">applications.commands</span>
             </div>
             <div style="display:inline-flex;align-items:center;gap:8px;padding:8px 12px;background:#36393f;border-radius:6px">
-              <div class="checkbox" style="background:#40444b"> </div><span style="color:#b9bbbe">guilds</span>
+              <div class="checkbox" style="background:#40444b"> </div><span style="color:#b9bbbe">identify</span>
             </div>
           </div>
           
@@ -287,7 +287,7 @@ a:hover{text-decoration:underline}
           </div>
 
           <h3 style="color:#fff;margin-bottom:8px">Generated URL</h3>
-          <div class="url-box">https://discord.com/oauth2/authorize?client_id=123456789&permissions=8192&scope=bot</div>
+          <div class="url-box">https://discord.com/oauth2/authorize?client_id=123456789&permissions=11264&scope=bot+applications.commands</div>
           <div class="highlight-box" style="margin-top:8px">
             <span class="btn btn-primary">Copy</span>
           </div>
@@ -296,7 +296,7 @@ a:hover{text-decoration:underline}
     </div>
   </div>
 
-  <div class="tip">Under <strong>Scopes</strong>, check <strong>"bot"</strong>. Then under <strong>Bot Permissions</strong>, select only the permissions your bot actually needs. Copy the generated URL at the bottom.</div>
+  <div class="tip">Under <strong>Scopes</strong>, check both <strong>"bot"</strong> and <strong>"applications.commands"</strong> (required for slash commands). Then under <strong>Bot Permissions</strong>, select the permissions your bot needs. Copy the generated URL at the bottom.</div>
 </div>
 
 <div class="connector"></div>
