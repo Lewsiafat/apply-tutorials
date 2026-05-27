@@ -154,6 +154,109 @@ a{color:#6366f1;text-decoration:none}
   <div class="tip">OpenRouter uses a <strong>credit-based billing system</strong>. Add credits via your Billing page, and pay only for what you use. Rates are competitive and vary by model.</div>
 </div>
 
+
+<div style="width:4px;height:30px;background:#6366f1;margin:0 auto;opacity:0.3"></div>
+
+<!-- Step 6 -->
+<div class="step">
+  <div class="step-number">6</div>
+  <h2>Buy Credits (Top Up)</h2>
+  <p>OpenRouter uses a prepaid Credits system. API usage is deducted from your balance — you only top up when needed, with no automatic charges.</p>
+
+  <h3 style="color:#fff;margin:16px 0 8px">Go to the Credits Page</h3>
+  <p>After logging in, click your avatar in the top-right and select <strong>Credits</strong>, or go directly to:</p>
+
+  <div class="token-box" style="font-size:0.85rem;margin-bottom:16px">
+    https://openrouter.ai/credits
+  </div>
+
+  <div style="background:#1a1a1a;border:1px solid #333;border-radius:12px;overflow:hidden;margin:16px 0">
+    <div style="background:#111;padding:10px 16px;display:flex;align-items:center;gap:8px;border-bottom:1px solid #333">
+      <div style="width:12px;height:12px;border-radius:50%;background:#ff5f56"></div>
+      <div style="width:12px;height:12px;border-radius:50%;background:#ffbd2e"></div>
+      <div style="width:12px;height:12px;border-radius:50%;background:#27c93f"></div>
+      <div style="background:#222;border-radius:4px;padding:3px 12px;color:#888;font-size:0.75rem;margin-left:8px">openrouter.ai/credits</div>
+    </div>
+    <div style="padding:24px">
+      <div style="color:#9ca3af;font-size:0.8rem;margin-bottom:16px">Current Balance</div>
+      <div style="font-size:2rem;font-weight:700;color:#fff;margin-bottom:4px">/bin/bash.00</div>
+      <div style="color:#6366f1;font-size:0.85rem;margin-bottom:24px">0 credits</div>
+
+      <div style="color:#9ca3af;font-size:0.85rem;margin-bottom:12px">Select Amount</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px">
+        <div style="border:1px solid #333;border-radius:8px;padding:12px;text-align:center">
+          <div style="color:#fff;font-weight:600"></div>
+          <div style="color:#6b7280;font-size:0.75rem">5 USD</div>
+        </div>
+        <div style="border:2px solid #6366f1;border-radius:8px;padding:12px;text-align:center;background:#1a1a2e">
+          <div style="color:#6366f1;font-weight:700">0</div>
+          <div style="color:#6b7280;font-size:0.75rem">Most popular</div>
+        </div>
+        <div style="border:1px solid #333;border-radius:8px;padding:12px;text-align:center">
+          <div style="color:#fff;font-weight:600">5</div>
+          <div style="color:#6b7280;font-size:0.75rem">25 USD</div>
+        </div>
+      </div>
+      <div style="border:1px dashed #333;border-radius:8px;padding:10px 14px;margin-bottom:16px">
+        <div style="color:#9ca3af;font-size:0.75rem;margin-bottom:4px">Custom amount (min )</div>
+        <div style="color:#fff;font-size:0.9rem"></div>
+      </div>
+      <div style="background:#6366f1;color:#fff;border-radius:8px;padding:12px;text-align:center;font-weight:600">
+        Pay with Credit Card →
+      </div>
+    </div>
+  </div>
+
+  <h3 style="color:#fff;margin:20px 0 8px">Payment Methods</h3>
+
+  <div style="background:#111;border:1px solid #333;border-radius:8px;overflow:hidden;margin-bottom:16px">
+    <div style="padding:14px 16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid #222">
+      <span style="font-size:1.2rem">💳</span>
+      <div>
+        <div style="color:#fff;font-weight:600;font-size:0.9rem">Credit / Debit Card</div>
+        <div style="color:#6b7280;font-size:0.8rem">Visa, Mastercard, American Express</div>
+      </div>
+    </div>
+    <div style="padding:14px 16px;display:flex;align-items:center;gap:12px">
+      <span style="font-size:1.2rem">₿</span>
+      <div>
+        <div style="color:#fff;font-weight:600;font-size:0.9rem">Cryptocurrency</div>
+        <div style="color:#6b7280;font-size:0.8rem">USDC, ETH, and other major tokens supported</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tip">OpenRouter will <strong>never charge you automatically</strong>. When your credits run out, API calls return a <code style="background:#0d0d0d;padding:2px 6px;border-radius:4px;color:#6366f1">402 Payment Required</code> error — just top up when that happens. We recommend starting with <strong>–0</strong> to explore, then adding more as needed.</div>
+
+  <h3 style="color:#fff;margin:20px 0 8px">View Usage & Billing</h3>
+  <p>Visit <strong>openrouter.ai/activity</strong> to see a detailed breakdown of each API call, including model used, tokens consumed, and cost.</p>
+
+  <div style="background:#111;border:1px solid #333;border-radius:8px;padding:16px;font-family:monospace;font-size:0.8rem;color:#9ca3af">
+    <div style="display:flex;justify-content:space-between;border-bottom:1px solid #222;padding-bottom:8px;margin-bottom:8px">
+      <span style="color:#fff">Model</span>
+      <span style="color:#fff">Tokens</span>
+      <span style="color:#fff">Cost</span>
+    </div>
+    <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+      <span style="color:#6366f1">deepseek/deepseek-v4-pro</span>
+      <span>1,234</span>
+      <span style="color:#4ade80">/bin/bash.0012</span>
+    </div>
+    <div style="display:flex;justify-content:space-between">
+      <span style="color:#6366f1">anthropic/claude-sonnet-4-5</span>
+      <span>567</span>
+      <span style="color:#4ade80">/bin/bash.0034</span>
+    </div>
+  </div>
+
+  <div style="background:#2d1f3d;border:2px solid #6366f1;border-radius:12px;padding:24px;text-align:center;margin:24px 0">
+    <div style="font-size:2.5rem;margin-bottom:12px">💳</div>
+    <h3 style="color:#6366f1;margin-bottom:8px">Credits added — you're ready to go!</h3>
+    <p style="color:#9ca3af">Credits are available immediately after purchase. Add your API Key to your application and start calling any model available on OpenRouter.</p>
+  </div>
+</div>
+
+
 <div style="background:#2d1f3d;border-radius:12px;padding:24px;margin-top:40px;text-align:center;border:1px solid #6366f1">
   <h3 style="color:#fff;margin-bottom:12px">Free Tier & Trial</h3>
   <p style="color:#9ca3af">OpenRouter offers <strong>free tier models</strong> including Llama 2, Mistral, and others. You can test the API without adding a payment method. When you're ready, add credits for premium models like GPT-4 and Claude 3.</p>

@@ -154,6 +154,109 @@ a{color:#6366f1;text-decoration:none}
   <div class="tip">OpenRouter 使用<strong>信用額計費系統</strong>。通過帳單頁面添加信用額，只需為您使用的部分付費。費率具有競爭力，按模型而異。</div>
 </div>
 
+
+<div style="width:4px;height:30px;background:#6366f1;margin:0 auto;opacity:0.3"></div>
+
+<!-- 步驟 6 -->
+<div class="step">
+  <div class="step-number">6</div>
+  <h2>購買 Credits（儲值）</h2>
+  <p>OpenRouter 採用預付 Credits 制度。使用 API 時會從你的 Credits 餘額扣款，用完才需要再儲值，不會自動扣款。</p>
+
+  <h3 style="color:#fff;margin:16px 0 8px">前往儲值頁面</h3>
+  <p>登入後點擊右上角的帳號頭像，選擇 <strong>Credits</strong>，或直接前往：</p>
+
+  <div class="token-box" style="font-size:0.85rem;margin-bottom:16px">
+    https://openrouter.ai/credits
+  </div>
+
+  <div style="background:#1a1a1a;border:1px solid #333;border-radius:12px;overflow:hidden;margin:16px 0">
+    <div style="background:#111;padding:10px 16px;display:flex;align-items:center;gap:8px;border-bottom:1px solid #333">
+      <div style="width:12px;height:12px;border-radius:50%;background:#ff5f56"></div>
+      <div style="width:12px;height:12px;border-radius:50%;background:#ffbd2e"></div>
+      <div style="width:12px;height:12px;border-radius:50%;background:#27c93f"></div>
+      <div style="background:#222;border-radius:4px;padding:3px 12px;color:#888;font-size:0.75rem;margin-left:8px">openrouter.ai/credits</div>
+    </div>
+    <div style="padding:24px">
+      <div style="color:#9ca3af;font-size:0.8rem;margin-bottom:16px">目前餘額</div>
+      <div style="font-size:2rem;font-weight:700;color:#fff;margin-bottom:4px">/bin/bash.00</div>
+      <div style="color:#6366f1;font-size:0.85rem;margin-bottom:24px">0 credits</div>
+
+      <div style="color:#9ca3af;font-size:0.85rem;margin-bottom:12px">選擇儲值金額</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px">
+        <div style="border:1px solid #333;border-radius:8px;padding:12px;text-align:center;cursor:pointer">
+          <div style="color:#fff;font-weight:600"></div>
+          <div style="color:#6b7280;font-size:0.75rem">5 USD</div>
+        </div>
+        <div style="border:2px solid #6366f1;border-radius:8px;padding:12px;text-align:center;background:#1a1a2e">
+          <div style="color:#6366f1;font-weight:700">0</div>
+          <div style="color:#6b7280;font-size:0.75rem">最受歡迎</div>
+        </div>
+        <div style="border:1px solid #333;border-radius:8px;padding:12px;text-align:center">
+          <div style="color:#fff;font-weight:600">5</div>
+          <div style="color:#6b7280;font-size:0.75rem">25 USD</div>
+        </div>
+      </div>
+      <div style="border:1px dashed #333;border-radius:8px;padding:10px 14px;margin-bottom:16px">
+        <div style="color:#9ca3af;font-size:0.75rem;margin-bottom:4px">自訂金額（最低 ）</div>
+        <div style="color:#fff;font-size:0.9rem"></div>
+      </div>
+      <div style="background:#6366f1;color:#fff;border-radius:8px;padding:12px;text-align:center;font-weight:600">
+        使用信用卡付款 →
+      </div>
+    </div>
+  </div>
+
+  <h3 style="color:#fff;margin:20px 0 8px">付款方式</h3>
+
+  <div style="background:#111;border:1px solid #333;border-radius:8px;overflow:hidden;margin-bottom:16px">
+    <div style="padding:14px 16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid #222">
+      <span style="font-size:1.2rem">💳</span>
+      <div>
+        <div style="color:#fff;font-weight:600;font-size:0.9rem">信用卡 / 簽帳卡</div>
+        <div style="color:#6b7280;font-size:0.8rem">Visa、Mastercard、American Express</div>
+      </div>
+    </div>
+    <div style="padding:14px 16px;display:flex;align-items:center;gap:12px">
+      <span style="font-size:1.2rem">₿</span>
+      <div>
+        <div style="color:#fff;font-weight:600;font-size:0.9rem">加密貨幣</div>
+        <div style="color:#6b7280;font-size:0.8rem">支援 USDC、ETH 等主流幣種</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tip">OpenRouter 不會自動扣款。Credits 用完後 API 呼叫會回傳 <code style="background:#0d0d0d;padding:2px 6px;border-radius:4px;color:#6366f1">402 Payment Required</code> 錯誤，這時再去儲值即可。建議新手先儲值 <strong>–0</strong> 試用，確認適合再加值。</div>
+
+  <h3 style="color:#fff;margin:20px 0 8px">查看用量與帳單</h3>
+  <p>可在 <strong>openrouter.ai/activity</strong> 查看每次 API 呼叫的詳細費用，以及各模型的用量明細。</p>
+
+  <div style="background:#111;border:1px solid #333;border-radius:8px;padding:16px;font-family:monospace;font-size:0.8rem;color:#9ca3af">
+    <div style="display:flex;justify-content:space-between;border-bottom:1px solid #222;padding-bottom:8px;margin-bottom:8px">
+      <span style="color:#fff">模型</span>
+      <span style="color:#fff">Token 用量</span>
+      <span style="color:#fff">費用</span>
+    </div>
+    <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+      <span style="color:#6366f1">deepseek/deepseek-v4-pro</span>
+      <span>1,234 tokens</span>
+      <span style="color:#4ade80">/bin/bash.0012</span>
+    </div>
+    <div style="display:flex;justify-content:space-between">
+      <span style="color:#6366f1">anthropic/claude-sonnet-4-5</span>
+      <span>567 tokens</span>
+      <span style="color:#4ade80">/bin/bash.0034</span>
+    </div>
+  </div>
+
+  <div style="background:#2d1f3d;border:2px solid #6366f1;border-radius:12px;padding:24px;text-align:center;margin:24px 0">
+    <div style="font-size:2.5rem;margin-bottom:12px">💳</div>
+    <h3 style="color:#6366f1;margin-bottom:8px">儲值完成！可以開始使用了</h3>
+    <p style="color:#9ca3af">Credits 儲值後立即生效，把 API Key 填入你的程式中，就可以呼叫 OpenRouter 上的所有模型。</p>
+  </div>
+</div>
+
+
 <div style="background:#2d1f3d;border-radius:12px;padding:24px;margin-top:40px;text-align:center;border:1px solid #6366f1">
   <h3 style="color:#fff;margin-bottom:12px">免費層和試用</h3>
   <p style="color:#9ca3af">OpenRouter 提供<strong>免費層模型</strong>，包括 Llama 2、Mistral 等。您可以在不添加付款方式的情況下測試 API。當您準備好時，為 GPT-4 和 Claude 3 等高級模型添加信用額。</p>
