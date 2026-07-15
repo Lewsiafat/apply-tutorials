@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meta Threads API 申請教學:發文與回文(2026 實測版)</title>
+<style>
+  :root{
+    --m-dark:#1c2b33; --m-blue:#0064e0; --m-teal:#00695c; --m-bg:#f4f6f8; --m-surface:#fff;
+    --m-text:#1c2b33; --m-sub:#65676b; --m-border:#dddfe2; --m-green:#31a24c;
+    --warn-bg:#fff4e5; --warn-border:#f0a020; --tip-bg:#e7f3ff;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{font-family:"Noto Sans TC","Microsoft JhengHei",Helvetica,Arial,sans-serif; background:var(--m-bg); color:var(--m-text); line-height:1.75;}
+  .hero{background:linear-gradient(135deg,#000 0%,#1c2b33 55%,#0064e0 130%); color:#fff; padding:56px 24px 48px; text-align:center;}
+  .hero h1{font-size:1.9rem; font-weight:700; margin-bottom:12px;}
+  .hero p{opacity:.92; max-width:760px; margin:0 auto; font-size:1.02rem;}
+  .hero .badges{margin-top:18px;}
+  .hero .badge{display:inline-block; background:rgba(255,255,255,.14); border:1px solid rgba(255,255,255,.32); border-radius:999px; padding:4px 14px; font-size:.85rem; margin:4px;}
+  main{max-width:900px; margin:0 auto; padding:32px 20px 80px;}
+  .toc{background:var(--m-surface); border:1px solid var(--m-border); border-radius:12px; padding:20px 24px; margin-bottom:32px;}
+  .toc h2{font-size:1.05rem; margin-bottom:10px;}
+  .toc ol{padding-left:22px;}
+  .toc a{color:var(--m-blue); text-decoration:none;}
+  .toc a:hover{text-decoration:underline;}
+  section.step{background:var(--m-surface); border:1px solid var(--m-border); border-radius:12px; padding:28px; margin-bottom:28px;}
+  .step-head{display:flex; align-items:center; gap:14px; margin-bottom:14px;}
+  .step-num{flex:0 0 40px; width:40px; height:40px; border-radius:50%; background:var(--m-dark); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:1.1rem;}
+  .step-head h2{font-size:1.25rem;}
+  .step p{margin:10px 0;}
+  .kbd{background:#eef1f5; border:1px solid var(--m-border); border-bottom-width:2px; border-radius:6px; padding:1px 8px; font-size:.9em; white-space:nowrap;}
+  .url{display:inline-block; background:#e7f3ff; color:#0653b6; border-radius:6px; padding:1px 8px; font-family:Consolas,monospace; font-size:.88em; word-break:break-all;}
+  .tip,.warn{border-radius:10px; padding:14px 18px; margin:16px 0; font-size:.95rem;}
+  .tip{background:var(--tip-bg); border-left:4px solid var(--m-blue);}
+  .warn{background:var(--warn-bg); border-left:4px solid var(--warn-border);}
+  .tip b,.warn b{display:block; margin-bottom:4px;}
+  /* 模擬瀏覽器視窗(依實際操作畫面重繪) */
+  .shot{border:1px solid var(--m-border); border-radius:12px; overflow:hidden; margin:18px 0; box-shadow:0 2px 10px rgba(0,0,0,.08); font-size:.86rem;}
+  .shot .bar{background:#e9eef6; padding:8px 14px; display:flex; align-items:center; gap:8px; border-bottom:1px solid var(--m-border);}
+  .shot .dot{width:10px; height:10px; border-radius:50%;}
+  .shot .addr{flex:1; background:#fff; border:1px solid var(--m-border); border-radius:999px; padding:2px 14px; color:var(--m-sub); font-family:Consolas,monospace; font-size:.78rem; overflow:hidden; white-space:nowrap; text-overflow:ellipsis;}
+  .shot .body{background:#fff; padding:18px;}
+  .shot .caption{background:#f8f9fa; border-top:1px solid var(--m-border); padding:8px 14px; color:var(--m-sub); font-size:.8rem;}
+  .meta-top{display:flex; align-items:center; gap:14px; padding-bottom:12px; border-bottom:1px solid var(--m-border); margin-bottom:16px; font-weight:700;}
+  .meta-top .nav{font-weight:400; color:var(--m-sub); font-size:.85rem;}
+  .m-field{border:1px solid var(--m-border); border-radius:8px; padding:8px 12px; margin:10px 0; max-width:560px;}
+  .m-label{font-weight:600; font-size:.85rem; margin-top:10px;}
+  .m-sub{color:var(--m-sub); font-size:.8rem;}
+  .m-btn{display:inline-block; background:#00695c; color:#fff; border-radius:8px; padding:7px 20px; font-weight:500; margin:8px 6px 0 0;}
+  .m-btn.blue{background:var(--m-blue);}
+  .m-btn.ghost{background:#fff; color:var(--m-text); border:1px solid var(--m-border);}
+  .m-chip{display:inline-block; background:#f0f2f5; border-radius:999px; padding:2px 12px; font-size:.82rem;}
+  .wizard{display:flex; gap:6px; flex-wrap:wrap; color:var(--m-sub); font-size:.82rem; margin-bottom:12px;}
+  .wizard .on{color:var(--m-blue); font-weight:700;}
+  .wizard .done{color:var(--m-green); font-weight:600;}
+  table.perm{width:100%; border-collapse:collapse; margin:10px 0; font-size:.85rem;}
+  table.perm th,table.perm td{border:1px solid var(--m-border); padding:8px 10px; text-align:left; vertical-align:top;}
+  table.perm th{background:#f8f9fa;}
+  .pill{display:inline-block; border-radius:999px; padding:1px 10px; font-size:.78rem;}
+  .pill.ok{background:#e6f4ea; color:#188038;}
+  .pill.add{background:#eef1f5; color:var(--m-text); border:1px solid var(--m-border);}
+  code, pre{font-family:Consolas,"Courier New",monospace;}
+  pre{background:#0f172a; color:#e2e8f0; border-radius:10px; padding:18px; overflow-x:auto; font-size:.85rem; margin:14px 0; line-height:1.6;}
+  pre .c{color:#94a3b8;}
+  .steps-mini{margin:8px 0 8px 20px;}
+  .steps-mini li{margin:6px 0;}
+  h3{margin:18px 0 6px; font-size:1.05rem;}
+  footer{text-align:center; color:var(--m-sub); font-size:.85rem; padding:24px;}
+  .flow{display:flex; flex-wrap:wrap; gap:8px; margin:14px 0;}
+  .flow .node{background:#e7f3ff; border:1px solid #c3ddf7; border-radius:8px; padding:6px 12px; font-size:.85rem;}
+  .flow .arr{align-self:center; color:var(--m-sub);}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <h1>Meta Threads API 申請教學:發文與回文</h1>
+  <p>從 Meta for Developers 建立應用程式、加入 Threads API 使用案例、開通發文(threads_content_publish)與回覆(threads_manage_replies)權限,到實際發出第一篇串文 —— 每一步皆於 2026 年 7 月實際操作驗證,示意圖依真實畫面重繪。</p>
+  <div class="badges">
+    <span class="badge">實測日期:2026-07</span>
+    <span class="badge">介面語言:繁體中文</span>
+    <span class="badge">難度:入門~中階</span>
+    <span class="badge">費用:免費</span>
+  </div>
+</div>
+
+<main>
+
+<div class="toc">
+  <h2>目錄</h2>
+  <ol>
+    <li><a href="#s0">事前準備</a></li>
+    <li><a href="#s1">註冊 Meta 開發者帳號</a></li>
+    <li><a href="#s2">建立應用程式(5 步驟精靈)</a></li>
+    <li><a href="#s3">加入權限:發文與回文</a></li>
+    <li><a href="#s4">使用案例「設定」:App 編號、密鑰與回呼網址</a></li>
+    <li><a href="#s5">新增 Threads 測試人員並產生存取權杖</a></li>
+    <li><a href="#s6">用 API 發文(附 Python 範例)</a></li>
+    <li><a href="#s7">用 API 回覆串文</a></li>
+    <li><a href="#s8">常見問題</a></li>
+  </ol>
+</div>
+
+<section class="step" id="s0">
+  <div class="step-head"><div class="step-num">0</div><h2>事前準備</h2></div>
+  <ol class="steps-mini">
+    <li>一個 <b>Facebook 帳號</b>(登入 Meta for Developers 用)。</li>
+    <li>一個 <b>Threads 帳號</b>(公開帳號才能用權杖產生器產生權杖;發文就發在這個帳號上)。</li>
+  </ol>
+  <div class="flow">
+    <div class="node">開發者帳號</div><div class="arr">→</div>
+    <div class="node">建立 App</div><div class="arr">→</div>
+    <div class="node">勾選 Threads API</div><div class="arr">→</div>
+    <div class="node">加發文/回文權限</div><div class="arr">→</div>
+    <div class="node">測試人員+權杖</div><div class="arr">→</div>
+    <div class="node">呼叫 API</div>
+  </div>
+  <div class="tip"><b>Threads API 跟 Facebook/IG API 不一樣</b>Threads API 是獨立產品:獨立的 App 編號/密鑰、獨立的 OAuth 網域(threads.net)、獨立的 Graph 端點 <span class="kbd">graph.threads.net</span>。就算你用過 IG API,仍要照本文流程重新申請。</div>
+</section>
+
+<section class="step" id="s1">
+  <div class="step-head"><div class="step-num">1</div><h2>註冊 Meta 開發者帳號</h2></div>
+  <p>開啟 <span class="url">https://developers.facebook.com</span>,用 Facebook 帳號登入,首次使用點右上角「開始使用」(Get Started),同意開發者條款、驗證電子郵件/手機即完成註冊(已是開發者可跳過本步)。完成後點上方 <span class="kbd">我的應用程式</span> 進入應用程式列表。</p>
+</section>
+
+<section class="step" id="s2">
+  <div class="step-head"><div class="step-num">2</div><h2>建立應用程式(5 步驟精靈)</h2></div>
+  <p>在「應用程式」頁右上角按綠色 <span class="kbd">建立應用程式</span>。精靈共 5 步:<b>應用程式詳細資料 → 使用案例 → 商家 → 要求 → 總覽</b>。</p>
+
+  <h3>2-1 應用程式詳細資料</h3>
+  <div class="shot">
+    <div class="bar"><span class="dot" style="background:#f66"></span><span class="dot" style="background:#fc3"></span><span class="dot" style="background:#5c5"></span><span class="addr">developers.facebook.com/apps/creation/</span></div>
+    <div class="body">
+      <div class="meta-top">∞ Meta <span class="nav">我的應用程式 · 必要動作 · 文件 · 工具 · 支援</span></div>
+      <div class="wizard"><span class="on">◑ 應用程式詳細資料</span> · · · <span>○ 使用案例</span> · · · <span>○ 商家</span> · · · <span>○ 要求</span> · · · <span>○ 總覽</span></div>
+      <div class="m-label">應用程式名稱</div>
+      <div class="m-sub">這個應用程式名稱會顯示在你的「我的應用程式」頁面,並與你應用程式編號相關聯。</div>
+      <div class="m-field">ThreadsCourseDemo</div>
+      <div class="m-label">應用程式聯絡電子郵件地址</div>
+      <div class="m-field">you@example.com</div>
+      <span class="m-btn ghost">取消</span><span class="m-btn blue">繼續</span>
+    </div>
+    <div class="caption">▲ 依實際畫面重繪:輸入名稱與聯絡信箱後按「繼續」。</div>
+  </div>
+
+  <h3>2-2 使用案例:勾選「存取 Threads API」</h3>
+  <div class="shot">
+    <div class="bar"><span class="dot" style="background:#f66"></span><span class="dot" style="background:#fc3"></span><span class="dot" style="background:#5c5"></span><span class="addr">developers.facebook.com/apps/creation/ — 使用案例</span></div>
+    <div class="body">
+      <div class="wizard"><span class="done">✔ 應用程式詳細資料</span> · · · <span class="on">◔ 使用案例</span> · · · <span>○ 商家</span> · · · <span>○ 要求</span> · · · <span>○ 總覽</span></div>
+      <table class="perm">
+        <tr><td>🎯 使用行銷 API 建立和管理廣告</td><td style="width:36px;">☐</td></tr>
+        <tr style="background:#eef6ff;"><td><b>🧵 存取 Threads API</b><br><span class="m-sub">使用 Threads API,並選擇驗證用戶、擷取用戶資訊、發佈串文、回覆串文、管理回覆設定,以及/或是收集自有或替其他商家代管的 Threads 個人檔案的洞察報告。</span></td><td><span class="pill ok">✔</span></td></tr>
+        <tr><td>f 使用 Facebook 登入,驗證用戶並索取資料</td><td>☐</td></tr>
+        <tr><td>🟢 透過 WhatsApp 與顧客建立聯繫</td><td>☐</td></tr>
+      </table>
+      <div class="m-sub">已新增 1 個使用案例</div>
+      <span class="m-btn ghost">上一頁</span><span class="m-btn blue">繼續</span>
+    </div>
+    <div class="caption">▲ 依實際畫面重繪:勾選「存取 Threads API」後按「繼續」。</div>
+  </div>
+
+  <h3>2-3 商家 → 2-4 要求 → 2-5 總覽</h3>
+  <ol class="steps-mini">
+    <li><b>商家</b>:選 <span class="kbd">我還不想連結商家資產管理組合</span>(個人開發不需要),按「繼續」。</li>
+    <li><b>要求(發佈條件)</b>:顯示「找不到條件」,直接按「下一步」。</li>
+    <li><b>總覽</b>:確認名稱、電子郵件與使用案例無誤,按綠色 <span class="kbd">建立應用程式</span>。</li>
+  </ol>
+  <div class="warn"><b>會要求重新輸入密碼</b>按下「建立應用程式」後,Meta 會跳出「請重新輸入密碼」的安全驗證視窗,輸入你的 Facebook 密碼並按「提交」,App 才會真正建立,接著自動進入應用程式主控板。</div>
+</section>
+
+<section class="step" id="s3">
+  <div class="step-head"><div class="step-num">3</div><h2>加入權限:發文與回文</h2></div>
+  <p>主控板會出現「應用程式自訂和要求」清單,點第一項 <span class="kbd">自訂存取 Threads API 的使用案例</span>(或左側 <span class="kbd">使用案例</span> → 自訂),進入「權限和功能」頁。</p>
+  <div class="shot">
+    <div class="bar"><span class="dot" style="background:#f66"></span><span class="dot" style="background:#fc3"></span><span class="dot" style="background:#5c5"></span><span class="addr">developers.facebook.com/apps/…/use_cases/customize/?use_case_enum=THREADS_API</span></div>
+    <div class="body">
+      <div class="m-sub" style="margin-bottom:8px;">使用案例 &gt; 自訂 —「🧵 存取 Threads API」·「權限和功能」分頁</div>
+      <table class="perm">
+        <tr><th>權限和功能</th><th style="width:90px;">狀態</th><th style="width:90px;">操作</th></tr>
+        <tr><td><b>threads_basic</b><br><span class="m-sub">讀取用戶自己的串文與基本資料(預設必備)</span></td><td><span class="pill ok">可供測試</span></td><td>操作 ▾</td></tr>
+        <tr><td><b>threads_content_publish</b><br><span class="m-sub">允許 App 代表 Threads 個人檔案建立與發佈內容(發文必備)</span></td><td><span class="pill ok">可供測試</span></td><td>操作 ▾</td></tr>
+        <tr><td><b>threads_manage_replies</b><br><span class="m-sub">代表用戶建立回覆、隱藏/取消隱藏回覆、控制誰可以回覆(回文必備)</span></td><td><span class="pill ok">可供測試</span></td><td>操作 ▾</td></tr>
+        <tr><td><b>threads_read_replies</b><br><span class="m-sub">讀取用戶串文的回覆(讀回覆串必備)</span></td><td><span class="pill ok">可供測試</span></td><td>操作 ▾</td></tr>
+        <tr><td><b>threads_delete</b> / <b>threads_keyword_search</b> / <b>threads_manage_insights</b> …</td><td><span class="pill add">＋ 新增</span></td><td></td></tr>
+      </table>
+    </div>
+    <div class="caption">▲ 依實際畫面重繪:在需要的權限右側按「＋ 新增」,狀態變成「可供測試」即可。</div>
+  </div>
+  <ol class="steps-mini">
+    <li><span class="kbd">threads_basic</span> 建 App 時已自動加入(所有 Threads API 呼叫的基礎)。</li>
+    <li>找到 <span class="kbd">threads_content_publish</span> 按 <span class="kbd">＋ 新增</span> —— 這是「發文」權限。</li>
+    <li>找到 <span class="kbd">threads_manage_replies</span> 按 <span class="kbd">＋ 新增</span> —— 這是「回文」權限。</li>
+    <li>建議一併加入 <span class="kbd">threads_read_replies</span>,才能讀取回覆串。</li>
+  </ol>
+  <div class="tip"><b>「可供測試」是什麼意思?</b>開發模式下,這些權限對「Threads 測試人員」立即生效,不必送審。要開放給任何 Threads 用戶授權,才需要走「應用程式審查」並提供示範影片等資料。</div>
+</section>
+
+<section class="step" id="s4">
+  <div class="step-head"><div class="step-num">4</div><h2>使用案例「設定」:App 編號、密鑰與回呼網址</h2></div>
+  <p>左側切到 <span class="kbd">設定</span>(使用案例的設定,不是應用程式設定),這頁有四樣關鍵資訊:</p>
+  <div class="shot">
+    <div class="bar"><span class="dot" style="background:#f66"></span><span class="dot" style="background:#fc3"></span><span class="dot" style="background:#5c5"></span><span class="addr">developers.facebook.com/apps/…/use_cases/customize/settings/?use_case_enum=THREADS_API</span></div>
+    <div class="body">
+      <div style="display:flex; gap:16px; flex-wrap:wrap;">
+        <div style="flex:1; min-width:240px;">
+          <div class="m-label">Threads 應用程式編號</div>
+          <div class="m-field" style="background:#f0f2f5;">17242•••••••••73</div>
+        </div>
+        <div style="flex:1; min-width:240px;">
+          <div class="m-label">Threads 應用程式密鑰</div>
+          <div class="m-field" style="background:#f0f2f5;">●●●●●●●● <span style="float:right; color:var(--m-blue);">顯示</span></div>
+        </div>
+      </div>
+      <div class="m-label">重新導向回呼網址</div>
+      <div class="m-field"><span class="m-chip">https://example.com/callback ✕</span></div>
+      <div class="m-label">解除安裝回呼網址</div>
+      <div class="m-field m-sub">https://example.com/uninstall</div>
+      <div class="m-label">刪除回呼網址</div>
+      <div class="m-field m-sub">https://example.com/delete</div>
+      <span class="m-btn ghost">取消</span><span class="m-btn blue">儲存</span>
+      <hr style="border:none; border-top:1px solid var(--m-border); margin:16px 0;">
+      <div class="m-label">用戶權杖產生器</div>
+      <div class="m-sub">為這個應用程式的 Threads 測試人員產生長效存取權杖。你只能為公開的 Threads 帳號產生權杖。</div>
+      <span class="m-btn ghost">✏ 新增或移除 Threads 測試人員</span>
+    </div>
+    <div class="caption">▲ 依實際畫面重繪:編號/密鑰在最上方;下方是三個回呼網址與「用戶權杖產生器」。</div>
+  </div>
+  <ol class="steps-mini">
+    <li><b>Threads 應用程式編號 / 密鑰</b>:寫程式走 OAuth 流程時的 <span class="kbd">client_id</span> / <span class="kbd">client_secret</span>。密鑰請妥善保管,勿放進前端或公開 repo。</li>
+    <li><b>重新導向回呼網址</b>:OAuth 授權完成後跳轉的網址,必須是 <b>HTTPS</b>(實測 <span class="kbd">localhost</span> 會被拒絕)。輸入網址後<b>要按 Enter 讓它變成標籤(chip)</b>再按「儲存」,否則會出現「無法儲存表單」。</li>
+    <li><b>解除安裝 / 刪除回呼網址</b>:使用者取消授權或要求刪除資料時,Meta 會 ping 的端點。開發階段可先填占位網址。</li>
+  </ol>
+  <div class="tip"><b>只是自己發文,可以不寫 OAuth</b>若只是幫自己的帳號排程發文,直接用下一步的「用戶權杖產生器」拿長效權杖即可,完全不用架回呼伺服器。</div>
+</section>
+
+<section class="step" id="s5">
+  <div class="step-head"><div class="step-num">5</div><h2>新增 Threads 測試人員並產生存取權杖</h2></div>
+  <ol class="steps-mini">
+    <li>在「用戶權杖產生器」按 <span class="kbd">新增或移除 Threads 測試人員</span>,會開啟「應用程式角色」頁。</li>
+    <li>按 <span class="kbd">新增用戶</span> → 選 <span class="kbd">Threads 測試人員</span> → 輸入你的 <b>Threads 用戶名稱</b>(@handle)→ 送出邀請。</li>
+    <li>用手機打開 <b>Threads App</b>:設定 → 帳號 → <span class="kbd">網站權限</span> → <span class="kbd">邀請</span>,接受測試邀請。</li>
+    <li>回到「設定」頁的用戶權杖產生器,你的帳號旁會出現 <span class="kbd">產生存取權杖</span> 按鈕,點它並登入 Threads 授權,即可複製一組<b>長效存取權杖(60 天有效)</b>。</li>
+  </ol>
+  <div class="warn"><b>權杖 = 密碼</b>存取權杖能直接以你的身分發文。請存在環境變數或秘密管理服務,別寫死在程式碼裡。60 天到期前可用 refresh 端點換新。</div>
+</section>
+
+<section class="step" id="s6">
+  <div class="step-head"><div class="step-num">6</div><h2>用 API 發文</h2></div>
+  <p>Threads 發文是<b>兩段式</b>:先建立「媒體容器」,再「發佈」容器。端點是 <span class="url">https://graph.threads.net</span>。</p>
+  <pre><span class="c"># 1) 建立文字貼文容器</span>
+curl -X POST "https://graph.threads.net/v1.0/me/threads" \
+  -d "media_type=TEXT" \
+  -d "text=我的第一篇 Threads API 貼文!" \
+  -d "access_token=你的存取權杖"
+<span class="c"># 回傳 {"id": "17888..."}  ← 這是容器 ID</span>
+
+<span class="c"># 2) 發佈容器(建議等 30 秒讓伺服器處理完)</span>
+curl -X POST "https://graph.threads.net/v1.0/me/threads_publish" \
+  -d "creation_id=17888..." \
+  -d "access_token=你的存取權杖"
+<span class="c"># 回傳 {"id": "18027..."}  ← 這是正式貼文 ID</span></pre>
+  <p>Python 版:</p>
+  <pre>import requests, time, os
+
+TOKEN = os.environ["THREADS_TOKEN"]
+BASE  = "https://graph.threads.net/v1.0"
+
+<span class="c"># 建立容器</span>
+r = requests.post(f"{BASE}/me/threads", data={
+    "media_type": "TEXT",
+    "text": "用 Python 發的 Threads 貼文 🎉",
+    "access_token": TOKEN,
+}).json()
+container_id = r["id"]
+
+time.sleep(30)  <span class="c"># 官方建議等容器處理完再發佈</span>
+
+<span class="c"># 發佈</span>
+r = requests.post(f"{BASE}/me/threads_publish", data={
+    "creation_id": container_id,
+    "access_token": TOKEN,
+}).json()
+print("貼文 ID:", r["id"])</pre>
+  <div class="tip"><b>發圖片/影片?</b>把 <span class="kbd">media_type</span> 改為 <span class="kbd">IMAGE</span> 並加 <span class="kbd">image_url=https://…</span>(必須是公開可存取的網址);影片用 <span class="kbd">VIDEO</span> + <span class="kbd">video_url</span>。多圖輪播要先建立多個子容器再組成 <span class="kbd">CAROUSEL</span> 容器。</div>
+</section>
+
+<section class="step" id="s7">
+  <div class="step-head"><div class="step-num">7</div><h2>用 API 回覆串文</h2></div>
+  <p>回覆(回文)同樣是兩段式,只是在建立容器時多帶一個 <span class="kbd">reply_to_id</span> 參數(需要 <span class="kbd">threads_manage_replies</span> 權限):</p>
+  <pre><span class="c"># 1) 建立「回覆」容器:reply_to_id = 要回覆的貼文 ID</span>
+curl -X POST "https://graph.threads.net/v1.0/me/threads" \
+  -d "media_type=TEXT" \
+  -d "text=這是用 API 發出的回覆!" \
+  -d "reply_to_id=18027..." \
+  -d "access_token=你的存取權杖"
+
+<span class="c"># 2) 一樣用 threads_publish 發佈</span>
+curl -X POST "https://graph.threads.net/v1.0/me/threads_publish" \
+  -d "creation_id=回覆容器ID" \
+  -d "access_token=你的存取權杖"</pre>
+  <p>常用的回覆管理端點(<span class="kbd">threads_read_replies</span> / <span class="kbd">threads_manage_replies</span>):</p>
+  <table class="perm">
+    <tr><th>目的</th><th>端點</th><th>方法</th></tr>
+    <tr><td>讀取某貼文的回覆</td><td><code>/{media_id}/replies</code></td><td>GET</td></tr>
+    <tr><td>讀取整串對話</td><td><code>/{media_id}/conversation</code></td><td>GET</td></tr>
+    <tr><td>隱藏/顯示某則回覆</td><td><code>/{reply_id}/manage_reply</code>(hide=true/false)</td><td>POST</td></tr>
+    <tr><td>限制誰能回覆</td><td>建容器時帶 <code>reply_control</code>(everyone / accounts_you_follow / mentioned_only)</td><td>POST</td></tr>
+  </table>
+</section>
+
+<section class="step" id="s8">
+  <div class="step-head"><div class="step-num">8</div><h2>常見問題</h2></div>
+  <h3>Q1:「重新導向回呼網址」一直存不進去?</h3>
+  <p>兩個常見原因:(1) 網址不是 HTTPS 或用了 localhost —— 換成正式網域;(2) 輸入後沒按 Enter 把網址變成標籤(chip)就按儲存 —— 實測必須先 Enter 再儲存。</p>
+  <h3>Q2:權杖產生器沒有「產生存取權杖」按鈕?</h3>
+  <p>對方(或你自己)還沒在 Threads App 裡接受測試人員邀請,或 Threads 帳號不是公開帳號。</p>
+  <h3>Q3:發文回傳權限錯誤 (#10 或 OAuthException)?</h3>
+  <p>檢查三件事:權杖是否過期(60 天)、該權限是否已加入使用案例(步驟 3)、授權當下是否有勾選對應 scope(threads_content_publish 等)。</p>
+  <h3>Q4:一天可以發多少篇?</h3>
+  <p>目前官方限制約每 24 小時 250 篇貼文、1,000 則回覆。可用 <span class="kbd">GET /me/threads_publishing_limit</span> 查詢已用額度。</p>
+  <h3>Q5:要給其他人使用我的服務?</h3>
+  <p>需在「應用程式審查」中為 threads_basic、threads_content_publish 等權限申請「進階存取」,提交使用說明與示範影片,審核通過後任何 Threads 用戶都能授權你的 App。</p>
+</section>
+
+</main>
+<footer>本教學依 2026 年 7 月 Meta for Developers 實際操作流程撰寫 · 示意圖依真實畫面重繪 · 僅供學習使用</footer>
+</body>
+</html>

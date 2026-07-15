@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meta Threads API Setup Guide: Posting & Replying (Tested 2026)</title>
+<style>
+  :root{
+    --m-dark:#1c2b33; --m-blue:#0064e0; --m-teal:#00695c; --m-bg:#f4f6f8; --m-surface:#fff;
+    --m-text:#1c2b33; --m-sub:#65676b; --m-border:#dddfe2; --m-green:#31a24c;
+    --warn-bg:#fff4e5; --warn-border:#f0a020; --tip-bg:#e7f3ff;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{font-family:"Inter","Helvetica Neue",Helvetica,Arial,sans-serif; background:var(--m-bg); color:var(--m-text); line-height:1.75;}
+  .hero{background:linear-gradient(135deg,#000 0%,#1c2b33 55%,#0064e0 130%); color:#fff; padding:56px 24px 48px; text-align:center;}
+  .hero h1{font-size:1.9rem; font-weight:700; margin-bottom:12px;}
+  .hero p{opacity:.92; max-width:760px; margin:0 auto; font-size:1.02rem;}
+  .hero .badges{margin-top:18px;}
+  .hero .badge{display:inline-block; background:rgba(255,255,255,.14); border:1px solid rgba(255,255,255,.32); border-radius:999px; padding:4px 14px; font-size:.85rem; margin:4px;}
+  main{max-width:900px; margin:0 auto; padding:32px 20px 80px;}
+  .toc{background:var(--m-surface); border:1px solid var(--m-border); border-radius:12px; padding:20px 24px; margin-bottom:32px;}
+  .toc h2{font-size:1.05rem; margin-bottom:10px;}
+  .toc ol{padding-left:22px;}
+  .toc a{color:var(--m-blue); text-decoration:none;}
+  .toc a:hover{text-decoration:underline;}
+  section.step{background:var(--m-surface); border:1px solid var(--m-border); border-radius:12px; padding:28px; margin-bottom:28px;}
+  .step-head{display:flex; align-items:center; gap:14px; margin-bottom:14px;}
+  .step-num{flex:0 0 40px; width:40px; height:40px; border-radius:50%; background:var(--m-dark); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:1.1rem;}
+  .step-head h2{font-size:1.25rem;}
+  .step p{margin:10px 0;}
+  .kbd{background:#eef1f5; border:1px solid var(--m-border); border-bottom-width:2px; border-radius:6px; padding:1px 8px; font-size:.9em; white-space:nowrap;}
+  .url{display:inline-block; background:#e7f3ff; color:#0653b6; border-radius:6px; padding:1px 8px; font-family:Consolas,monospace; font-size:.88em; word-break:break-all;}
+  .tip,.warn{border-radius:10px; padding:14px 18px; margin:16px 0; font-size:.95rem;}
+  .tip{background:var(--tip-bg); border-left:4px solid var(--m-blue);}
+  .warn{background:var(--warn-bg); border-left:4px solid var(--warn-border);}
+  .tip b,.warn b{display:block; margin-bottom:4px;}
+  /* Simulated browser window (redrawn from the actual UI) */
+  .shot{border:1px solid var(--m-border); border-radius:12px; overflow:hidden; margin:18px 0; box-shadow:0 2px 10px rgba(0,0,0,.08); font-size:.86rem;}
+  .shot .bar{background:#e9eef6; padding:8px 14px; display:flex; align-items:center; gap:8px; border-bottom:1px solid var(--m-border);}
+  .shot .dot{width:10px; height:10px; border-radius:50%;}
+  .shot .addr{flex:1; background:#fff; border:1px solid var(--m-border); border-radius:999px; padding:2px 14px; color:var(--m-sub); font-family:Consolas,monospace; font-size:.78rem; overflow:hidden; white-space:nowrap; text-overflow:ellipsis;}
+  .shot .body{background:#fff; padding:18px;}
+  .shot .caption{background:#f8f9fa; border-top:1px solid var(--m-border); padding:8px 14px; color:var(--m-sub); font-size:.8rem;}
+  .meta-top{display:flex; align-items:center; gap:14px; padding-bottom:12px; border-bottom:1px solid var(--m-border); margin-bottom:16px; font-weight:700;}
+  .meta-top .nav{font-weight:400; color:var(--m-sub); font-size:.85rem;}
+  .m-field{border:1px solid var(--m-border); border-radius:8px; padding:8px 12px; margin:10px 0; max-width:560px;}
+  .m-label{font-weight:600; font-size:.85rem; margin-top:10px;}
+  .m-sub{color:var(--m-sub); font-size:.8rem;}
+  .m-btn{display:inline-block; background:#00695c; color:#fff; border-radius:8px; padding:7px 20px; font-weight:500; margin:8px 6px 0 0;}
+  .m-btn.blue{background:var(--m-blue);}
+  .m-btn.ghost{background:#fff; color:var(--m-text); border:1px solid var(--m-border);}
+  .m-chip{display:inline-block; background:#f0f2f5; border-radius:999px; padding:2px 12px; font-size:.82rem;}
+  .wizard{display:flex; gap:6px; flex-wrap:wrap; color:var(--m-sub); font-size:.82rem; margin-bottom:12px;}
+  .wizard .on{color:var(--m-blue); font-weight:700;}
+  .wizard .done{color:var(--m-green); font-weight:600;}
+  table.perm{width:100%; border-collapse:collapse; margin:10px 0; font-size:.85rem;}
+  table.perm th,table.perm td{border:1px solid var(--m-border); padding:8px 10px; text-align:left; vertical-align:top;}
+  table.perm th{background:#f8f9fa;}
+  .pill{display:inline-block; border-radius:999px; padding:1px 10px; font-size:.78rem;}
+  .pill.ok{background:#e6f4ea; color:#188038;}
+  .pill.add{background:#eef1f5; color:var(--m-text); border:1px solid var(--m-border);}
+  code, pre{font-family:Consolas,"Courier New",monospace;}
+  pre{background:#0f172a; color:#e2e8f0; border-radius:10px; padding:18px; overflow-x:auto; font-size:.85rem; margin:14px 0; line-height:1.6;}
+  pre .c{color:#94a3b8;}
+  .steps-mini{margin:8px 0 8px 20px;}
+  .steps-mini li{margin:6px 0;}
+  h3{margin:18px 0 6px; font-size:1.05rem;}
+  footer{text-align:center; color:var(--m-sub); font-size:.85rem; padding:24px;}
+  .flow{display:flex; flex-wrap:wrap; gap:8px; margin:14px 0;}
+  .flow .node{background:#e7f3ff; border:1px solid #c3ddf7; border-radius:8px; padding:6px 12px; font-size:.85rem;}
+  .flow .arr{align-self:center; color:var(--m-sub);}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <h1>Meta Threads API Setup Guide: Posting & Replying</h1>
+  <p>From creating an app on Meta for Developers, adding the Threads API use case, enabling publishing (threads_content_publish) and reply (threads_manage_replies) permissions, all the way to sending your first post — every step was verified hands-on in July 2026, with screenshots redrawn from the actual UI.</p>
+  <div class="badges">
+    <span class="badge">Tested: 2026-07</span>
+    <span class="badge">UI language: Traditional Chinese</span>
+    <span class="badge">Level: Beginner–Intermediate</span>
+    <span class="badge">Cost: Free</span>
+  </div>
+</div>
+
+<main>
+
+<div class="toc">
+  <h2>Contents</h2>
+  <ol>
+    <li><a href="#s0">Prerequisites</a></li>
+    <li><a href="#s1">Register a Meta developer account</a></li>
+    <li><a href="#s2">Create an app (5-step wizard)</a></li>
+    <li><a href="#s3">Add permissions: publish & reply</a></li>
+    <li><a href="#s4">Use case "Settings": App ID, secret, and callback URLs</a></li>
+    <li><a href="#s5">Add a Threads tester and generate an access token</a></li>
+    <li><a href="#s6">Post via the API (with Python example)</a></li>
+    <li><a href="#s7">Reply to a thread via the API</a></li>
+    <li><a href="#s8">FAQ</a></li>
+  </ol>
+</div>
+
+<section class="step" id="s0">
+  <div class="step-head"><div class="step-num">0</div><h2>Prerequisites</h2></div>
+  <ol class="steps-mini">
+    <li>A <b>Facebook account</b> (used to log in to Meta for Developers).</li>
+    <li>A <b>Threads account</b> (must be public so the token generator can issue a token; this is also the account you'll be posting to).</li>
+  </ol>
+  <div class="flow">
+    <div class="node">Developer account</div><div class="arr">→</div>
+    <div class="node">Create app</div><div class="arr">→</div>
+    <div class="node">Check "Access Threads API"</div><div class="arr">→</div>
+    <div class="node">Add publish/reply permissions</div><div class="arr">→</div>
+    <div class="node">Tester + token</div><div class="arr">→</div>
+    <div class="node">Call the API</div>
+  </div>
+  <div class="tip"><b>The Threads API is not the Facebook/IG API</b>The Threads API is a standalone product: its own App ID/secret, its own OAuth domain (threads.net), and its own Graph endpoint <span class="kbd">graph.threads.net</span>. Even if you've used the IG API before, you still need to go through this flow from scratch.</div>
+</section>
+
+<section class="step" id="s1">
+  <div class="step-head"><div class="step-num">1</div><h2>Register a Meta developer account</h2></div>
+  <p>Open <span class="url">https://developers.facebook.com</span>, log in with your Facebook account, and on first use click "Get Started" in the top right, agree to the developer terms, and verify your email/phone to finish registering (skip this if you're already a developer). Then click <span class="kbd">My Apps</span> at the top to reach the app list.</p>
+</section>
+
+<section class="step" id="s2">
+  <div class="step-head"><div class="step-num">2</div><h2>Create an app (5-step wizard)</h2></div>
+  <p>On the "Apps" page click the green <span class="kbd">Create App</span> button in the top right. The wizard has 5 steps: <b>App details → Use case → Business → Requirements → Overview</b>.</p>
+
+  <h3>2-1 App details</h3>
+  <div class="shot">
+    <div class="bar"><span class="dot" style="background:#f66"></span><span class="dot" style="background:#fc3"></span><span class="dot" style="background:#5c5"></span><span class="addr">developers.facebook.com/apps/creation/</span></div>
+    <div class="body">
+      <div class="meta-top">∞ Meta <span class="nav">My Apps · Required Actions · Docs · Tools · Support</span></div>
+      <div class="wizard"><span class="on">◑ App details</span> · · · <span>○ Use case</span> · · · <span>○ Business</span> · · · <span>○ Requirements</span> · · · <span>○ Overview</span></div>
+      <div class="m-label">App name</div>
+      <div class="m-sub">This app name will appear on your "My Apps" page and is associated with your app ID.</div>
+      <div class="m-field">ThreadsCourseDemo</div>
+      <div class="m-label">App contact email</div>
+      <div class="m-field">you@example.com</div>
+      <span class="m-btn ghost">Cancel</span><span class="m-btn blue">Next</span>
+    </div>
+    <div class="caption">▲ Redrawn from the actual UI: enter the name and contact email, then click "Next".</div>
+  </div>
+
+  <h3>2-2 Use case: check "Access the Threads API"</h3>
+  <div class="shot">
+    <div class="bar"><span class="dot" style="background:#f66"></span><span class="dot" style="background:#fc3"></span><span class="dot" style="background:#5c5"></span><span class="addr">developers.facebook.com/apps/creation/ — Use case</span></div>
+    <div class="body">
+      <div class="wizard"><span class="done">✔ App details</span> · · · <span class="on">◔ Use case</span> · · · <span>○ Business</span> · · · <span>○ Requirements</span> · · · <span>○ Overview</span></div>
+      <table class="perm">
+        <tr><td>🎯 Create and manage ads with the Marketing API</td><td style="width:36px;">☐</td></tr>
+        <tr style="background:#eef6ff;"><td><b>🧵 Access the Threads API</b><br><span class="m-sub">Use the Threads API to authenticate users, retrieve profile info, publish threads, reply to threads, manage reply settings, and/or collect insights for your own or managed Threads profiles.</span></td><td><span class="pill ok">✔</span></td></tr>
+        <tr><td>f Authenticate users and request data with Facebook Login</td><td>☐</td></tr>
+        <tr><td>🟢 Connect with customers on WhatsApp</td><td>☐</td></tr>
+      </table>
+      <div class="m-sub">1 use case added</div>
+      <span class="m-btn ghost">Back</span><span class="m-btn blue">Next</span>
+    </div>
+    <div class="caption">▲ Redrawn from the actual UI: check "Access the Threads API" and click "Next".</div>
+  </div>
+
+  <h3>2-3 Business → 2-4 Requirements → 2-5 Overview</h3>
+  <ol class="steps-mini">
+    <li><b>Business</b>: choose <span class="kbd">I don't want to connect a business portfolio yet</span> (not needed for personal projects), click "Next".</li>
+    <li><b>Requirements (publishing criteria)</b>: shows "No requirements found" — click "Next".</li>
+    <li><b>Overview</b>: confirm the name, email, and use case are correct, then click the green <span class="kbd">Create App</span> button.</li>
+  </ol>
+  <div class="warn"><b>You'll be asked to re-enter your password</b>After clicking "Create App", Meta pops up a security prompt asking you to re-enter your Facebook password and submit — only then is the app actually created, and you're taken to the app dashboard.</div>
+</section>
+
+<section class="step" id="s3">
+  <div class="step-head"><div class="step-num">3</div><h2>Add permissions: publish & reply</h2></div>
+  <p>The dashboard shows a "App customization and requirements" list — click the first item, <span class="kbd">Customize use case: Access the Threads API</span> (or left sidebar <span class="kbd">Use cases</span> → Customize), to reach the "Permissions and features" page.</p>
+  <div class="shot">
+    <div class="bar"><span class="dot" style="background:#f66"></span><span class="dot" style="background:#fc3"></span><span class="dot" style="background:#5c5"></span><span class="addr">developers.facebook.com/apps/…/use_cases/customize/?use_case_enum=THREADS_API</span></div>
+    <div class="body">
+      <div class="m-sub" style="margin-bottom:8px;">Use cases &gt; Customize — "🧵 Access the Threads API" · "Permissions and features" tab</div>
+      <table class="perm">
+        <tr><th>Permission / feature</th><th style="width:90px;">Status</th><th style="width:90px;">Action</th></tr>
+        <tr><td><b>threads_basic</b><br><span class="m-sub">Read the user's own threads and basic profile (required by default)</span></td><td><span class="pill ok">Ready for testing</span></td><td>Action ▾</td></tr>
+        <tr><td><b>threads_content_publish</b><br><span class="m-sub">Allows the app to create and publish content on behalf of a Threads profile (required for posting)</span></td><td><span class="pill ok">Ready for testing</span></td><td>Action ▾</td></tr>
+        <tr><td><b>threads_manage_replies</b><br><span class="m-sub">Create replies on the user's behalf, hide/unhide replies, and control who can reply (required for replying)</span></td><td><span class="pill ok">Ready for testing</span></td><td>Action ▾</td></tr>
+        <tr><td><b>threads_read_replies</b><br><span class="m-sub">Read replies on the user's threads (required to read reply threads)</span></td><td><span class="pill ok">Ready for testing</span></td><td>Action ▾</td></tr>
+        <tr><td><b>threads_delete</b> / <b>threads_keyword_search</b> / <b>threads_manage_insights</b> …</td><td><span class="pill add">＋ Add</span></td><td></td></tr>
+      </table>
+    </div>
+    <div class="caption">▲ Redrawn from the actual UI: click "＋ Add" next to the permission you need; the status changes to "Ready for testing".</div>
+  </div>
+  <ol class="steps-mini">
+    <li><span class="kbd">threads_basic</span> is added automatically when the app is created (the base permission every Threads API call needs).</li>
+    <li>Find <span class="kbd">threads_content_publish</span> and click <span class="kbd">＋ Add</span> — this is the "publish" permission.</li>
+    <li>Find <span class="kbd">threads_manage_replies</span> and click <span class="kbd">＋ Add</span> — this is the "reply" permission.</li>
+    <li>It's also worth adding <span class="kbd">threads_read_replies</span> so you can read reply threads.</li>
+  </ol>
+  <div class="tip"><b>What does "Ready for testing" mean?</b>In development mode, these permissions take effect immediately for "Threads testers" without review. To let any Threads user authorize your app, you'll need to go through "App Review" and submit materials such as a demo video.</div>
+</section>
+
+<section class="step" id="s4">
+  <div class="step-head"><div class="step-num">4</div><h2>Use case "Settings": App ID, secret, and callback URLs</h2></div>
+  <p>Switch to <span class="kbd">Settings</span> in the left sidebar (this is the use case's settings, not the app's general settings) — this page has four key pieces of information:</p>
+  <div class="shot">
+    <div class="bar"><span class="dot" style="background:#f66"></span><span class="dot" style="background:#fc3"></span><span class="dot" style="background:#5c5"></span><span class="addr">developers.facebook.com/apps/…/use_cases/customize/settings/?use_case_enum=THREADS_API</span></div>
+    <div class="body">
+      <div style="display:flex; gap:16px; flex-wrap:wrap;">
+        <div style="flex:1; min-width:240px;">
+          <div class="m-label">Threads app ID</div>
+          <div class="m-field" style="background:#f0f2f5;">17242•••••••••73</div>
+        </div>
+        <div style="flex:1; min-width:240px;">
+          <div class="m-label">Threads app secret</div>
+          <div class="m-field" style="background:#f0f2f5;">●●●●●●●● <span style="float:right; color:var(--m-blue);">Show</span></div>
+        </div>
+      </div>
+      <div class="m-label">Redirect callback URL</div>
+      <div class="m-field"><span class="m-chip">https://example.com/callback ✕</span></div>
+      <div class="m-label">Deauthorize callback URL</div>
+      <div class="m-field m-sub">https://example.com/uninstall</div>
+      <div class="m-label">Data deletion request callback URL</div>
+      <div class="m-field m-sub">https://example.com/delete</div>
+      <span class="m-btn ghost">Cancel</span><span class="m-btn blue">Save</span>
+      <hr style="border:none; border-top:1px solid var(--m-border); margin:16px 0;">
+      <div class="m-label">User token generator</div>
+      <div class="m-sub">Generate a long-lived access token for this app's Threads testers. You can only generate tokens for public Threads accounts.</div>
+      <span class="m-btn ghost">✏ Add or remove Threads testers</span>
+    </div>
+    <div class="caption">▲ Redrawn from the actual UI: ID/secret at the top; below are the three callback URLs and the "User token generator".</div>
+  </div>
+  <ol class="steps-mini">
+    <li><b>Threads app ID / secret</b>: these are the <span class="kbd">client_id</span> / <span class="kbd">client_secret</span> for an OAuth flow in your code. Keep the secret safe — never put it in frontend code or a public repo.</li>
+    <li><b>Redirect callback URL</b>: where the user is redirected after OAuth authorization completes — it must be <b>HTTPS</b> (tested: <span class="kbd">localhost</span> is rejected). After typing the URL you <b>must press Enter to turn it into a chip</b> before saving, otherwise you'll get a "form couldn't be saved" error.</li>
+    <li><b>Deauthorize / data deletion callback URLs</b>: endpoints Meta pings when a user revokes authorization or requests data deletion. You can fill in placeholder URLs during development.</li>
+  </ol>
+  <div class="tip"><b>Just posting to your own account? You can skip OAuth</b>If you're only scheduling posts for your own account, just use the "user token generator" in the next step to get a long-lived token — no callback server needed at all.</div>
+</section>
+
+<section class="step" id="s5">
+  <div class="step-head"><div class="step-num">5</div><h2>Add a Threads tester and generate an access token</h2></div>
+  <ol class="steps-mini">
+    <li>In the "User token generator" click <span class="kbd">Add or remove Threads testers</span> — this opens the "App roles" page.</li>
+    <li>Click <span class="kbd">Add people</span> → choose <span class="kbd">Threads tester</span> → enter your <b>Threads username</b> (@handle) → send the invite.</li>
+    <li>Open the <b>Threads app</b> on your phone: Settings → Account → <span class="kbd">Website permissions</span> → <span class="kbd">Invites</span>, and accept the test invitation.</li>
+    <li>Back on the "Settings" page's user token generator, a <span class="kbd">Generate access token</span> button appears next to your account — click it, log in and authorize on Threads, and you'll get a copyable <b>long-lived access token (valid for 60 days)</b>.</li>
+  </ol>
+  <div class="warn"><b>A token is like a password</b>The access token can post directly as you. Store it in an environment variable or a secrets manager, never hard-code it. You can refresh it before the 60-day expiry via the refresh endpoint.</div>
+</section>
+
+<section class="step" id="s6">
+  <div class="step-head"><div class="step-num">6</div><h2>Post via the API</h2></div>
+  <p>Posting on Threads is a <b>two-step process</b>: first create a "media container", then "publish" the container. The endpoint is <span class="url">https://graph.threads.net</span>.</p>
+  <pre><span class="c"># 1) Create a text post container</span>
+curl -X POST "https://graph.threads.net/v1.0/me/threads" \
+  -d "media_type=TEXT" \
+  -d "text=My first post via the Threads API!" \
+  -d "access_token=YOUR_ACCESS_TOKEN"
+<span class="c"># Response {"id": "17888..."}  ← this is the container ID</span>
+
+<span class="c"># 2) Publish the container (recommended: wait ~30s for processing)</span>
+curl -X POST "https://graph.threads.net/v1.0/me/threads_publish" \
+  -d "creation_id=17888..." \
+  -d "access_token=YOUR_ACCESS_TOKEN"
+<span class="c"># Response {"id": "18027..."}  ← this is the published post ID</span></pre>
+  <p>Python version:</p>
+  <pre>import requests, time, os
+
+TOKEN = os.environ["THREADS_TOKEN"]
+BASE  = "https://graph.threads.net/v1.0"
+
+<span class="c"># Create the container</span>
+r = requests.post(f"{BASE}/me/threads", data={
+    "media_type": "TEXT",
+    "text": "Posted via Python 🎉",
+    "access_token": TOKEN,
+}).json()
+container_id = r["id"]
+
+time.sleep(30)  <span class="c"># Official recommendation: wait for the container to finish processing before publishing</span>
+
+<span class="c"># Publish</span>
+r = requests.post(f"{BASE}/me/threads_publish", data={
+    "creation_id": container_id,
+    "access_token": TOKEN,
+}).json()
+print("Post ID:", r["id"])</pre>
+  <div class="tip"><b>Posting images or video?</b>Change <span class="kbd">media_type</span> to <span class="kbd">IMAGE</span> and add <span class="kbd">image_url=https://…</span> (must be a publicly accessible URL); for video use <span class="kbd">VIDEO</span> + <span class="kbd">video_url</span>. For a multi-image carousel, first create multiple child containers, then group them into a <span class="kbd">CAROUSEL</span> container.</div>
+</section>
+
+<section class="step" id="s7">
+  <div class="step-head"><div class="step-num">7</div><h2>Reply to a thread via the API</h2></div>
+  <p>Replying is also a two-step process — you just add a <span class="kbd">reply_to_id</span> parameter when creating the container (requires the <span class="kbd">threads_manage_replies</span> permission):</p>
+  <pre><span class="c"># 1) Create a "reply" container: reply_to_id = the post ID being replied to</span>
+curl -X POST "https://graph.threads.net/v1.0/me/threads" \
+  -d "media_type=TEXT" \
+  -d "text=This is a reply posted via the API!" \
+  -d "reply_to_id=18027..." \
+  -d "access_token=YOUR_ACCESS_TOKEN"
+
+<span class="c"># 2) Publish it the same way with threads_publish</span>
+curl -X POST "https://graph.threads.net/v1.0/me/threads_publish" \
+  -d "creation_id=REPLY_CONTAINER_ID" \
+  -d "access_token=YOUR_ACCESS_TOKEN"</pre>
+  <p>Common reply-management endpoints (<span class="kbd">threads_read_replies</span> / <span class="kbd">threads_manage_replies</span>):</p>
+  <table class="perm">
+    <tr><th>Purpose</th><th>Endpoint</th><th>Method</th></tr>
+    <tr><td>Read replies on a post</td><td><code>/{media_id}/replies</code></td><td>GET</td></tr>
+    <tr><td>Read a full conversation thread</td><td><code>/{media_id}/conversation</code></td><td>GET</td></tr>
+    <tr><td>Hide/show a reply</td><td><code>/{reply_id}/manage_reply</code> (hide=true/false)</td><td>POST</td></tr>
+    <tr><td>Restrict who can reply</td><td>pass <code>reply_control</code> when creating the container (everyone / accounts_you_follow / mentioned_only)</td><td>POST</td></tr>
+  </table>
+</section>
+
+<section class="step" id="s8">
+  <div class="step-head"><div class="step-num">8</div><h2>FAQ</h2></div>
+  <h3>Q1: The "redirect callback URL" won't save?</h3>
+  <p>Two common causes: (1) the URL isn't HTTPS or uses localhost — switch to a real domain; (2) you didn't press Enter to turn the URL into a chip before saving — tested behavior requires pressing Enter first, then saving.</p>
+  <h3>Q2: No "Generate access token" button in the token generator?</h3>
+  <p>Either the tester hasn't accepted the test invite in the Threads app yet, or the Threads account isn't set to public.</p>
+  <h3>Q3: Posting returns a permission error (#10 or OAuthException)?</h3>
+  <p>Check three things: whether the token has expired (60 days), whether the permission has been added to the use case (step 3), and whether the corresponding scope (threads_content_publish, etc.) was actually granted during authorization.</p>
+  <h3>Q4: How many posts can I make per day?</h3>
+  <p>The current official limit is roughly 250 posts and 1,000 replies per 24 hours. You can check your remaining quota with <span class="kbd">GET /me/threads_publishing_limit</span>.</p>
+  <h3>Q5: Want other people to use your service?</h3>
+  <p>You'll need to request "Advanced Access" for permissions like threads_basic and threads_content_publish in App Review, submitting usage documentation and a demo video. Once approved, any Threads user can authorize your app.</p>
+</section>
+
+</main>
+<footer>Written from a hands-on walkthrough of the Meta for Developers flow in July 2026 · Screenshots redrawn from the actual UI · For learning purposes only</footer>
+</body>
+</html>

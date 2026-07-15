@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Google Gmail 與 Calendar API 申請教學(2026 實測版)</title>
+<style>
+  :root{
+    --g-blue:#1a73e8; --g-blue-dark:#174ea6; --g-bg:#f0f4f9; --g-surface:#fff;
+    --g-text:#202124; --g-sub:#5f6368; --g-border:#dadce0; --g-green:#188038;
+    --warn-bg:#fef7e0; --warn-border:#f9ab00; --tip-bg:#e8f0fe;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{font-family:"Noto Sans TC","Microsoft JhengHei",Roboto,Arial,sans-serif; background:var(--g-bg); color:var(--g-text); line-height:1.75;}
+  .hero{background:linear-gradient(135deg,#1a73e8 0%,#174ea6 60%,#0d3b7a 100%); color:#fff; padding:56px 24px 48px; text-align:center;}
+  .hero h1{font-size:1.9rem; font-weight:700; margin-bottom:12px;}
+  .hero p{opacity:.92; max-width:760px; margin:0 auto; font-size:1.02rem;}
+  .hero .badges{margin-top:18px;}
+  .hero .badge{display:inline-block; background:rgba(255,255,255,.16); border:1px solid rgba(255,255,255,.35); border-radius:999px; padding:4px 14px; font-size:.85rem; margin:4px;}
+  main{max-width:900px; margin:0 auto; padding:32px 20px 80px;}
+  .toc{background:var(--g-surface); border:1px solid var(--g-border); border-radius:12px; padding:20px 24px; margin-bottom:32px;}
+  .toc h2{font-size:1.05rem; margin-bottom:10px; color:var(--g-blue-dark);}
+  .toc ol{padding-left:22px;}
+  .toc a{color:var(--g-blue); text-decoration:none;}
+  .toc a:hover{text-decoration:underline;}
+  section.step{background:var(--g-surface); border:1px solid var(--g-border); border-radius:12px; padding:28px; margin-bottom:28px;}
+  .step-head{display:flex; align-items:center; gap:14px; margin-bottom:14px;}
+  .step-num{flex:0 0 40px; width:40px; height:40px; border-radius:50%; background:var(--g-blue); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:1.1rem;}
+  .step-head h2{font-size:1.25rem;}
+  .step p{margin:10px 0;}
+  .kbd{background:#eef1f5; border:1px solid var(--g-border); border-bottom-width:2px; border-radius:6px; padding:1px 8px; font-size:.9em; white-space:nowrap;}
+  .url{display:inline-block; background:#e8f0fe; color:var(--g-blue-dark); border-radius:6px; padding:1px 8px; font-family:Consolas,monospace; font-size:.88em; word-break:break-all;}
+  .tip,.warn{border-radius:10px; padding:14px 18px; margin:16px 0; font-size:.95rem;}
+  .tip{background:var(--tip-bg); border-left:4px solid var(--g-blue);}
+  .warn{background:var(--warn-bg); border-left:4px solid var(--warn-border);}
+  .tip b,.warn b{display:block; margin-bottom:4px;}
+  /* ---- 模擬瀏覽器視窗(依實際操作畫面重繪) ---- */
+  .shot{border:1px solid var(--g-border); border-radius:12px; overflow:hidden; margin:18px 0; box-shadow:0 2px 10px rgba(0,0,0,.08); font-size:.86rem;}
+  .shot .bar{background:#e9eef6; padding:8px 14px; display:flex; align-items:center; gap:8px; border-bottom:1px solid var(--g-border);}
+  .shot .dot{width:10px; height:10px; border-radius:50%;}
+  .shot .addr{flex:1; background:#fff; border:1px solid var(--g-border); border-radius:999px; padding:2px 14px; color:var(--g-sub); font-family:Consolas,monospace; font-size:.78rem; overflow:hidden; white-space:nowrap; text-overflow:ellipsis;}
+  .shot .body{background:#fff; padding:18px;}
+  .shot .caption{background:#f8f9fa; border-top:1px solid var(--g-border); padding:8px 14px; color:var(--g-sub); font-size:.8rem;}
+  .gc-top{display:flex; align-items:center; gap:12px; padding-bottom:12px; border-bottom:1px solid var(--g-border); margin-bottom:16px;}
+  .gc-logo{font-weight:700; color:#5f6368;} .gc-logo span{color:#4285f4;}
+  .gc-proj{border:1px solid var(--g-border); border-radius:999px; padding:2px 12px; color:var(--g-text); font-size:.82rem;}
+  .g-field{border:1px solid var(--g-border); border-radius:6px; padding:8px 12px; margin:10px 0; max-width:420px; position:relative;}
+  .g-field label{position:absolute; top:-9px; left:10px; background:#fff; padding:0 5px; font-size:.7rem; color:var(--g-blue);}
+  .g-btn{display:inline-block; background:var(--g-blue); color:#fff; border-radius:6px; padding:7px 20px; font-weight:500; margin:8px 6px 0 0;}
+  .g-btn.ghost{background:#fff; color:var(--g-blue); border:1px solid var(--g-border);}
+  .g-note{color:var(--g-sub); font-size:.8rem; margin-top:6px;}
+  table.scopes{width:100%; border-collapse:collapse; margin:10px 0; font-size:.85rem;}
+  table.scopes th,table.scopes td{border:1px solid var(--g-border); padding:8px 10px; text-align:left;}
+  table.scopes th{background:#f8f9fa;}
+  .chk{display:inline-block; width:15px; height:15px; border:2px solid var(--g-blue); border-radius:3px; background:var(--g-blue); color:#fff; text-align:center; line-height:13px; font-size:.7rem;}
+  code, pre{font-family:Consolas,"Courier New",monospace;}
+  pre{background:#0f172a; color:#e2e8f0; border-radius:10px; padding:18px; overflow-x:auto; font-size:.85rem; margin:14px 0; line-height:1.6;}
+  pre .c{color:#94a3b8;}
+  .steps-mini{margin:8px 0 8px 20px;}
+  .steps-mini li{margin:6px 0;}
+  h3{margin:18px 0 6px; font-size:1.05rem; color:var(--g-blue-dark);}
+  footer{text-align:center; color:var(--g-sub); font-size:.85rem; padding:24px;}
+  .flow{display:flex; flex-wrap:wrap; gap:8px; margin:14px 0;}
+  .flow .node{background:#e8f0fe; border:1px solid #c6dafc; border-radius:8px; padding:6px 12px; font-size:.85rem;}
+  .flow .arr{align-self:center; color:var(--g-sub);}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <h1>Google Gmail API 與 Calendar API 申請教學</h1>
+  <p>從建立 Google Cloud 專案、啟用 API、設定 OAuth 同意畫面,到取得憑證與測試使用者授權 —— 本教學的每一步皆於 2026 年 7 月在 Google Cloud 控制台實際操作驗證,示意圖依真實畫面重繪。</p>
+  <div class="badges">
+    <span class="badge">實測日期:2026-07</span>
+    <span class="badge">介面語言:繁體中文</span>
+    <span class="badge">難度:入門</span>
+    <span class="badge">費用:免費</span>
+  </div>
+</div>
+
+<main>
+
+<div class="toc">
+  <h2>目錄</h2>
+  <ol>
+    <li><a href="#s0">事前準備</a></li>
+    <li><a href="#s1">建立 Google Cloud 專案</a></li>
+    <li><a href="#s2">啟用 Gmail API</a></li>
+    <li><a href="#s3">啟用 Google Calendar API</a></li>
+    <li><a href="#s4">設定 OAuth 同意畫面(Google 驗證平台)</a></li>
+    <li><a href="#s5">建立 OAuth 用戶端 ID(憑證)</a></li>
+    <li><a href="#s6">設定資料存取權(Scopes)</a></li>
+    <li><a href="#s7">新增測試使用者</a></li>
+    <li><a href="#s8">開始呼叫 API(Python 範例)</a></li>
+    <li><a href="#s9">常見問題</a></li>
+  </ol>
+</div>
+
+<section class="step" id="s0">
+  <div class="step-head"><div class="step-num">0</div><h2>事前準備</h2></div>
+  <p>你只需要一個 <b>Google 帳號</b>(一般 Gmail 帳號即可)。整個流程不需要綁定信用卡:Gmail API 與 Calendar API 都有免費配額,個人開發綽綽有餘。</p>
+  <div class="flow">
+    <div class="node">建立專案</div><div class="arr">→</div>
+    <div class="node">啟用 2 個 API</div><div class="arr">→</div>
+    <div class="node">OAuth 同意畫面</div><div class="arr">→</div>
+    <div class="node">建立憑證</div><div class="arr">→</div>
+    <div class="node">Scopes + 測試使用者</div><div class="arr">→</div>
+    <div class="node">寫程式呼叫</div>
+  </div>
+  <div class="tip"><b>為什麼需要這些步驟?</b>Gmail 和行事曆是「使用者的私人資料」,Google 要求應用程式透過 OAuth 2.0 取得使用者同意後才能存取。所以除了打開 API,還要設定「同意畫面」和「授權範圍」。</div>
+</section>
+
+<section class="step" id="s1">
+  <div class="step-head"><div class="step-num">1</div><h2>建立 Google Cloud 專案</h2></div>
+  <p>開啟 <span class="url">https://console.cloud.google.com/projectcreate</span>(或在控制台上方的專案選單點「新增專案」)。</p>
+  <div class="shot">
+    <div class="bar"><span class="dot" style="background:#f66"></span><span class="dot" style="background:#fc3"></span><span class="dot" style="background:#5c5"></span><span class="addr">console.cloud.google.com/projectcreate</span></div>
+    <div class="body">
+      <div class="gc-top"><span class="gc-logo">Google <span>Cloud</span></span></div>
+      <div style="font-weight:500; margin-bottom:14px;">新增專案</div>
+      <div class="g-field"><label>專案名稱 *</label>api-course-demo</div>
+      <div class="g-note">專案 ID:api-course-demo。ID 設定後即無法變更。<a style="color:var(--g-blue)">編輯</a></div>
+      <div class="g-field"><label>父項資源 *</label>無組織 <span style="float:right; color:var(--g-blue)">瀏覽</span></div>
+      <div class="g-note">選取要建立這項資源的組織或資料夾</div>
+      <span class="g-btn">建立</span><span class="g-btn ghost">取消</span>
+    </div>
+    <div class="caption">▲ 依實際畫面重繪:「新增專案」頁。輸入專案名稱後按「建立」。</div>
+  </div>
+  <ol class="steps-mini">
+    <li>在「專案名稱」輸入好記的名稱,例如 <span class="kbd">api-course-demo</span>(名稱下方會自動產生專案 ID,之後無法更改)。</li>
+    <li>個人帳號「父項資源」保持「無組織」即可。</li>
+    <li>按 <span class="kbd">建立</span>。約 10 秒後右上角鈴鐺會出現「建立專案:api-course-demo ✔」的通知。</li>
+    <li>在通知中點「選取專案」,或用上方專案下拉選單切換到新專案。<b>之後所有步驟都要確認左上角顯示的是這個專案。</b></li>
+  </ol>
+  <div class="warn"><b>注意</b>免費帳號預設最多 10~12 個專案配額。如果按「建立」沒反應,先刪除舊專案或申請提高配額。</div>
+</section>
+
+<section class="step" id="s2">
+  <div class="step-head"><div class="step-num">2</div><h2>啟用 Gmail API</h2></div>
+  <p>左上選單 ☰ → <span class="kbd">API 和服務</span> → <span class="kbd">程式庫</span>,搜尋「Gmail」;或直接開啟
+  <span class="url">https://console.cloud.google.com/apis/library/gmail.googleapis.com</span>。</p>
+  <div class="shot">
+    <div class="bar"><span class="dot" style="background:#f66"></span><span class="dot" style="background:#fc3"></span><span class="dot" style="background:#5c5"></span><span class="addr">console.cloud.google.com/apis/library/gmail.googleapis.com?project=api-course-demo</span></div>
+    <div class="body">
+      <div class="gc-top"><span class="gc-logo">Google <span>Cloud</span></span><span class="gc-proj">🔽 api-course-demo</span></div>
+      <div style="display:flex; gap:16px; align-items:flex-start;">
+        <div style="font-size:2rem;">✉️</div>
+        <div>
+          <div style="font-size:1.15rem; font-weight:500;">Gmail API</div>
+          <div class="g-note">Google Enterprise API · View and manage Gmail mailbox data.</div>
+          <span class="g-btn">啟用</span><span class="g-btn ghost">試用這個 API</span>
+        </div>
+      </div>
+    </div>
+    <div class="caption">▲ 依實際畫面重繪:Gmail API 產品頁,按藍色「啟用」。</div>
+  </div>
+  <p>按下 <span class="kbd">啟用</span> 後會轉圈約 5~10 秒,完成後自動跳到「API/服務詳細資料」頁,狀態顯示 <b style="color:var(--g-green)">已啟用</b>。頁面上方會提示「您可能需要建立憑證,才能從自己的應用程式呼叫這個 API」——憑證我們在步驟 5 建立。</p>
+</section>
+
+<section class="step" id="s3">
+  <div class="step-head"><div class="step-num">3</div><h2>啟用 Google Calendar API</h2></div>
+  <p>同樣方式,在程式庫搜尋「Calendar」,選擇 <b>Google Calendar API</b>;或直接開啟
+  <span class="url">https://console.cloud.google.com/apis/library/calendar-json.googleapis.com</span>。</p>
+  <div class="shot">
+    <div class="bar"><span class="dot" style="background:#f66"></span><span class="dot" style="background:#fc3"></span><span class="dot" style="background:#5c5"></span><span class="addr">console.cloud.google.com/apis/library/calendar-json.googleapis.com?project=api-course-demo</span></div>
+    <div class="body">
+      <div class="gc-top"><span class="gc-logo">Google <span>Cloud</span></span><span class="gc-proj">🔽 api-course-demo</span></div>
+      <div style="display:flex; gap:16px; align-items:flex-start;">
+        <div style="font-size:2rem;">📅</div>
+        <div>
+          <div style="font-size:1.15rem; font-weight:500;">Google Calendar API</div>
+          <div class="g-note">Google Enterprise API · Manage calendars and events in Google Calendar.</div>
+          <span class="g-btn">啟用</span><span class="g-btn ghost">試用這個 API</span>
+        </div>
+      </div>
+    </div>
+    <div class="caption">▲ 依實際畫面重繪:Google Calendar API 產品頁(服務名稱 calendar-json.googleapis.com)。</div>
+  </div>
+  <p>按 <span class="kbd">啟用</span>,狀態變成「已啟用」即完成。到此專案已可使用兩個 API,接著處理授權。</p>
+</section>
+
+<section class="step" id="s4">
+  <div class="step-head"><div class="step-num">4</div><h2>設定 OAuth 同意畫面(Google 驗證平台)</h2></div>
+  <p>左側選單 <span class="kbd">API 和服務</span> → <span class="kbd">OAuth 同意畫面</span>,會進入「Google Auth Platform」。新專案會顯示「尚未設定 Google 驗證平台」,按 <span class="kbd">開始</span>。</p>
+  <div class="shot">
+    <div class="bar"><span class="dot" style="background:#f66"></span><span class="dot" style="background:#fc3"></span><span class="dot" style="background:#5c5"></span><span class="addr">console.cloud.google.com/auth/overview?project=api-course-demo</span></div>
+    <div class="body" style="text-align:center; padding:34px;">
+      <div style="font-size:2.2rem;">🖼️</div>
+      <div style="font-weight:500; margin:8px 0;">尚未設定 Google 驗證平台</div>
+      <div class="g-note" style="max-width:420px; margin:0 auto 14px;">開始設定應用程式身分,並管理用於呼叫 Google API 和「使用 Google 帳戶登入」的憑證。</div>
+      <span class="g-btn">開始</span>
+    </div>
+    <div class="caption">▲ 依實際畫面重繪:OAuth 總覽初始頁。</div>
+  </div>
+  <p>設定精靈共 4 個步驟(實測畫面依序如下):</p>
+  <ol class="steps-mini">
+    <li><b>應用程式資訊</b>:「應用程式名稱」輸入例如 <span class="kbd">API Course Demo</span>(這是使用者在授權畫面看到的名稱);「使用者支援電子郵件」下拉選你自己的 Gmail。按「下一步」。</li>
+    <li><b>目標對象</b>:選 <span class="kbd">外部</span>。個人 Gmail 帳號沒有 Workspace 組織,只能選外部;應用程式會先以「測試模式」推出,只有測試使用者清單中的人可以用。按「下一步」。</li>
+    <li><b>聯絡資訊</b>:輸入你的電子郵件(Google 專案異動通知用)。按「下一步」。</li>
+    <li><b>完成</b>:勾選「我同意《Google API 服務:使用者資料政策》」→ 按「繼續」→ 按 <span class="kbd">建立</span>。畫面底部出現「OAuth 設定建立完成!」。</li>
+  </ol>
+  <div class="shot">
+    <div class="bar"><span class="dot" style="background:#f66"></span><span class="dot" style="background:#fc3"></span><span class="dot" style="background:#5c5"></span><span class="addr">console.cloud.google.com/auth/overview/create?project=api-course-demo</span></div>
+    <div class="body">
+      <div style="margin-bottom:10px; color:var(--g-blue);">✔ 應用程式資訊&nbsp;&nbsp;✔ 目標對象&nbsp;&nbsp;✔ 聯絡資訊&nbsp;&nbsp;<b>❹ 完成</b></div>
+      <div style="margin:8px 0;"><span class="chk">✓</span> 我同意《<span style="color:var(--g-blue)">Google API 服務:使用者資料政策</span>》。</div>
+      <span class="g-btn ghost">繼續</span><br>
+      <span class="g-btn">建立</span><span class="g-btn ghost">取消</span>
+    </div>
+    <div class="caption">▲ 依實際畫面重繪:4 步驟精靈的最後一步。</div>
+  </div>
+</section>
+
+<section class="step" id="s5">
+  <div class="step-head"><div class="step-num">5</div><h2>建立 OAuth 用戶端 ID(憑證)</h2></div>
+  <p>Google Auth Platform 左側選單 → <span class="kbd">用戶端</span> → <span class="kbd">建立用戶端</span>(或 API 和服務 → 憑證 → 建立憑證 → OAuth 用戶端 ID)。</p>
+  <div class="shot">
+    <div class="bar"><span class="dot" style="background:#f66"></span><span class="dot" style="background:#fc3"></span><span class="dot" style="background:#5c5"></span><span class="addr">console.cloud.google.com/auth/clients/create?project=api-course-demo</span></div>
+    <div class="body">
+      <div style="font-weight:500; margin-bottom:12px;">建立 OAuth 用戶端 ID</div>
+      <div class="g-field"><label>應用程式類型 *</label>電腦版應用程式 ▾</div>
+      <div class="g-note" style="margin-bottom:6px;">選項:網頁應用程式 / Android / Chrome 擴充功能 / iOS / 電視和受限制的輸入裝置 / 電腦版應用程式</div>
+      <div class="g-field"><label>名稱 *</label>電腦用戶端 1</div>
+      <div class="g-note">注意:設定可能需要 5 分鐘至數小時才會生效</div>
+      <span class="g-btn">建立</span><span class="g-btn ghost">取消</span>
+    </div>
+    <div class="caption">▲ 依實際畫面重繪:寫本機腳本/課程練習選「電腦版應用程式」最簡單。</div>
+  </div>
+  <p>按 <span class="kbd">建立</span> 後跳出「OAuth 用戶端已建立」視窗:</p>
+  <div class="shot">
+    <div class="bar"><span class="dot" style="background:#f66"></span><span class="dot" style="background:#fc3"></span><span class="dot" style="background:#5c5"></span><span class="addr">console.cloud.google.com/auth/clients — 對話框</span></div>
+    <div class="body">
+      <div style="font-weight:500; font-size:1.05rem; margin-bottom:8px;">OAuth 用戶端已建立</div>
+      <div class="g-note" style="margin-bottom:10px;">您隨時可以在 Google Auth Platform 的「用戶端」分頁找到用戶端 ID。<br>ⓘ 只有 OAuth 同意畫面中列出的測試使用者具備 OAuth 存取權限</div>
+      <table class="scopes"><tr><th style="width:120px;">用戶端 ID</th><td>1454707•••••-9t3e7t•••••••••••••.apps.googleusercontent.com 📋</td></tr></table>
+      <div style="color:var(--g-blue); margin:8px 0;">⬇ 下載 JSON</div>
+      <div style="text-align:right; color:var(--g-blue); font-weight:500;">確定</div>
+    </div>
+    <div class="caption">▲ 依實際畫面重繪:務必點「下載 JSON」,把檔案存成 credentials.json。</div>
+  </div>
+  <div class="warn"><b>重要:保管好 JSON 憑證檔</b>下載的 <span class="kbd">client_secret_xxx.json</span> 內含 client_id 與 client_secret,等同你 App 的鑰匙。請改名為 <span class="kbd">credentials.json</span> 放進專案資料夾,並加入 <span class="kbd">.gitignore</span>,絕不要上傳到公開的 GitHub。</div>
+</section>
+
+<section class="step" id="s6">
+  <div class="step-head"><div class="step-num">6</div><h2>設定資料存取權(Scopes)</h2></div>
+  <p>Google Auth Platform → <span class="kbd">資料存取權</span> → <span class="kbd">新增或移除範圍</span>。右側會滑出「更新所選範圍」面板,列出<b>已啟用 API</b> 的所有範圍(這就是為什麼要先做步驟 2、3)。</p>
+  <ol class="steps-mini">
+    <li>在「篩選條件」輸入 <span class="kbd">gmail.send</span> 按 Enter,勾選 Gmail API 的 <span class="kbd">.../auth/gmail.send</span>(以您的名義傳送電子郵件)。</li>
+    <li>清除篩選,再輸入 <span class="kbd">calendar.events</span>,勾選 Google Calendar API 的 <span class="kbd">.../auth/calendar.events</span>(查看及編輯所有日曆上的活動)。</li>
+    <li>捲到面板底部按 <span class="kbd">更新</span>,回到頁面後再按 <span class="kbd">Save</span>。</li>
+  </ol>
+  <div class="shot">
+    <div class="bar"><span class="dot" style="background:#f66"></span><span class="dot" style="background:#fc3"></span><span class="dot" style="background:#5c5"></span><span class="addr">console.cloud.google.com/auth/scopes?project=api-course-demo</span></div>
+    <div class="body">
+      <div style="font-weight:500; margin-bottom:10px;">🔒 您的機密範圍</div>
+      <table class="scopes">
+        <tr><th>API</th><th>範圍</th><th>使用者可以看見的說明</th></tr>
+        <tr><td>Gmail API</td><td>.../auth/gmail.send</td><td>以您的名義傳送電子郵件 🗑</td></tr>
+        <tr><td>Google Calendar API</td><td>.../auth/calendar.events</td><td>查看及編輯所有日曆上的活動 🗑</td></tr>
+      </table>
+      <span class="g-btn">Save</span><span class="g-btn ghost">捨棄變更</span>
+    </div>
+    <div class="caption">▲ 依實際畫面重繪:兩個範圍都屬於「機密範圍」,在測試模式下可直接使用。</div>
+  </div>
+  <div class="tip"><b>Scope 挑選原則:夠用就好</b>常用選項——只讀信:<span class="kbd">gmail.readonly</span>;只寄信:<span class="kbd">gmail.send</span>;完整信箱:<span class="kbd">https://mail.google.com/</span>(受限制範圍,正式上線需安全審查);行事曆讀寫:<span class="kbd">calendar.events</span>;行事曆唯讀:<span class="kbd">calendar.events.readonly</span>。範圍越小,審查越簡單、風險越低。</div>
+</section>
+
+<section class="step" id="s7">
+  <div class="step-head"><div class="step-num">7</div><h2>新增測試使用者</h2></div>
+  <p>應用程式處於「測試中」狀態時,<b>只有測試使用者清單裡的帳號</b>能完成 OAuth 授權。Google Auth Platform → <span class="kbd">目標對象</span> → 測試使用者區塊按 <span class="kbd">+ Add users</span>。</p>
+  <div class="shot">
+    <div class="bar"><span class="dot" style="background:#f66"></span><span class="dot" style="background:#fc3"></span><span class="dot" style="background:#5c5"></span><span class="addr">console.cloud.google.com/auth/audience?project=api-course-demo</span></div>
+    <div class="body">
+      <div style="font-weight:500;">測試使用者</div>
+      <div class="g-note" style="margin-bottom:8px;">1 位使用者(1 位測試使用者,0 位其他使用者)/ 上限為 100 位</div>
+      <span class="g-btn ghost">+ Add users</span>
+      <table class="scopes" style="max-width:420px;">
+        <tr><th>使用者資訊</th></tr>
+        <tr><td>your-account@gmail.com 🗑</td></tr>
+      </table>
+    </div>
+    <div class="caption">▲ 依實際畫面重繪:輸入你自己的 Gmail 後按「Save」,清單出現該帳號即成功。</div>
+  </div>
+  <p>輸入你要拿來測試的 Gmail(通常就是自己的帳號),按 <span class="kbd">Save</span>。上限 100 位。</p>
+  <div class="tip"><b>要正式給所有人用?</b>「目標對象」頁上方有「發布應用程式」按鈕可切換為正式版。使用機密/受限制範圍的應用程式需要通過 Google 驗證(數天~數週)。自用或課程練習停留在測試模式即可,唯一小缺點是 refresh token 7 天會過期,重新授權一次即可。</div>
+</section>
+
+<section class="step" id="s8">
+  <div class="step-head"><div class="step-num">8</div><h2>開始呼叫 API(Python 範例)</h2></div>
+  <p>把步驟 5 下載的 <span class="kbd">credentials.json</span> 放到程式同層資料夾,安裝套件:</p>
+  <pre>pip install google-auth-oauthlib google-api-python-client</pre>
+  <p>第一次執行會自動打開瀏覽器,用<b>測試使用者帳號</b>登入並同意授權(畫面會顯示「Google 尚未驗證這個應用程式」,點「繼續」即可,因為是你自己的 App)。授權後 token 會存在本機,之後不必重新登入。</p>
+  <pre><span class="c"># demo.py — 寄一封信 + 建一個行事曆活動</span>
+from google_auth_oauthlib.flow import InstalledAppFlow
+from googleapiclient.discovery import build
+import base64, os.path, pickle
+from email.mime.text import MIMEText
+
+SCOPES = [
+    "https://www.googleapis.com/auth/gmail.send",
+    "https://www.googleapis.com/auth/calendar.events",
+]
+
+<span class="c"># --- OAuth 授權(第一次會開瀏覽器) ---</span>
+creds = None
+if os.path.exists("token.pickle"):
+    with open("token.pickle", "rb") as f:
+        creds = pickle.load(f)
+if not creds or not creds.valid:
+    flow = InstalledAppFlow.from_client_secrets_file("credentials.json", SCOPES)
+    creds = flow.run_local_server(port=0)
+    with open("token.pickle", "wb") as f:
+        pickle.dump(creds, f)
+
+<span class="c"># --- Gmail:寄信 ---</span>
+gmail = build("gmail", "v1", credentials=creds)
+msg = MIMEText("哈囉,這封信是用 Gmail API 寄出的!")
+msg["to"] = "someone@example.com"
+msg["subject"] = "Gmail API 測試"
+raw = base64.urlsafe_b64encode(msg.as_bytes()).decode()
+gmail.users().messages().send(userId="me", body={"raw": raw}).execute()
+print("信寄出去了!")
+
+<span class="c"># --- Calendar:建立活動 ---</span>
+cal = build("calendar", "v3", credentials=creds)
+event = {
+    "summary": "API 課程練習",
+    "start": {"dateTime": "2026-07-20T10:00:00+08:00"},
+    "end":   {"dateTime": "2026-07-20T11:00:00+08:00"},
+}
+created = cal.events().insert(calendarId="primary", body=event).execute()
+print("活動建好了:", created.get("htmlLink"))</pre>
+</section>
+
+<section class="step" id="s9">
+  <div class="step-head"><div class="step-num">9</div><h2>常見問題</h2></div>
+  <h3>Q1:授權時出現「拒絕存取」錯誤 (403: access_denied)?</h3>
+  <p>登入的帳號不在測試使用者清單。回到步驟 7 把該帳號加進去。</p>
+  <h3>Q2:出現「Google 尚未驗證這個應用程式」警告?</h3>
+  <p>測試模式的正常現象。點「繼續」(有時藏在「進階」連結裡)即可,因為這是你自己建立的應用程式。</p>
+  <h3>Q3:過幾天 token 失效、要求重新登入?</h3>
+  <p>測試模式的 refresh token 有效期 7 天。刪掉 <span class="kbd">token.pickle</span> 重新授權,或將應用程式發布為正式版。</p>
+  <h3>Q4:找不到「OAuth 同意畫面」選單?</h3>
+  <p>2024 年後 Google 把它整合進「Google Auth Platform」。路徑:API 和服務 → OAuth 同意畫面,或直接開 <span class="url">console.cloud.google.com/auth/overview</span>。</p>
+  <h3>Q5:API 已啟用,程式卻回報 API not enabled?</h3>
+  <p>多半是專案選錯了。確認控制台左上角專案名稱,以及 credentials.json 是從同一個專案下載的。</p>
+</section>
+
+</main>
+<footer>本教學依 2026 年 7 月 Google Cloud 控制台實際操作流程撰寫 · 示意圖依真實畫面重繪 · 僅供學習使用</footer>
+</body>
+</html>

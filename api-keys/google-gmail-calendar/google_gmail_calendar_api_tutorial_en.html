@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Google Gmail & Calendar API Setup Guide (Tested 2026)</title>
+<style>
+  :root{
+    --g-blue:#1a73e8; --g-blue-dark:#174ea6; --g-bg:#f0f4f9; --g-surface:#fff;
+    --g-text:#202124; --g-sub:#5f6368; --g-border:#dadce0; --g-green:#188038;
+    --warn-bg:#fef7e0; --warn-border:#f9ab00; --tip-bg:#e8f0fe;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{font-family:"Inter","Helvetica Neue",Roboto,Arial,sans-serif; background:var(--g-bg); color:var(--g-text); line-height:1.75;}
+  .hero{background:linear-gradient(135deg,#1a73e8 0%,#174ea6 60%,#0d3b7a 100%); color:#fff; padding:56px 24px 48px; text-align:center;}
+  .hero h1{font-size:1.9rem; font-weight:700; margin-bottom:12px;}
+  .hero p{opacity:.92; max-width:760px; margin:0 auto; font-size:1.02rem;}
+  .hero .badges{margin-top:18px;}
+  .hero .badge{display:inline-block; background:rgba(255,255,255,.16); border:1px solid rgba(255,255,255,.35); border-radius:999px; padding:4px 14px; font-size:.85rem; margin:4px;}
+  main{max-width:900px; margin:0 auto; padding:32px 20px 80px;}
+  .toc{background:var(--g-surface); border:1px solid var(--g-border); border-radius:12px; padding:20px 24px; margin-bottom:32px;}
+  .toc h2{font-size:1.05rem; margin-bottom:10px; color:var(--g-blue-dark);}
+  .toc ol{padding-left:22px;}
+  .toc a{color:var(--g-blue); text-decoration:none;}
+  .toc a:hover{text-decoration:underline;}
+  section.step{background:var(--g-surface); border:1px solid var(--g-border); border-radius:12px; padding:28px; margin-bottom:28px;}
+  .step-head{display:flex; align-items:center; gap:14px; margin-bottom:14px;}
+  .step-num{flex:0 0 40px; width:40px; height:40px; border-radius:50%; background:var(--g-blue); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:1.1rem;}
+  .step-head h2{font-size:1.25rem;}
+  .step p{margin:10px 0;}
+  .kbd{background:#eef1f5; border:1px solid var(--g-border); border-bottom-width:2px; border-radius:6px; padding:1px 8px; font-size:.9em; white-space:nowrap;}
+  .url{display:inline-block; background:#e8f0fe; color:var(--g-blue-dark); border-radius:6px; padding:1px 8px; font-family:Consolas,monospace; font-size:.88em; word-break:break-all;}
+  .tip,.warn{border-radius:10px; padding:14px 18px; margin:16px 0; font-size:.95rem;}
+  .tip{background:var(--tip-bg); border-left:4px solid var(--g-blue);}
+  .warn{background:var(--warn-bg); border-left:4px solid var(--warn-border);}
+  .tip b,.warn b{display:block; margin-bottom:4px;}
+  /* Simulated browser window (redrawn from the actual UI) */
+  .shot{border:1px solid var(--g-border); border-radius:12px; overflow:hidden; margin:18px 0; box-shadow:0 2px 10px rgba(0,0,0,.08); font-size:.86rem;}
+  .shot .bar{background:#e9eef6; padding:8px 14px; display:flex; align-items:center; gap:8px; border-bottom:1px solid var(--g-border);}
+  .shot .dot{width:10px; height:10px; border-radius:50%;}
+  .shot .addr{flex:1; background:#fff; border:1px solid var(--g-border); border-radius:999px; padding:2px 14px; color:var(--g-sub); font-family:Consolas,monospace; font-size:.78rem; overflow:hidden; white-space:nowrap; text-overflow:ellipsis;}
+  .shot .body{background:#fff; padding:18px;}
+  .shot .caption{background:#f8f9fa; border-top:1px solid var(--g-border); padding:8px 14px; color:var(--g-sub); font-size:.8rem;}
+  .gc-top{display:flex; align-items:center; gap:12px; padding-bottom:12px; border-bottom:1px solid var(--g-border); margin-bottom:16px;}
+  .gc-logo{font-weight:700; color:#5f6368;} .gc-logo span{color:#4285f4;}
+  .gc-proj{border:1px solid var(--g-border); border-radius:999px; padding:2px 12px; color:var(--g-text); font-size:.82rem;}
+  .g-field{border:1px solid var(--g-border); border-radius:6px; padding:8px 12px; margin:10px 0; max-width:420px; position:relative;}
+  .g-field label{position:absolute; top:-9px; left:10px; background:#fff; padding:0 5px; font-size:.7rem; color:var(--g-blue);}
+  .g-btn{display:inline-block; background:var(--g-blue); color:#fff; border-radius:6px; padding:7px 20px; font-weight:500; margin:8px 6px 0 0;}
+  .g-btn.ghost{background:#fff; color:var(--g-blue); border:1px solid var(--g-border);}
+  .g-note{color:var(--g-sub); font-size:.8rem; margin-top:6px;}
+  table.scopes{width:100%; border-collapse:collapse; margin:10px 0; font-size:.85rem;}
+  table.scopes th,table.scopes td{border:1px solid var(--g-border); padding:8px 10px; text-align:left;}
+  table.scopes th{background:#f8f9fa;}
+  .chk{display:inline-block; width:15px; height:15px; border:2px solid var(--g-blue); border-radius:3px; background:var(--g-blue); color:#fff; text-align:center; line-height:13px; font-size:.7rem;}
+  code, pre{font-family:Consolas,"Courier New",monospace;}
+  pre{background:#0f172a; color:#e2e8f0; border-radius:10px; padding:18px; overflow-x:auto; font-size:.85rem; margin:14px 0; line-height:1.6;}
+  pre .c{color:#94a3b8;}
+  .steps-mini{margin:8px 0 8px 20px;}
+  .steps-mini li{margin:6px 0;}
+  h3{margin:18px 0 6px; font-size:1.05rem; color:var(--g-blue-dark);}
+  footer{text-align:center; color:var(--g-sub); font-size:.85rem; padding:24px;}
+  .flow{display:flex; flex-wrap:wrap; gap:8px; margin:14px 0;}
+  .flow .node{background:#e8f0fe; border:1px solid #c6dafc; border-radius:8px; padding:6px 12px; font-size:.85rem;}
+  .flow .arr{align-self:center; color:var(--g-sub);}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <h1>Google Gmail API & Calendar API Setup Guide</h1>
+  <p>From creating a Google Cloud project, enabling the APIs, configuring the OAuth consent screen, all the way to getting credentials and authorizing a test user — every step in this guide was verified hands-on in the Google Cloud Console in July 2026, with screenshots redrawn from the actual UI.</p>
+  <div class="badges">
+    <span class="badge">Tested: 2026-07</span>
+    <span class="badge">UI language: Traditional Chinese</span>
+    <span class="badge">Level: Beginner</span>
+    <span class="badge">Cost: Free</span>
+  </div>
+</div>
+
+<main>
+
+<div class="toc">
+  <h2>Contents</h2>
+  <ol>
+    <li><a href="#s0">Prerequisites</a></li>
+    <li><a href="#s1">Create a Google Cloud project</a></li>
+    <li><a href="#s2">Enable the Gmail API</a></li>
+    <li><a href="#s3">Enable the Google Calendar API</a></li>
+    <li><a href="#s4">Configure the OAuth consent screen (Google Auth Platform)</a></li>
+    <li><a href="#s5">Create an OAuth client ID (credentials)</a></li>
+    <li><a href="#s6">Configure data access (scopes)</a></li>
+    <li><a href="#s7">Add a test user</a></li>
+    <li><a href="#s8">Call the API (Python example)</a></li>
+    <li><a href="#s9">FAQ</a></li>
+  </ol>
+</div>
+
+<section class="step" id="s0">
+  <div class="step-head"><div class="step-num">0</div><h2>Prerequisites</h2></div>
+  <p>All you need is a <b>Google account</b> (a regular Gmail account works fine). No credit card is required anywhere in this flow: both the Gmail API and Calendar API have generous free quotas, more than enough for individual developers.</p>
+  <div class="flow">
+    <div class="node">Create project</div><div class="arr">→</div>
+    <div class="node">Enable 2 APIs</div><div class="arr">→</div>
+    <div class="node">OAuth consent screen</div><div class="arr">→</div>
+    <div class="node">Create credentials</div><div class="arr">→</div>
+    <div class="node">Scopes + test user</div><div class="arr">→</div>
+    <div class="node">Write code &amp; call it</div>
+  </div>
+  <div class="tip"><b>Why all these steps?</b>Gmail and Calendar data are "the user's private data" — Google requires apps to get the user's consent via OAuth 2.0 before accessing them. So beyond turning on the APIs, you also need to set up a "consent screen" and "authorized scopes".</div>
+</section>
+
+<section class="step" id="s1">
+  <div class="step-head"><div class="step-num">1</div><h2>Create a Google Cloud project</h2></div>
+  <p>Open <span class="url">https://console.cloud.google.com/projectcreate</span> (or click "New Project" from the project dropdown at the top of the console).</p>
+  <div class="shot">
+    <div class="bar"><span class="dot" style="background:#f66"></span><span class="dot" style="background:#fc3"></span><span class="dot" style="background:#5c5"></span><span class="addr">console.cloud.google.com/projectcreate</span></div>
+    <div class="body">
+      <div class="gc-top"><span class="gc-logo">Google <span>Cloud</span></span></div>
+      <div style="font-weight:500; margin-bottom:14px;">New Project</div>
+      <div class="g-field"><label>Project name *</label>api-course-demo</div>
+      <div class="g-note">Project ID: api-course-demo. The ID cannot be changed once set. <a style="color:var(--g-blue)">Edit</a></div>
+      <div class="g-field"><label>Location *</label>No organization <span style="float:right; color:var(--g-blue)">Browse</span></div>
+      <div class="g-note">Select an organization or folder to create this resource under</div>
+      <span class="g-btn">Create</span><span class="g-btn ghost">Cancel</span>
+    </div>
+    <div class="caption">▲ Redrawn from the actual UI: the "New Project" page. Enter a project name and click "Create".</div>
+  </div>
+  <ol class="steps-mini">
+    <li>In "Project name" enter something memorable, e.g. <span class="kbd">api-course-demo</span> (a project ID is auto-generated below the name and cannot be changed later).</li>
+    <li>For a personal account, leave "Location" as "No organization".</li>
+    <li>Click <span class="kbd">Create</span>. After about 10 seconds the bell icon in the top right shows a notification "Creating project: api-course-demo ✔".</li>
+    <li>Click "Select project" in the notification, or switch to the new project via the project dropdown at the top. <b>From here on, always confirm the top-left corner shows this project.</b></li>
+  </ol>
+  <div class="warn"><b>Note</b>Free accounts default to a quota of about 10–12 projects. If clicking "Create" does nothing, delete an old project or request a quota increase.</div>
+</section>
+
+<section class="step" id="s2">
+  <div class="step-head"><div class="step-num">2</div><h2>Enable the Gmail API</h2></div>
+  <p>Top-left menu ☰ → <span class="kbd">APIs & Services</span> → <span class="kbd">Library</span>, search "Gmail"; or open directly
+  <span class="url">https://console.cloud.google.com/apis/library/gmail.googleapis.com</span>.</p>
+  <div class="shot">
+    <div class="bar"><span class="dot" style="background:#f66"></span><span class="dot" style="background:#fc3"></span><span class="dot" style="background:#5c5"></span><span class="addr">console.cloud.google.com/apis/library/gmail.googleapis.com?project=api-course-demo</span></div>
+    <div class="body">
+      <div class="gc-top"><span class="gc-logo">Google <span>Cloud</span></span><span class="gc-proj">🔽 api-course-demo</span></div>
+      <div style="display:flex; gap:16px; align-items:flex-start;">
+        <div style="font-size:2rem;">✉️</div>
+        <div>
+          <div style="font-size:1.15rem; font-weight:500;">Gmail API</div>
+          <div class="g-note">Google Enterprise API · View and manage Gmail mailbox data.</div>
+          <span class="g-btn">Enable</span><span class="g-btn ghost">Try this API</span>
+        </div>
+      </div>
+    </div>
+    <div class="caption">▲ Redrawn from the actual UI: the Gmail API product page, click the blue "Enable" button.</div>
+  </div>
+  <p>After clicking <span class="kbd">Enable</span>, it spins for about 5–10 seconds, then automatically lands on the "API/Service Details" page, showing <b style="color:var(--g-green)">Enabled</b>. A banner at the top will suggest "You may need credentials to call this API from your own application" — we'll create credentials in step 5.</p>
+</section>
+
+<section class="step" id="s3">
+  <div class="step-head"><div class="step-num">3</div><h2>Enable the Google Calendar API</h2></div>
+  <p>Same process: search the library for "Calendar" and choose <b>Google Calendar API</b>; or open directly
+  <span class="url">https://console.cloud.google.com/apis/library/calendar-json.googleapis.com</span>.</p>
+  <div class="shot">
+    <div class="bar"><span class="dot" style="background:#f66"></span><span class="dot" style="background:#fc3"></span><span class="dot" style="background:#5c5"></span><span class="addr">console.cloud.google.com/apis/library/calendar-json.googleapis.com?project=api-course-demo</span></div>
+    <div class="body">
+      <div class="gc-top"><span class="gc-logo">Google <span>Cloud</span></span><span class="gc-proj">🔽 api-course-demo</span></div>
+      <div style="display:flex; gap:16px; align-items:flex-start;">
+        <div style="font-size:2rem;">📅</div>
+        <div>
+          <div style="font-size:1.15rem; font-weight:500;">Google Calendar API</div>
+          <div class="g-note">Google Enterprise API · Manage calendars and events in Google Calendar.</div>
+          <span class="g-btn">Enable</span><span class="g-btn ghost">Try this API</span>
+        </div>
+      </div>
+    </div>
+    <div class="caption">▲ Redrawn from the actual UI: the Google Calendar API product page (service name calendar-json.googleapis.com).</div>
+  </div>
+  <p>Click <span class="kbd">Enable</span>; once the status changes to "Enabled" you're done. The project now has both APIs available — next we handle authorization.</p>
+</section>
+
+<section class="step" id="s4">
+  <div class="step-head"><div class="step-num">4</div><h2>Configure the OAuth consent screen (Google Auth Platform)</h2></div>
+  <p>Left sidebar <span class="kbd">APIs & Services</span> → <span class="kbd">OAuth consent screen</span>, which takes you to the "Google Auth Platform". A new project will show "Google Auth Platform not configured" — click <span class="kbd">Get Started</span>.</p>
+  <div class="shot">
+    <div class="bar"><span class="dot" style="background:#f66"></span><span class="dot" style="background:#fc3"></span><span class="dot" style="background:#5c5"></span><span class="addr">console.cloud.google.com/auth/overview?project=api-course-demo</span></div>
+    <div class="body" style="text-align:center; padding:34px;">
+      <div style="font-size:2.2rem;">🖼️</div>
+      <div style="font-weight:500; margin:8px 0;">Google Auth Platform not configured</div>
+      <div class="g-note" style="max-width:420px; margin:0 auto 14px;">Get started configuring your application's identity, and manage the credentials used to call Google APIs and "Sign in with Google".</div>
+      <span class="g-btn">Get Started</span>
+    </div>
+    <div class="caption">▲ Redrawn from the actual UI: the initial OAuth overview page.</div>
+  </div>
+  <p>The setup wizard has 4 steps (as tested):</p>
+  <ol class="steps-mini">
+    <li><b>App Information</b>: for "App name" enter something like <span class="kbd">API Course Demo</span> (this is what users see on the consent screen); for "User support email" pick your own Gmail from the dropdown. Click "Next".</li>
+    <li><b>Audience</b>: choose <span class="kbd">External</span>. A personal Gmail account has no Workspace organization, so External is the only option; the app will launch in "Testing" mode, usable only by accounts on the test user list. Click "Next".</li>
+    <li><b>Contact Information</b>: enter your email (used for Google project change notifications). Click "Next".</li>
+    <li><b>Finish</b>: check "I agree to the Google API Services: User Data Policy" → click "Continue" → click <span class="kbd">Create</span>. A "OAuth configuration created!" message appears at the bottom.</li>
+  </ol>
+  <div class="shot">
+    <div class="bar"><span class="dot" style="background:#f66"></span><span class="dot" style="background:#fc3"></span><span class="dot" style="background:#5c5"></span><span class="addr">console.cloud.google.com/auth/overview/create?project=api-course-demo</span></div>
+    <div class="body">
+      <div style="margin-bottom:10px; color:var(--g-blue);">✔ App Information&nbsp;&nbsp;✔ Audience&nbsp;&nbsp;✔ Contact Information&nbsp;&nbsp;<b>❹ Finish</b></div>
+      <div style="margin:8px 0;"><span class="chk">✓</span> I agree to the <span style="color:var(--g-blue)">Google API Services: User Data Policy</span>.</div>
+      <span class="g-btn ghost">Continue</span><br>
+      <span class="g-btn">Create</span><span class="g-btn ghost">Cancel</span>
+    </div>
+    <div class="caption">▲ Redrawn from the actual UI: the final step of the 4-step wizard.</div>
+  </div>
+</section>
+
+<section class="step" id="s5">
+  <div class="step-head"><div class="step-num">5</div><h2>Create an OAuth client ID (credentials)</h2></div>
+  <p>Google Auth Platform left sidebar → <span class="kbd">Clients</span> → <span class="kbd">Create Client</span> (or APIs & Services → Credentials → Create Credentials → OAuth client ID).</p>
+  <div class="shot">
+    <div class="bar"><span class="dot" style="background:#f66"></span><span class="dot" style="background:#fc3"></span><span class="dot" style="background:#5c5"></span><span class="addr">console.cloud.google.com/auth/clients/create?project=api-course-demo</span></div>
+    <div class="body">
+      <div style="font-weight:500; margin-bottom:12px;">Create OAuth Client ID</div>
+      <div class="g-field"><label>Application type *</label>Desktop app ▾</div>
+      <div class="g-note" style="margin-bottom:6px;">Options: Web application / Android / Chrome extension / iOS / TV and limited-input devices / Desktop app</div>
+      <div class="g-field"><label>Name *</label>Desktop client 1</div>
+      <div class="g-note">Note: it may take 5 minutes to a few hours for settings to take effect</div>
+      <span class="g-btn">Create</span><span class="g-btn ghost">Cancel</span>
+    </div>
+    <div class="caption">▲ Redrawn from the actual UI: for local scripts/course exercises, "Desktop app" is simplest.</div>
+  </div>
+  <p>After clicking <span class="kbd">Create</span>, an "OAuth client created" dialog pops up:</p>
+  <div class="shot">
+    <div class="bar"><span class="dot" style="background:#f66"></span><span class="dot" style="background:#fc3"></span><span class="dot" style="background:#5c5"></span><span class="addr">console.cloud.google.com/auth/clients — dialog</span></div>
+    <div class="body">
+      <div style="font-weight:500; font-size:1.05rem; margin-bottom:8px;">OAuth client created</div>
+      <div class="g-note" style="margin-bottom:10px;">You can find this client ID anytime in the "Clients" tab of Google Auth Platform.<br>ⓘ Only test users listed on the OAuth consent screen have OAuth access</div>
+      <table class="scopes"><tr><th style="width:120px;">Client ID</th><td>1454707•••••-9t3e7t•••••••••••••.apps.googleusercontent.com 📋</td></tr></table>
+      <div style="color:var(--g-blue); margin:8px 0;">⬇ Download JSON</div>
+      <div style="text-align:right; color:var(--g-blue); font-weight:500;">OK</div>
+    </div>
+    <div class="caption">▲ Redrawn from the actual UI: be sure to click "Download JSON" and save the file as credentials.json.</div>
+  </div>
+  <div class="warn"><b>Important: keep the JSON credentials file safe</b>The downloaded <span class="kbd">client_secret_xxx.json</span> file contains your client_id and client_secret — it's effectively the key to your app. Rename it to <span class="kbd">credentials.json</span>, place it in your project folder, add it to <span class="kbd">.gitignore</span>, and never upload it to a public GitHub repo.</div>
+</section>
+
+<section class="step" id="s6">
+  <div class="step-head"><div class="step-num">6</div><h2>Configure data access (scopes)</h2></div>
+  <p>Google Auth Platform → <span class="kbd">Data Access</span> → <span class="kbd">Add or Remove Scopes</span>. A "Update selected scopes" panel slides out from the right, listing all scopes for your <b>enabled APIs</b> (which is why we did steps 2 and 3 first).</p>
+  <ol class="steps-mini">
+    <li>In "Filter" type <span class="kbd">gmail.send</span> and press Enter, then check the Gmail API scope <span class="kbd">.../auth/gmail.send</span> ("Send email on your behalf").</li>
+    <li>Clear the filter, type <span class="kbd">calendar.events</span>, and check the Google Calendar API scope <span class="kbd">.../auth/calendar.events</span> ("View and edit events on all your calendars").</li>
+    <li>Scroll to the bottom of the panel and click <span class="kbd">Update</span>, then back on the page click <span class="kbd">Save</span>.</li>
+  </ol>
+  <div class="shot">
+    <div class="bar"><span class="dot" style="background:#f66"></span><span class="dot" style="background:#fc3"></span><span class="dot" style="background:#5c5"></span><span class="addr">console.cloud.google.com/auth/scopes?project=api-course-demo</span></div>
+    <div class="body">
+      <div style="font-weight:500; margin-bottom:10px;">🔒 Your sensitive scopes</div>
+      <table class="scopes">
+        <tr><th>API</th><th>Scope</th><th>User-facing description</th></tr>
+        <tr><td>Gmail API</td><td>.../auth/gmail.send</td><td>Send email on your behalf 🗑</td></tr>
+        <tr><td>Google Calendar API</td><td>.../auth/calendar.events</td><td>View and edit events on all your calendars 🗑</td></tr>
+      </table>
+      <span class="g-btn">Save</span><span class="g-btn ghost">Discard changes</span>
+    </div>
+    <div class="caption">▲ Redrawn from the actual UI: both scopes fall under "sensitive scopes" and can be used directly while in testing mode.</div>
+  </div>
+  <div class="tip"><b>Scope selection: keep it minimal</b>Common options — read-only mail: <span class="kbd">gmail.readonly</span>; send-only: <span class="kbd">gmail.send</span>; full mailbox: <span class="kbd">https://mail.google.com/</span> (a restricted scope requiring security review for production); calendar read/write: <span class="kbd">calendar.events</span>; calendar read-only: <span class="kbd">calendar.events.readonly</span>. The narrower the scope, the simpler the review and the lower the risk.</div>
+</section>
+
+<section class="step" id="s7">
+  <div class="step-head"><div class="step-num">7</div><h2>Add a test user</h2></div>
+  <p>While your app is in "Testing" status, <b>only accounts on the test user list</b> can complete OAuth authorization. Google Auth Platform → <span class="kbd">Audience</span> → in the test users section click <span class="kbd">+ Add users</span>.</p>
+  <div class="shot">
+    <div class="bar"><span class="dot" style="background:#f66"></span><span class="dot" style="background:#fc3"></span><span class="dot" style="background:#5c5"></span><span class="addr">console.cloud.google.com/auth/audience?project=api-course-demo</span></div>
+    <div class="body">
+      <div style="font-weight:500;">Test users</div>
+      <div class="g-note" style="margin-bottom:8px;">1 user (1 test user, 0 other users) / limit 100</div>
+      <span class="g-btn ghost">+ Add users</span>
+      <table class="scopes" style="max-width:420px;">
+        <tr><th>User info</th></tr>
+        <tr><td>your-account@gmail.com 🗑</td></tr>
+      </table>
+    </div>
+    <div class="caption">▲ Redrawn from the actual UI: enter your Gmail and click "Save"; success is confirmed when the account appears in the list.</div>
+  </div>
+  <p>Enter the Gmail address you'll use for testing (usually your own account) and click <span class="kbd">Save</span>. The limit is 100 users.</p>
+  <div class="tip"><b>Want to launch this to everyone?</b>At the top of the "Audience" page there's a "Publish App" button to switch to production. Apps using sensitive/restricted scopes require Google verification (days to weeks). For personal use or course exercises, staying in testing mode is fine — the only downside is the refresh token expires after 7 days, after which you just re-authorize once.</div>
+</section>
+
+<section class="step" id="s8">
+  <div class="step-head"><div class="step-num">8</div><h2>Call the API (Python example)</h2></div>
+  <p>Put the <span class="kbd">credentials.json</span> file downloaded in step 5 in the same folder as your script, then install the packages:</p>
+  <pre>pip install google-auth-oauthlib google-api-python-client</pre>
+  <p>The first run automatically opens a browser; sign in with your <b>test user account</b> and grant consent (you'll see "Google hasn't verified this app" — just click "Continue", since it's your own app). After authorizing, the token is cached locally so you won't need to sign in again.</p>
+  <pre><span class="c"># demo.py — send an email + create a calendar event</span>
+from google_auth_oauthlib.flow import InstalledAppFlow
+from googleapiclient.discovery import build
+import base64, os.path, pickle
+from email.mime.text import MIMEText
+
+SCOPES = [
+    "https://www.googleapis.com/auth/gmail.send",
+    "https://www.googleapis.com/auth/calendar.events",
+]
+
+<span class="c"># --- OAuth authorization (opens a browser the first time) ---</span>
+creds = None
+if os.path.exists("token.pickle"):
+    with open("token.pickle", "rb") as f:
+        creds = pickle.load(f)
+if not creds or not creds.valid:
+    flow = InstalledAppFlow.from_client_secrets_file("credentials.json", SCOPES)
+    creds = flow.run_local_server(port=0)
+    with open("token.pickle", "wb") as f:
+        pickle.dump(creds, f)
+
+<span class="c"># --- Gmail: send an email ---</span>
+gmail = build("gmail", "v1", credentials=creds)
+msg = MIMEText("Hello, this email was sent via the Gmail API!")
+msg["to"] = "someone@example.com"
+msg["subject"] = "Gmail API test"
+raw = base64.urlsafe_b64encode(msg.as_bytes()).decode()
+gmail.users().messages().send(userId="me", body={"raw": raw}).execute()
+print("Email sent!")
+
+<span class="c"># --- Calendar: create an event ---</span>
+cal = build("calendar", "v3", credentials=creds)
+event = {
+    "summary": "API course exercise",
+    "start": {"dateTime": "2026-07-20T10:00:00+08:00"},
+    "end":   {"dateTime": "2026-07-20T11:00:00+08:00"},
+}
+created = cal.events().insert(calendarId="primary", body=event).execute()
+print("Event created:", created.get("htmlLink"))</pre>
+</section>
+
+<section class="step" id="s9">
+  <div class="step-head"><div class="step-num">9</div><h2>FAQ</h2></div>
+  <h3>Q1: "Access denied" error during authorization (403: access_denied)?</h3>
+  <p>The signed-in account isn't on the test user list. Go back to step 7 and add it.</p>
+  <h3>Q2: "Google hasn't verified this app" warning appears?</h3>
+  <p>Normal for testing mode. Click "Continue" (sometimes hidden under an "Advanced" link) — it's fine since this is your own app.</p>
+  <h3>Q3: The token stops working after a few days and asks you to sign in again?</h3>
+  <p>In testing mode, the refresh token is valid for 7 days. Delete <span class="kbd">token.pickle</span> and re-authorize, or publish the app to production.</p>
+  <h3>Q4: Can't find the "OAuth consent screen" menu item?</h3>
+  <p>Since 2024, Google folded it into "Google Auth Platform". Path: APIs & Services → OAuth consent screen, or open <span class="url">console.cloud.google.com/auth/overview</span> directly.</p>
+  <h3>Q5: The API is enabled, but the program still reports "API not enabled"?</h3>
+  <p>You likely selected the wrong project. Check the project name in the top-left of the console, and confirm credentials.json was downloaded from that same project.</p>
+</section>
+
+</main>
+<footer>Written from a hands-on walkthrough of the Google Cloud Console flow in July 2026 · Screenshots redrawn from the actual UI · For learning purposes only</footer>
+</body>
+</html>
